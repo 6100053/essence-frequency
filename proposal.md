@@ -16,7 +16,7 @@ The player will be able to explore a main world area, and play levels from porta
         - [x] Level portals
             - [ ] Level progress info
             - [ ] Song info
-    - [ ] Completed levels indicator
+    - [ ] Completed levels count
     - [x] Background
     - [ ] Pause menu
 - Levels
@@ -27,6 +27,7 @@ The player will be able to explore a main world area, and play levels from porta
         - [x] Capsule movement
             - [x] Background animation
         - [ ] Obstacles
+            - [ ] Basic movement
             - [ ] Player collision
     - Progress
         - [ ] Start transition
@@ -52,9 +53,10 @@ The player will be able to explore a main world area, and play levels from porta
             - Level progress info
                 - [ ] **Points/best**
             - Song info
-    - [ ] **Level points display**
+    - [ ] **Level points count**
     - Background
-        - [ ] **Changing based on nearby portals**
+        - [ ] **Changing based on areas/nearby portals**
+    - [ ] **Ambient music near portals**
     - Pause menu
 - Levels
     - Player
@@ -64,6 +66,7 @@ The player will be able to explore a main world area, and play levels from porta
         - Capsule movement
             - Background animation
         - Obstacles
+            - Basic movement
             - Player collision
             - [ ] **Different shapes**
     - Progress
@@ -72,6 +75,7 @@ The player will be able to explore a main world area, and play levels from porta
         - Level completion
             - [ ] **Different amounts of points (Either for getting further in level or getting hit less)**
         - Level failing
+            - [ ] **Multiple tries (Lives/Checkpoints)**
     - Pause menu
 - Game data
     - [ ] **Fninshed world area**

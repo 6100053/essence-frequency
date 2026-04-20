@@ -24,13 +24,13 @@ const KEYS = {
 
 // Game states
 const STATES = {
+  none: "",
   world: "world",
   level: "level",
 };
 
 //shapes???
 //player size etc??
-//pending state string
 
 //////// Data for the game's world levels ////////
 
@@ -88,7 +88,7 @@ let worldPortals = [
 //////// Variables for playing the game ////////
 
 let gameState;
-let pendingState = "";
+let pendingState = STATES.none;
 let pendingStateLevel = [];
 
 let player;
@@ -310,10 +310,10 @@ function drawPlayer() {
 
 function checkTransition() {
   // Check if it's time to change the game state or finish the transition
-  if (pendingState !== "" && millis() >= transition.switchTime) {
+  if (pendingState !== STATES.none && millis() >= transition.switchTime) {
     setGameState(pendingState, pendingStateLevel);
   
-    pendingState = "";
+    pendingState = STATES.none;
     pendingStateLevel = [];
   }
   if (transition.active && millis() >= transition.switchTime + transition.duration) {
