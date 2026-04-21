@@ -14,7 +14,7 @@ The player will be able to explore a main world area, and play levels from porta
         - [x] World border wall
         - [ ] Other world walls
         - [x] Level portals
-            - [ ] Level progress info
+            - [ ] Level completed indicator
             - [ ] Song info
     - [ ] Completed levels count
     - [x] Background
@@ -52,8 +52,7 @@ The player will be able to explore a main world area, and play levels from porta
         - [ ] **Gates (opened with points)**
         - [ ] **Other interacive mechanics**
         - Level portals
-            - Level progress info
-                - [ ] **Points/best**
+            - [ ] **Level progress info (Best score, attempts, etc)**
             - Song info
     - [ ] **Level points count**
     - Background
@@ -71,7 +70,7 @@ The player will be able to explore a main world area, and play levels from porta
         - Obstacles
             - Basic movement
             - Player collision
-            - [ ] **Different shapes**
+            - [ ] **Different obstacle shapes**
     - Progress
         - Start transition
         - Progress indicator

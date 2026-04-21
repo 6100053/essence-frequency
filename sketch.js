@@ -5,14 +5,13 @@
 // Extras for Experts:
 // -Placeholder
 
-//just check the rubric again to be sure
-
-//WHERE IN THE CODE DO I PUT THE CLASSES
+//find a way to put classes in proper place (data file?)
 //Data files of some kind?? //IS NODE INFO OK TO BE HERE? IF SO SHOULD IT BE A CONSTANT?? //should i make data files for portal info
 //See if constants needed (shapes???player size etc??)
 //other world walls, also classes
 
-//////// Classes //////// can rename/move later
+
+//////// Classes ////////
 
 class Portal {
   constructor(levelIndex, x, y) {
@@ -22,26 +21,36 @@ class Portal {
     this.color = {s: 50, b: 40};
     this.levelIndex = levelIndex;
     this.playerHover = false;
+    this.hoverAmount = 0;
+    this.hoverSpeed = 0.1;
   }
 
   checkPlayer() {
     if (collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x, this.y, this.size)) {
-      //placeholder for portal info drawing
-      this.color.b = 80;
+      this.playerHover = true;
 
       if (keyIsDown(KEYS.space)) {
         pendGameState(STATES.level, levels[this.levelIndex]);
       }
     } else {
-      //placeholder for no portal info drawing
-      this.color.b = 40;
+      this.playerHover = false;
     }
   }
 
   draw() {
+    if (this.playerHover) {
+      this.hoverAmount += this.hoverSpeed;
+    } else {
+      this.hoverAmount -= this.hoverSpeed;
+    }
+    this.hoverAmount = constrain(this.hoverAmount, 0, 1);
+
     noStroke();
     fill(levels[this.levelIndex].colorH, this.color.s, this.color.b);
     circle(this.x, this.y, this.size);
+
+    fill(levels[this.levelIndex].colorH, this.color.s, this.color.b*2);
+    circle(this.x, this.y, this.size * this.hoverAmount);
   }
 }
 
@@ -150,7 +159,7 @@ function setup() {
   rectMode(CENTER);
   angleMode(DEGREES);
   colorMode(HSB);
-
+  
   setGameState(STATES.world);
 }
 
@@ -165,7 +174,7 @@ function draw() {
       movePlayer();
       checkPortals();
     }
-
+    
     prepareDrawing();
     drawBackground();
     drawBorder();
@@ -194,7 +203,7 @@ function pendGameState(state, level = []) {
     // Store the next game state so it can be set at the end of the draw loop
     pendingState = state;
     pendingStateLevel = level;
-
+    
     transition.active = true;
     transition.switchTime = millis() + transition.duration;
   }
@@ -203,7 +212,7 @@ function pendGameState(state, level = []) {
 function setGameState(state, level = []) {
   // Change the game state and set up the new state
   gameState = state;
-
+  
   if (state === STATES.world) {
     player = worldPlayer;
     backdrop = {shape: "circle", spacing: 100, size: 50, angle: 0, backColor: {h: 0, s: 0, b: 0}, frontColor: {h: 0, s: 0, b: 10}};
@@ -218,12 +227,12 @@ function setGameState(state, level = []) {
     levelState.path = {border: 5, color: {h: 0, s: 0, b: 30}};
     
     levelState.levelObject = level;
-
+    
     // Register the first frame of the level
     levelState.startTime = millis();
     levelProgress();
     moveCapsule();
-
+    
     levelState.startTime = millis() + transition.duration;
   }
 }
@@ -244,13 +253,13 @@ function movePlayer() {
   let inputDown = keyIsDown(KEYS.down) || keyIsDown(KEYS.s);
   // Up arrow or W key
   let inputUp = keyIsDown(KEYS.up) || keyIsDown(KEYS.w);
-
+  
   // Convert input into movement direction
   let angle = inputRight * 360 * inputUp + inputLeft * 180 + inputDown * 90 + inputUp * 270;
   if (inputRight !== inputLeft && inputDown !== inputUp) {
     angle = angle / 2;
   }
-
+  
   if (gameState === STATES.world) {
     // Move player and collide with world border
     if (inputRight !== inputLeft || inputDown !== inputUp) {
@@ -263,14 +272,14 @@ function movePlayer() {
         player.y -= sin(angle) * player.speed;
       }
     }
-
+    
   } else if (gameState === STATES.level) {
     // Move player
     if (inputRight !== inputLeft || inputDown !== inputUp) {
       player.x += cos(angle) * player.speed;
       player.y += sin(angle) * player.speed;
     }
-
+    
     // Keep the player in the capsule
     let currentCapsule = levelState.capsule;
     
@@ -282,14 +291,14 @@ function movePlayer() {
 function prepareDrawing() {
   // Scale the scene so things take up the same space in the window regardless of how big it is
   scale(screenSize / viewSize);
-
+  
   // Translate the scene so everything is centered on the player (in world state) or the capsule (in game state)
   if (gameState === STATES.world) {
     translate(viewSize/2 - player.x, viewSize/2 - player.y);
-
+    
   } else if (gameState === STATES.level) {
     translate(viewSize/2 - levelState.capsule.x, viewSize/2 - levelState.capsule.y);
-
+    
   }
 }
 
@@ -299,13 +308,13 @@ function drawBackground() {
   let focusY;
   let frontColorH;
   let backColorH;
-
+  
   if (gameState === STATES.world) {
     focusX = player.x;
     focusY = player.y;
     frontColorH = backdrop.frontColor.h;
     backColorH = backdrop.backColor.h;
-
+    
   } else if (gameState === STATES.level) {
     focusX = levelState.capsule.x;
     focusY = levelState.capsule.y;
@@ -347,7 +356,7 @@ function checkTransition() {
   // Check if it's time to change the game state or finish the transition
   if (pendingState !== STATES.none && millis() >= transition.switchTime) {
     setGameState(pendingState, pendingStateLevel);
-  
+    
     pendingState = STATES.none;
     pendingStateLevel = [];
   }
@@ -397,19 +406,19 @@ function drawPortals() {
 
 function levelProgress() {
   // Gets the current progress through the level and through the paths
-
+  
   levelState.currentNodeIndex = 0;
   levelState.lastNodeTime = levelState.startTime;
   
   // Check the level's nodes in order
   for (let nodeIndex = 0; nodeIndex < levelState.levelObject.nodes.length; nodeIndex += 1) {
-
+    
     if (millis() - levelState.startTime >= beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeats, levelState.levelObject.tempo)) {
       // If the time before the capsule reaches the node has passed, set the capsule's current node as that one (but not if it's the last one)
       if (nodeIndex < levelState.levelObject.nodes.length - 1) {
         levelState.currentNodeIndex = nodeIndex;
         levelState.lastNodeTime = levelState.startTime + beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeats, levelState.levelObject.tempo);
-
+        
       } else {
         // If the last node in the level has been passed, exit to the world state
         pendGameState(STATES.world, 0);
@@ -425,13 +434,13 @@ function levelProgress() {
 function moveCapsule() {
   // Move the capsule along the path by setting the position based on the current node and time
   let levelCapsule = levelState.capsule;
-
+  
   let currentPath = levelState.levelObject.nodes[levelState.currentNodeIndex];
   let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
   
   // Amount from the last node to the next one (0 to 1)
   let amountBetweenNodes = (millis() - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeats, levelState.levelObject.tempo) - beatsToMillis(currentPath.timeBeats, levelState.levelObject.tempo));
-
+  
   // Set capsule and backdrop properties to values between those of the last and next node
   levelCapsule.x = lerp(currentPath.x, nextPath.x, amountBetweenNodes);
   levelCapsule.y = lerp(currentPath.y, nextPath.y, amountBetweenNodes);
@@ -445,13 +454,13 @@ function moveCapsule() {
   
   let newBackColor = {};
   let newFrontColor = {};
- 
+  
   newBackColor.s = lerp(currentPath.backdropData.backColor.s, nextPath.backdropData.backColor.s, amountBetweenNodes);
   newBackColor.b = lerp(currentPath.backdropData.backColor.b, nextPath.backdropData.backColor.b, amountBetweenNodes);
   
   newFrontColor.s = lerp(currentPath.backdropData.frontColor.s, nextPath.backdropData.frontColor.s, amountBetweenNodes);
   newFrontColor.b = lerp(currentPath.backdropData.frontColor.b, nextPath.backdropData.frontColor.b, amountBetweenNodes);
-
+  
   backdrop.backColor = newBackColor;
   backdrop.frontColor = newFrontColor;
 }
@@ -466,7 +475,7 @@ function drawPaths() {
   for (let lineIndex = 0; lineIndex < levelLines.length - 1; lineIndex += 1) {
     let startNode = levelLines[lineIndex];
     let endNode = levelLines[lineIndex + 1];  
-
+    
     line(startNode.x, startNode.y, endNode.x, endNode.y);
   }
 }
