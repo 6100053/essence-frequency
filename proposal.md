@@ -45,10 +45,12 @@ The player will be able to explore a main world area, and play levels from porta
 - Main world area
     - Player
         - Movement
+        - [ ] **Smooth player following view**
     - Player interaction features
         - World border wall
         - Other world walls
-        - [ ] **Gates opened with points**
+        - [ ] **Gates (opened with points)**
+        - [ ] **Other interacive mechanics**
         - Level portals
             - Level progress info
                 - [ ] **Points/best**
@@ -65,6 +67,7 @@ The player will be able to explore a main world area, and play levels from porta
         - Music
         - Capsule movement
             - Background animation
+            - [ ] **Additional animations**
         - Obstacles
             - Basic movement
             - Player collision

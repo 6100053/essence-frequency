@@ -3,15 +3,53 @@
 // Mmmmm DD 2026
 //
 // Extras for Experts:
-// -Placeholder also maybe other SDS requirements
+// -Placeholder
 
-// (possible things to add: portal info, level progress/completion/fail, world features?, data files, attacks etc(later), music(later))
+//just check the rubric again to be sure
 
+//WHERE IN THE CODE DO I PUT THE CLASSES
+//Data files of some kind?? //IS NODE INFO OK TO BE HERE? IF SO SHOULD IT BE A CONSTANT?? //should i make data files for portal info
+//See if constants needed (shapes???player size etc??)
+//other world walls, also classes
 
-//////// Constants //////// (hdfljfdhdlkafhjd i might need to organize differently)
+//////// Classes //////// can rename/move later
+
+class Portal {
+  constructor(levelIndex, x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = 100;
+    this.color = {s: 50, b: 40};
+    this.levelIndex = levelIndex;
+    this.playerHover = false;
+  }
+
+  checkPlayer() {
+    if (collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x, this.y, this.size)) {
+      //placeholder for portal info drawing
+      this.color.b = 80;
+
+      if (keyIsDown(KEYS.space)) {
+        pendGameState(STATES.level, levels[this.levelIndex]);
+      }
+    } else {
+      //placeholder for no portal info drawing
+      this.color.b = 40;
+    }
+  }
+
+  draw() {
+    noStroke();
+    fill(levels[this.levelIndex].colorH, this.color.s, this.color.b);
+    circle(this.x, this.y, this.size);
+  }
+}
+
+//////// Constants ////////
 
 // Key codes
 const KEYS = {
+  space: 32,
   left: 37,
   up: 38,
   right: 39,
@@ -29,39 +67,36 @@ const STATES = {
   level: "level",
 };
 
-//shapes???
-//player size etc??
-
-//////// Data for the game's world levels ////////
+//////// Data for the game's levels ////////
 
 // The points on the path of the capsule through each level
 let allNodes = [
   [
-    {x: 0, y: 0, capsuleW: 100, capsuleH: 100, timeBeats: 0, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
-    {x: 0, y: 0, capsuleW: 100, capsuleH: 100, timeBeats: 4, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
-    {x: 400, y: 0, capsuleW: 100, capsuleH: 100, timeBeats: 8, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
-    {x: 400, y: -200, capsuleW: 200, capsuleH: 100, timeBeats: 12, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
-    {x: -400, y: -200, capsuleW: 200, capsuleH: 100, timeBeats: 20, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
-    {x: -400, y: 0, capsuleW: 200, capsuleH: 200, timeBeats: 24, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
-    {x: 0, y: 400, capsuleW: 200, capsuleH: 200, timeBeats: 30, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, backColor: {s: 100, b: 20}, frontColor: {s: 100, b: 5}}},
-    {x: 0, y: 0, capsuleW: 100, capsuleH: 100, timeBeats: 34, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
-    {x: 0, y: 0, capsuleW: 100, capsuleH: 100, timeBeats: 36, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
+    {timeBeats: 0, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
+    {timeBeats: 4, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
+    {timeBeats: 8, x: 400, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
+    {timeBeats: 12, x: 400, y: -200, capsuleW: 200, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
+    {timeBeats: 20, x: -400, y: -200, capsuleW: 200, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
+    {timeBeats: 24, x: -400, y: 0, capsuleW: 200, capsuleH: 200, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
+    {timeBeats: 30, x: 0, y: 400, capsuleW: 200, capsuleH: 200, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, backColor: {s: 100, b: 20}, frontColor: {s: 100, b: 5}}},
+    {timeBeats: 34, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
+    {timeBeats: 36, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
   ],
   [
-    {x: 0, y: 0, capsuleW: 150, capsuleH: 150, timeBeats: 0, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {x: 0, y: 0, capsuleW: 150, capsuleH: 150, timeBeats: 8, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {x: -300, y: 150, capsuleW: 150, capsuleH: 100, timeBeats: 16, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {x: -300, y: 450, capsuleW: 250, capsuleH: 100, timeBeats: 24, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {x: -150, y: 600, capsuleW: 250, capsuleH: 100, timeBeats: 28, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {x: 0, y: 450, capsuleW: 250, capsuleH: 100, timeBeats: 32, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {x: 150, y: 600, capsuleW: 250, capsuleH: 100, timeBeats: 36, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {x: 300, y: 450, capsuleW: 250, capsuleH: 100, timeBeats: 40, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {x: 450, y: 150, capsuleW: 50, capsuleH: 50, timeBeats: 48, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {x: 450, y: 150, capsuleW: 50, capsuleH: 50, timeBeats: 52, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {x: 300, y: 150, capsuleW: 50, capsuleH: 50, timeBeats: 53, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {x: 300, y: 0, capsuleW: 50, capsuleH: 50, timeBeats: 54, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {x: 0, y: 0, capsuleW: 150, capsuleH: 150, timeBeats: 60, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {x: 0, y: 0, capsuleW: 150, capsuleH: 150, timeBeats: 64, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 0, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 8, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 16, x: -300, y: 150, capsuleW: 150, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 24, x: -300, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
+    {timeBeats: 28, x: -150, y: 600, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
+    {timeBeats: 32, x: 0, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
+    {timeBeats: 36, x: 150, y: 600, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
+    {timeBeats: 40, x: 300, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
+    {timeBeats: 48, x: 450, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 52, x: 450, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 53, x: 300, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 54, x: 300, y: 0, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 60, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 64, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
   ]
 ];
 
@@ -81,8 +116,8 @@ let worldBorder = {color: {h: 0, s: 0, b: 25}, corners: [
 ]};
 
 let worldPortals = [
-  {x: 400, y: 100, size: 100, color: {s: 50, b: 40}, level: levels[0], playerHover: false},
-  {x: -200, y: -300, size: 100, color: {s: 50, b: 40}, level: levels[1], playerHover: false}
+  new Portal(0, 400, 100),
+  new Portal(1, -200, -300)
 ];
 
 //////// Variables for playing the game ////////
@@ -333,15 +368,7 @@ function drawTransition() {
 function checkPortals() {
   // Check all the portals for player collision
   for (let portal of worldPortals) {
-    if (collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, portal.x, portal.y, portal.size)) {
-      portal.playerHover = true;
-
-      if (mouseIsPressed) {
-        pendGameState(STATES.level, portal.level);
-      }
-    } else {
-      portal.playerHover = false;
-    }
+    portal.checkPlayer();
   }
 }
 
@@ -360,20 +387,9 @@ function drawBorder() {
 }
 
 function drawPortals() {
-  // Draw the world's portals (This will include other world features eventually)
+  // Draw the world's portals ////This will include other world features eventually, in a seperate loop or its own function
   for (let portal of worldPortals) {
-    // Draw them brighter if player is touching
-    let portalColorB;
-
-    if (portal.playerHover) {
-      portalColorB = portal.color.b * 2;
-    } else { 
-      portalColorB = portal.color.b;
-    }
-
-    noStroke();
-    fill(portal.level.colorH, portal.color.s, portalColorB);
-    circle(portal.x, portal.y, portal.size);
+    portal.draw();
   }
 }
 
