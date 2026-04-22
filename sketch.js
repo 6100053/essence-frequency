@@ -18,39 +18,45 @@ class Portal {
     this.x = x;
     this.y = y;
     this.size = 100;
-    this.color = {s: 50, b: 40};
+    this.colorPrimary = {s: 50, b: 40};
+    this.colorSecondary = {s: 50, b: 80};
     this.levelIndex = levelIndex;
-    this.playerHover = false;
-    this.hoverAmount = 0;
+    this.playerHover = 0;
     this.hoverSpeed = 0.1;
   }
 
   checkPlayer() {
+    // Check if the player is touching the portal
     if (collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x, this.y, this.size)) {
-      this.playerHover = true;
+      this.playerHover += this.hoverSpeed;
 
+      // Enter the level if space key is pressed
       if (keyIsDown(KEYS.space)) {
         pendGameState(STATES.level, levels[this.levelIndex]);
       }
     } else {
-      this.playerHover = false;
+      this.playerHover -= this.hoverSpeed;
     }
+    this.playerHover = constrain(this.playerHover, 0, 1);
   }
 
   draw() {
-    if (this.playerHover) {
-      this.hoverAmount += this.hoverSpeed;
-    } else {
-      this.hoverAmount -= this.hoverSpeed;
-    }
-    this.hoverAmount = constrain(this.hoverAmount, 0, 1);
-
     noStroke();
-    fill(levels[this.levelIndex].colorH, this.color.s, this.color.b);
-    circle(this.x, this.y, this.size);
 
-    fill(levels[this.levelIndex].colorH, this.color.s, this.color.b*2);
-    circle(this.x, this.y, this.size * this.hoverAmount);
+    // Portal circles
+    fill(levels[this.levelIndex].colorH, this.colorPrimary.s, this.colorPrimary.b);
+    circle(this.x, this.y, this.size * (1 + this.playerHover / 2));
+
+    fill(levels[this.levelIndex].colorH, this.colorSecondary.s, this.colorSecondary.b);
+    circle(this.x, this.y, this.size * this.playerHover);
+
+    // Level info
+    fill(levels[this.levelIndex].colorH, this.colorPrimary.s, this.colorPrimary.b);
+    rect(this.x, this.y - this.size*1.5, this.size*2 * this.playerHover, this.size * this.playerHover);
+
+    fill(levels[this.levelIndex].colorH, this.colorSecondary.s, this.colorSecondary.b);
+    textSize(this.size / 4 * this.playerHover + Number.MIN_VALUE);//find some better way?? this seems good though
+    text(levels[this.levelIndex].name, this.x, this.y - this.size*1.5);
   }
 }
 
@@ -81,31 +87,31 @@ const STATES = {
 // The points on the path of the capsule through each level
 let allNodes = [
   [
-    {timeBeats: 0, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
-    {timeBeats: 4, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
-    {timeBeats: 8, x: 400, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
-    {timeBeats: 12, x: 400, y: -200, capsuleW: 200, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
-    {timeBeats: 20, x: -400, y: -200, capsuleW: 200, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
-    {timeBeats: 24, x: -400, y: 0, capsuleW: 200, capsuleH: 200, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, backColor: {s: 50, b: 10}, frontColor: {s: 50, b: 20}}},
-    {timeBeats: 30, x: 0, y: 400, capsuleW: 200, capsuleH: 200, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, backColor: {s: 100, b: 20}, frontColor: {s: 100, b: 5}}},
-    {timeBeats: 34, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
-    {timeBeats: 36, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 0, b: 10}}},
+    {timeBeats: 0, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 0, b: 10}}},
+    {timeBeats: 4, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 0, b: 10}}},
+    {timeBeats: 8, x: 400, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 50, b: 10}, colorFront: {s: 50, b: 20}}},
+    {timeBeats: 12, x: 400, y: -200, capsuleW: 200, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, colorBack: {s: 50, b: 10}, colorFront: {s: 50, b: 20}}},
+    {timeBeats: 20, x: -400, y: -200, capsuleW: 200, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, colorBack: {s: 50, b: 10}, colorFront: {s: 50, b: 20}}},
+    {timeBeats: 24, x: -400, y: 0, capsuleW: 200, capsuleH: 200, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, colorBack: {s: 50, b: 10}, colorFront: {s: 50, b: 20}}},
+    {timeBeats: 30, x: 0, y: 400, capsuleW: 200, capsuleH: 200, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, colorBack: {s: 100, b: 20}, colorFront: {s: 100, b: 5}}},
+    {timeBeats: 34, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 0, b: 10}}},
+    {timeBeats: 36, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 0, b: 10}}},
   ],
   [
-    {timeBeats: 0, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {timeBeats: 8, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {timeBeats: 16, x: -300, y: 150, capsuleW: 150, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {timeBeats: 24, x: -300, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {timeBeats: 28, x: -150, y: 600, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {timeBeats: 32, x: 0, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {timeBeats: 36, x: 150, y: 600, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {timeBeats: 40, x: 300, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 75, b: 15}}},
-    {timeBeats: 48, x: 450, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {timeBeats: 52, x: 450, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {timeBeats: 53, x: 300, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {timeBeats: 54, x: 300, y: 0, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {timeBeats: 60, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
-    {timeBeats: 64, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, backColor: {s: 0, b: 0}, frontColor: {s: 25, b: 15}}},
+    {timeBeats: 0, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
+    {timeBeats: 8, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
+    {timeBeats: 16, x: -300, y: 150, capsuleW: 150, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
+    {timeBeats: 24, x: -300, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
+    {timeBeats: 28, x: -150, y: 600, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
+    {timeBeats: 32, x: 0, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
+    {timeBeats: 36, x: 150, y: 600, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
+    {timeBeats: 40, x: 300, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
+    {timeBeats: 48, x: 450, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
+    {timeBeats: 52, x: 450, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
+    {timeBeats: 53, x: 300, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
+    {timeBeats: 54, x: 300, y: 0, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
+    {timeBeats: 60, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
+    {timeBeats: 64, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
   ]
 ];
 
@@ -159,6 +165,7 @@ function setup() {
   rectMode(CENTER);
   angleMode(DEGREES);
   colorMode(HSB);
+  textAlign(CENTER, CENTER);
   
   setGameState(STATES.world);
 }
@@ -215,7 +222,7 @@ function setGameState(state, level = []) {
   
   if (state === STATES.world) {
     player = worldPlayer;
-    backdrop = {shape: "circle", spacing: 100, size: 50, angle: 0, backColor: {h: 0, s: 0, b: 0}, frontColor: {h: 0, s: 0, b: 10}};
+    backdrop = {shape: "circle", spacing: 100, size: 50, angle: 0, colorBack: {h: 0, s: 0, b: 0}, colorFront: {h: 0, s: 0, b: 10}};
     
   } else if (state === STATES.level) {
     worldPlayer = structuredClone(player);
@@ -306,25 +313,25 @@ function drawBackground() {
   // Center the drawing on the player (in world state) or the capsule (in game state)
   let focusX;
   let focusY;
-  let frontColorH;
-  let backColorH;
+  let colorFrontH;
+  let colorBackH;
   
   if (gameState === STATES.world) {
     focusX = player.x;
     focusY = player.y;
-    frontColorH = backdrop.frontColor.h;
-    backColorH = backdrop.backColor.h;
+    colorFrontH = backdrop.colorFront.h;
+    colorBackH = backdrop.colorBack.h;
     
   } else if (gameState === STATES.level) {
     focusX = levelState.capsule.x;
     focusY = levelState.capsule.y;
-    frontColorH = levelState.levelObject.colorH;
-    backColorH = levelState.levelObject.colorH;
+    colorFrontH = levelState.levelObject.colorH;
+    colorBackH = levelState.levelObject.colorH;
   }
   
-  background(backColorH, backdrop.backColor.s, backdrop.backColor.b);
+  background(colorBackH, backdrop.colorBack.s, backdrop.colorBack.b);
   noStroke();
-  fill(frontColorH, backdrop.frontColor.s, backdrop.frontColor.b);
+  fill(colorFrontH, backdrop.colorFront.s, backdrop.colorFront.b);
   
   let shapeSpacing = backdrop.spacing;
   
@@ -452,17 +459,17 @@ function moveCapsule() {
   backdrop.size = lerp(currentPath.backdropData.size, nextPath.backdropData.size, amountBetweenNodes);
   backdrop.angle = lerp(currentPath.backdropData.angle, nextPath.backdropData.angle, amountBetweenNodes);
   
-  let newBackColor = {};
-  let newFrontColor = {};
+  let newcolorBack = {};
+  let newcolorFront = {};
   
-  newBackColor.s = lerp(currentPath.backdropData.backColor.s, nextPath.backdropData.backColor.s, amountBetweenNodes);
-  newBackColor.b = lerp(currentPath.backdropData.backColor.b, nextPath.backdropData.backColor.b, amountBetweenNodes);
+  newcolorBack.s = lerp(currentPath.backdropData.colorBack.s, nextPath.backdropData.colorBack.s, amountBetweenNodes);
+  newcolorBack.b = lerp(currentPath.backdropData.colorBack.b, nextPath.backdropData.colorBack.b, amountBetweenNodes);
   
-  newFrontColor.s = lerp(currentPath.backdropData.frontColor.s, nextPath.backdropData.frontColor.s, amountBetweenNodes);
-  newFrontColor.b = lerp(currentPath.backdropData.frontColor.b, nextPath.backdropData.frontColor.b, amountBetweenNodes);
+  newcolorFront.s = lerp(currentPath.backdropData.colorFront.s, nextPath.backdropData.colorFront.s, amountBetweenNodes);
+  newcolorFront.b = lerp(currentPath.backdropData.colorFront.b, nextPath.backdropData.colorFront.b, amountBetweenNodes);
   
-  backdrop.backColor = newBackColor;
-  backdrop.frontColor = newFrontColor;
+  backdrop.colorBack = newcolorBack;
+  backdrop.colorFront = newcolorFront;
 }
 
 function drawPaths() {
