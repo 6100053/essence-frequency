@@ -3,7 +3,9 @@
 // Mmmmm DD 2026
 //
 // Extras for Experts:
-// -Placeholder
+// - Handling of window resizing while the project is running (windowResized function)
+// - p5.collide2d library for collision between shapes
+// - Placeholder
 
 //find a way to put classes in proper place (data file?)
 //Data files of some kind?? //IS NODE INFO OK TO BE HERE? IF SO SHOULD IT BE A CONSTANT?? //should i make data files for portal info
@@ -23,6 +25,9 @@ class Portal {
     this.levelIndex = levelIndex;
     this.playerHover = 0;
     this.hoverSpeed = 0.1;
+    this.infoWidth = 300;
+    this.infoHeight = 100;
+    this.infoTextSize = 25;
   }
 
   checkPlayer() {
@@ -41,22 +46,29 @@ class Portal {
   }
 
   draw() {
+    let portalLevel = levels[this.levelIndex];
+
     noStroke();
 
     // Portal circles
-    fill(levels[this.levelIndex].colorH, this.colorPrimary.s, this.colorPrimary.b);
+    fill(portalLevel.colorH, this.colorPrimary.s, this.colorPrimary.b);
     circle(this.x, this.y, this.size * (1 + this.playerHover / 2));
 
-    fill(levels[this.levelIndex].colorH, this.colorSecondary.s, this.colorSecondary.b);
+    fill(portalLevel.colorH, this.colorSecondary.s, this.colorSecondary.b);
     circle(this.x, this.y, this.size * this.playerHover);
 
     // Level info
-    fill(levels[this.levelIndex].colorH, this.colorPrimary.s, this.colorPrimary.b);
-    rect(this.x, this.y - this.size*1.5, this.size*2 * this.playerHover, this.size * this.playerHover);
+    if (this.playerHover > 0) {
+      let infoY = this.y - (this.size + this.infoHeight/2);
 
-    fill(levels[this.levelIndex].colorH, this.colorSecondary.s, this.colorSecondary.b);
-    textSize(this.size / 4 * this.playerHover + Number.MIN_VALUE);//find some better way?? this seems good though
-    text(levels[this.levelIndex].name, this.x, this.y - this.size*1.5);
+      fill(portalLevel.colorH, this.colorPrimary.s, this.colorPrimary.b);
+      rect(this.x, infoY, this.infoWidth * this.playerHover, this.infoHeight * this.playerHover);
+  
+      fill(portalLevel.colorH, this.colorSecondary.s, this.colorSecondary.b);
+      textSize(this.infoTextSize * this.playerHover);
+      text(portalLevel.name, this.x, infoY - this.infoHeight/4 * this.playerHover);
+      text(portalLevel.tempo + " BPM    " + portalLevel.minorKey + " minor", this.x, infoY + this.infoHeight/4 * this.playerHover);
+    }
   }
 }
 
@@ -116,8 +128,8 @@ let allNodes = [
 ];
 
 let levels = [
-  {name: "Test name", tempo: 120, colorH: 240, nodes: allNodes[0]},
-  {name: "Another level", tempo: 168, colorH: 120, nodes: allNodes[1]}
+  {name: "Test name", minorKey: "C#", tempo: 120, colorH: 240, nodes: allNodes[0]},
+  {name: "Another level", minorKey: "Bb", tempo: 168, colorH: 120, nodes: allNodes[1]}
 ];
 
 let worldBorder = {color: {h: 0, s: 0, b: 25}, corners: [
