@@ -39,7 +39,7 @@ The player will be able to explore a main world area, and play levels from porta
     - [ ] Prototype world area
     - [ ] Prototype levels (1-3 levels, partial songs)
 
-## Desired Features
+## Desired Features (in bold)
 
 - Title screen/introduction
 - Main world area
@@ -54,11 +54,14 @@ The player will be able to explore a main world area, and play levels from porta
         - Level portals
             - [ ] **Level progress info (Best score, attempts, etc)**
             - Song info
+            - [ ] **Level icons**
+            - [ ] **Portal entering animation**
     - [ ] **Level points count**
     - Background
         - [ ] **Changing based on areas/nearby portals**
     - [ ] **Ambient music near portals**
     - Pause menu
+        - [ ] **Map**
 - Levels
     - Player
         - Movement

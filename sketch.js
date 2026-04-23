@@ -5,12 +5,17 @@
 // Extras for Experts:
 // - Handling of window resizing while the project is running (windowResized function)
 // - p5.collide2d library for collision between shapes
-// - Placeholder
+// - Placeholder (later look through code to find things)
+
+
+//Should my portals have the level index or the whole level as a property????????????????????????????????????????????????????????????????
 
 //find a way to put classes in proper place (data file?)
 //Data files of some kind?? //IS NODE INFO OK TO BE HERE? IF SO SHOULD IT BE A CONSTANT?? //should i make data files for portal info
-//See if constants needed (shapes???player size etc??)
+//See if constants needed (shapes???default world player/background etc??)
 //other world walls, also classes
+//download copy of collide2d?
+//fonts?
 
 
 //////// Classes ////////
@@ -25,9 +30,20 @@ class Portal {
     this.levelIndex = levelIndex;
     this.playerHover = 0;
     this.hoverSpeed = 0.1;
-    this.infoWidth = 300;
-    this.infoHeight = 100;
-    this.infoTextSize = 25;
+    this.hoverInfo = [
+      {yDirection: -1, width: 450, textSize: 25, textSpacing: 35,
+        textLines: [
+          levels[this.levelIndex].name,
+          levels[this.levelIndex].tempo + " BPM    " + levels[this.levelIndex].minorKey + " minor",
+        ]
+      },
+      {yDirection: 1, width: 350, textSize: 30, textSpacing: 40,
+        textLines: [
+          "[Level progress]",
+          "Press space to enter",
+        ]
+      },
+    ];
   }
 
   checkPlayer() {
@@ -35,8 +51,8 @@ class Portal {
     if (collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x, this.y, this.size)) {
       this.playerHover += this.hoverSpeed;
 
-      // Enter the level if space key is pressed
-      if (keyIsDown(KEYS.space)) {
+      // Enter the level if space key is pressed and the portal is fully open
+      if (keyIsDown(KEYS.space) && this.playerHover >= 1) {
         pendGameState(STATES.level, levels[this.levelIndex]);
       }
     } else {
@@ -50,24 +66,40 @@ class Portal {
 
     noStroke();
 
-    // Portal circles
+    // Draw the portal circles
     fill(portalLevel.colorH, this.colorPrimary.s, this.colorPrimary.b);
     circle(this.x, this.y, this.size * (1 + this.playerHover / 2));
 
     fill(portalLevel.colorH, this.colorSecondary.s, this.colorSecondary.b);
     circle(this.x, this.y, this.size * this.playerHover);
 
-    // Level info
+    // Display info about the level if the player is on the portal
     if (this.playerHover > 0) {
-      let infoY = this.y - (this.size + this.infoHeight/2);
+      // Draw both the top and bottom info boxes
+      for (let infoObject of this.hoverInfo) {
+        // Draw the base rectangle
+        let infoHeight = infoObject.textSpacing * (infoObject.textLines.length + 1);
+        let infoY = this.y + infoObject.yDirection * (this.size + infoHeight/2);
 
-      fill(portalLevel.colorH, this.colorPrimary.s, this.colorPrimary.b);
-      rect(this.x, infoY, this.infoWidth * this.playerHover, this.infoHeight * this.playerHover);
-  
-      fill(portalLevel.colorH, this.colorSecondary.s, this.colorSecondary.b);
-      textSize(this.infoTextSize * this.playerHover);
-      text(portalLevel.name, this.x, infoY - this.infoHeight/4 * this.playerHover);
-      text(portalLevel.tempo + " BPM    " + portalLevel.minorKey + " minor", this.x, infoY + this.infoHeight/4 * this.playerHover);
+        fill(portalLevel.colorH, this.colorPrimary.s, this.colorPrimary.b);
+        rect(this.x, infoY, infoObject.width * this.playerHover, infoHeight * this.playerHover);
+
+        fill(portalLevel.colorH, this.colorSecondary.s, this.colorSecondary.b);
+        textSize(infoObject.textSize * this.playerHover);
+
+        // Draw the text
+        let textY;
+        if (infoObject.yDirection === -1) {
+          textY = this.y - (this.size + infoObject.textSpacing * infoObject.textLines.length);
+        } else if (infoObject.yDirection === 1) {
+          textY = this.y + (this.size + infoObject.textSpacing);
+        }
+
+        for (let textString of infoObject.textLines) {
+          text(textString, this.x, lerp(infoY, textY, this.playerHover));
+          textY += infoObject.textSpacing;
+        }
+      }
     }
   }
 }
@@ -264,13 +296,9 @@ function beatsToMillis(beats, bpm) {
 //////// Draw loop functions used in all game states ////////
 
 function movePlayer() {
-  // Right arrow or D key
   let inputRight = keyIsDown(KEYS.right) || keyIsDown(KEYS.d);
-  // Left arrow or A key
   let inputLeft = keyIsDown(KEYS.left) || keyIsDown(KEYS.a);
-  // Down arrow or S key
   let inputDown = keyIsDown(KEYS.down) || keyIsDown(KEYS.s);
-  // Up arrow or W key
   let inputUp = keyIsDown(KEYS.up) || keyIsDown(KEYS.w);
   
   // Convert input into movement direction
