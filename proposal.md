@@ -15,7 +15,7 @@ The player will be able to explore a main world area, and play levels from porta
         - [ ] Other world walls
         - [x] Level portals
             - [ ] Level completed indicator
-            - [ ] Song info
+            - [x] Song info
     - [ ] Completed levels count
     - [x] Background
     - [ ] Pause menu

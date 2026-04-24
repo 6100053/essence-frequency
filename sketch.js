@@ -8,101 +8,13 @@
 // - Placeholder (later look through code to find things)
 
 
-//Should my portals have the level index or the whole level as a property????????????????????????????????????????????????????????????????
-
-//find a way to put classes in proper place (data file?)
-//Data files of some kind?? //IS NODE INFO OK TO BE HERE? IF SO SHOULD IT BE A CONSTANT?? //should i make data files for portal info
+//levels class
+//Data files of some kind?? //IS NODE INFO OK TO BE HERE? IF SO SHOULD IT BE A CONSTANT?? //should i make data files for portal info and levels too?
 //See if constants needed (shapes???default world player/background etc??)
 //other world walls, also classes
 //download copy of collide2d?
 //fonts?
-
-
-//////// Classes ////////
-
-class Portal {
-  constructor(levelIndex, x, y) {
-    this.x = x;
-    this.y = y;
-    this.size = 100;
-    this.colorPrimary = {s: 50, b: 40};
-    this.colorSecondary = {s: 50, b: 80};
-    this.levelIndex = levelIndex;
-    this.playerHover = 0;
-    this.hoverSpeed = 0.1;
-    this.hoverInfo = [
-      {yDirection: -1, width: 450, textSize: 25, textSpacing: 35,
-        textLines: [
-          levels[this.levelIndex].name,
-          levels[this.levelIndex].tempo + " BPM    " + levels[this.levelIndex].minorKey + " minor",
-        ]
-      },
-      {yDirection: 1, width: 350, textSize: 30, textSpacing: 40,
-        textLines: [
-          "[Level progress]",
-          "Press space to enter",
-        ]
-      },
-    ];
-  }
-
-  checkPlayer() {
-    // Check if the player is touching the portal
-    if (collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x, this.y, this.size)) {
-      this.playerHover += this.hoverSpeed;
-
-      // Enter the level if space key is pressed and the portal is fully open
-      if (keyIsDown(KEYS.space) && this.playerHover >= 1) {
-        pendGameState(STATES.level, levels[this.levelIndex]);
-      }
-    } else {
-      this.playerHover -= this.hoverSpeed;
-    }
-    this.playerHover = constrain(this.playerHover, 0, 1);
-  }
-
-  draw() {
-    let portalLevel = levels[this.levelIndex];
-
-    noStroke();
-
-    // Draw the portal circles
-    fill(portalLevel.colorH, this.colorPrimary.s, this.colorPrimary.b);
-    circle(this.x, this.y, this.size * (1 + this.playerHover / 2));
-
-    fill(portalLevel.colorH, this.colorSecondary.s, this.colorSecondary.b);
-    circle(this.x, this.y, this.size * this.playerHover);
-
-    // Display info about the level if the player is on the portal
-    if (this.playerHover > 0) {
-      // Draw both the top and bottom info boxes
-      for (let infoObject of this.hoverInfo) {
-        // Draw the base rectangle
-        let infoHeight = infoObject.textSpacing * (infoObject.textLines.length + 1);
-        let infoY = this.y + infoObject.yDirection * (this.size + infoHeight/2);
-
-        fill(portalLevel.colorH, this.colorPrimary.s, this.colorPrimary.b);
-        rect(this.x, infoY, infoObject.width * this.playerHover, infoHeight * this.playerHover);
-
-        fill(portalLevel.colorH, this.colorSecondary.s, this.colorSecondary.b);
-        textSize(infoObject.textSize * this.playerHover);
-
-        // Draw the text
-        let textY;
-        if (infoObject.yDirection === -1) {
-          textY = this.y - (this.size + infoObject.textSpacing * infoObject.textLines.length);
-        } else if (infoObject.yDirection === 1) {
-          textY = this.y + (this.size + infoObject.textSpacing);
-        }
-
-        for (let textString of infoObject.textLines) {
-          text(textString, this.x, lerp(infoY, textY, this.playerHover));
-          textY += infoObject.textSpacing;
-        }
-      }
-    }
-  }
-}
+//MAKE OBSTACLES!!
 
 //////// Constants ////////
 
@@ -160,8 +72,8 @@ let allNodes = [
 ];
 
 let levels = [
-  {name: "Test name", minorKey: "C#", tempo: 120, colorH: 240, nodes: allNodes[0]},
-  {name: "Another level", minorKey: "Bb", tempo: 168, colorH: 120, nodes: allNodes[1]}
+  {name: "Test name", minorKey: "C#", tempo: 120, colorH: 240, nodes: allNodes[0], progress: false},
+  {name: "Another level", minorKey: "Bb", tempo: 168, colorH: 120, nodes: allNodes[1], progress: false}
 ];
 
 let worldBorder = {color: {h: 0, s: 0, b: 25}, corners: [
@@ -174,10 +86,7 @@ let worldBorder = {color: {h: 0, s: 0, b: 25}, corners: [
   {x: -400, y: -500},
 ]};
 
-let worldPortals = [
-  new Portal(0, 400, 100),
-  new Portal(1, -200, -300)
-];
+let worldPortals = [];
 
 //////// Variables for playing the game ////////
 
@@ -210,6 +119,10 @@ function setup() {
   angleMode(DEGREES);
   colorMode(HSB);
   textAlign(CENTER, CENTER);
+
+  // Set up game variables
+  worldPortals.push(new Portal(levels[0], 400, 100));
+  worldPortals.push(new Portal(levels[1], -200, -300));
   
   setGameState(STATES.world);
 }
@@ -468,6 +381,7 @@ function levelProgress() {
         
       } else {
         // If the last node in the level has been passed, exit to the world state
+        levelState.levelObject.progress = true;
         pendGameState(STATES.world, 0);
       }
       
@@ -535,4 +449,95 @@ function drawCapsule() {
   stroke(currentCapsule.color.h, currentCapsule.color.s, currentCapsule.color.b);
   strokeWeight(currentCapsule.border);
   rect(currentCapsule.x, currentCapsule.y, currentCapsule.width + currentCapsule.border, currentCapsule.height + currentCapsule.border);
+}
+
+//////// Classes ////////
+
+class Portal {
+  constructor(levelObject, x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = 100;
+    this.colorPrimary = {s: 50, b: 40};
+    this.colorSecondary = {s: 50, b: 80};
+    this.levelObject = levelObject;
+    this.playerHover = 0;
+    this.hoverSpeed = 0.1;
+    this.hoverInfo = [
+      {yDirection: -1, width: 450, textSize: 25, textSpacing: 35,
+        textLines: [
+          this.levelObject.name,
+          this.levelObject.tempo + " BPM    " + this.levelObject.minorKey + " minor",
+        ]
+      },
+      {yDirection: 1, width: 350, textSize: 30, textSpacing: 40,
+        textLines: [
+          "[Level progress]",
+          "Press space to enter",
+        ]
+      },
+    ];
+  }
+
+  checkPlayer() {
+    // Check if the player is touching the portal
+    if (collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x, this.y, this.size)) {
+      this.playerHover += this.hoverSpeed;
+
+      // Enter the level if space key is pressed and the portal is fully open
+      if (keyIsDown(KEYS.space) && this.playerHover >= 1) {
+        pendGameState(STATES.level, this.levelObject);
+      }
+    } else {
+      this.playerHover -= this.hoverSpeed;
+    }
+    this.playerHover = constrain(this.playerHover, 0, 1);
+  }
+
+  draw() {
+    if (this.levelObject.progress) {
+      this.hoverInfo[1].textLines[0] = "Completed";
+    } else {
+      this.hoverInfo[1].textLines[0] = "Incomplete";
+    }
+
+
+    noStroke();
+
+    // Draw the portal circles
+    fill(this.levelObject.colorH, this.colorPrimary.s, this.colorPrimary.b);
+    circle(this.x, this.y, this.size * (1 + this.playerHover / 2));
+
+    fill(this.levelObject.colorH, this.colorSecondary.s, this.colorSecondary.b);
+    circle(this.x, this.y, this.size * this.playerHover);
+
+    // Display info about the level if the player is on the portal
+    if (this.playerHover > 0) {
+      // Draw both the top and bottom info boxes
+      for (let infoObject of this.hoverInfo) {
+        // Draw the base rectangle
+        let infoHeight = infoObject.textSpacing * (infoObject.textLines.length + 1);
+        let infoY = this.y + infoObject.yDirection * (this.size + infoHeight/2);
+
+        fill(this.levelObject.colorH, this.colorPrimary.s, this.colorPrimary.b);
+        rect(this.x, infoY, infoObject.width * this.playerHover, infoHeight * this.playerHover);
+
+        fill(this.levelObject.colorH, this.colorSecondary.s, this.colorSecondary.b);
+        textSize(infoObject.textSize * this.playerHover);
+
+        // Draw the text
+        let textY;
+        if (infoObject.yDirection === -1) {
+          textY = this.y - (this.size + infoObject.textSpacing * infoObject.textLines.length);
+        } else if (infoObject.yDirection === 1) {
+          textY = this.y + (this.size + infoObject.textSpacing);
+        }
+
+        for (let textString of infoObject.textLines) {
+          text(textString, this.x, lerp(infoY, textY, this.playerHover));
+          textY += infoObject.textSpacing;
+        }
+      }
+    }
+  }
 }
