@@ -5,16 +5,18 @@
 // Extras for Experts:
 // - Handling of window resizing while the project is running (windowResized function)
 // - p5.collide2d library for collision between shapes
-// - Placeholder (later look through code to find things)
+// - Using Object.keys() and object bracket notation for setting properties of capsule path nodes from data file
+// - PLACEHOLDER (later look through code to find things)
 
 
-//levels class
-//Data files of some kind?? //IS NODE INFO OK TO BE HERE? IF SO SHOULD IT BE A CONSTANT?? //should i make data files for portal info and levels too?
+//LEVEL CLASS OR JUST OBJECTS??? line 110ish
+//Same kind of data file setup with world objects
 //See if constants needed (shapes???default world player/background etc??)
-//other world walls, also classes
+//other world walls also classes
 //download copy of collide2d?
 //fonts?
 //MAKE OBSTACLES!!
+
 
 //////// Constants ////////
 
@@ -38,43 +40,10 @@ const STATES = {
   level: "level",
 };
 
-//////// Data for the game's levels ////////
+//////// Data variables for the game's world and levels ////////
 
-// The points on the path of the capsule through each level
-let allNodes = [
-  [
-    {timeBeats: 0, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 0, b: 10}}},
-    {timeBeats: 4, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 0, b: 10}}},
-    {timeBeats: 8, x: 400, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 50, b: 10}, colorFront: {s: 50, b: 20}}},
-    {timeBeats: 12, x: 400, y: -200, capsuleW: 200, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, colorBack: {s: 50, b: 10}, colorFront: {s: 50, b: 20}}},
-    {timeBeats: 20, x: -400, y: -200, capsuleW: 200, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 360, colorBack: {s: 50, b: 10}, colorFront: {s: 50, b: 20}}},
-    {timeBeats: 24, x: -400, y: 0, capsuleW: 200, capsuleH: 200, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, colorBack: {s: 50, b: 10}, colorFront: {s: 50, b: 20}}},
-    {timeBeats: 30, x: 0, y: 400, capsuleW: 200, capsuleH: 200, backdropData: {shape: "square", spacing: 100, size: 75, angle: 360, colorBack: {s: 100, b: 20}, colorFront: {s: 100, b: 5}}},
-    {timeBeats: 34, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 0, b: 10}}},
-    {timeBeats: 36, x: 0, y: 0, capsuleW: 100, capsuleH: 100, backdropData: {shape: "square", spacing: 100, size: 50, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 0, b: 10}}},
-  ],
-  [
-    {timeBeats: 0, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
-    {timeBeats: 8, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
-    {timeBeats: 16, x: -300, y: 150, capsuleW: 150, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
-    {timeBeats: 24, x: -300, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
-    {timeBeats: 28, x: -150, y: 600, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
-    {timeBeats: 32, x: 0, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
-    {timeBeats: 36, x: 150, y: 600, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: -45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
-    {timeBeats: 40, x: 300, y: 450, capsuleW: 250, capsuleH: 100, backdropData: {shape: "square", spacing: 75, size: 60, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 75, b: 15}}},
-    {timeBeats: 48, x: 450, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
-    {timeBeats: 52, x: 450, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
-    {timeBeats: 53, x: 300, y: 150, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
-    {timeBeats: 54, x: 300, y: 0, capsuleW: 50, capsuleH: 50, backdropData: {shape: "square", spacing: 75, size: 30, angle: 45, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
-    {timeBeats: 60, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
-    {timeBeats: 64, x: 0, y: 0, capsuleW: 150, capsuleH: 150, backdropData: {shape: "square", spacing: 75, size: 60, angle: 0, colorBack: {s: 0, b: 0}, colorFront: {s: 25, b: 15}}},
-  ]
-];
-
-let levels = [
-  {name: "Test name", minorKey: "C#", tempo: 120, colorH: 240, nodes: allNodes[0], progress: false},
-  {name: "Another level", minorKey: "Bb", tempo: 168, colorH: 120, nodes: allNodes[1], progress: false}
-];
+let gameLevelData;
+let allLevels = [];
 
 let worldBorder = {color: {h: 0, s: 0, b: 25}, corners: [
   {x: 0, y: -500},
@@ -111,6 +80,11 @@ let screenSize;
 
 //////// Setup and running functions ////////
 
+function preload() {
+  // Load game data
+  gameLevelData = loadJSON("gameleveldata.json");
+}
+
 function setup() {
   // Make the canvas square, and set modes for drawing
   screenSize = min(windowWidth, windowHeight);
@@ -120,9 +94,33 @@ function setup() {
   colorMode(HSB);
   textAlign(CENTER, CENTER);
 
-  // Set up game variables
-  worldPortals.push(new Portal(levels[0], 400, 100));
-  worldPortals.push(new Portal(levels[1], -200, -300));
+  // Set up game data
+  for (let levelData of gameLevelData.array) {
+    // The points on the path of the capsule through each level
+    let newCapsuleNodes = [];
+    let previousNode = levelData.capsulePath[0];
+    for (let node of levelData.capsulePath) {
+      // For each node, set its properties based on the data object, or the previous node's properties if not specified
+      let newNode = structuredClone(previousNode);
+      for (let property of Object.keys(node)) {
+        newNode[property] = node[property];
+      }
+      newCapsuleNodes.push(newNode);
+      previousNode = newNode;
+    }
+
+    // Add the level to the global array
+    let newInfo = levelData.info;
+    newInfo.nodes = newCapsuleNodes;
+    newInfo.progress = false;
+    allLevels.push(newInfo);
+
+    // let levelInfo = levelData.info;
+    // allLevels.push(new Level(levelInfo.name, levelInfo.minorKey, levelInfo.tempo, levelInfo.colorH, newCapsuleNodes));
+  }
+
+  worldPortals.push(new Portal(allLevels[0], 400, 100));
+  worldPortals.push(new Portal(allLevels[1], -200, -300));
   
   setGameState(STATES.world);
 }
@@ -408,19 +406,19 @@ function moveCapsule() {
   levelCapsule.width = lerp(currentPath.capsuleW, nextPath.capsuleW, amountBetweenNodes);
   levelCapsule.height = lerp(currentPath.capsuleH, nextPath.capsuleH, amountBetweenNodes);
   
-  backdrop.shape = currentPath.backdropData.shape;
-  backdrop.spacing = currentPath.backdropData.spacing;
-  backdrop.size = lerp(currentPath.backdropData.size, nextPath.backdropData.size, amountBetweenNodes);
-  backdrop.angle = lerp(currentPath.backdropData.angle, nextPath.backdropData.angle, amountBetweenNodes);
+  backdrop.shape = currentPath.bdShape;
+  backdrop.spacing = currentPath.bdSpacing;
+  backdrop.size = lerp(currentPath.bdSize, nextPath.bdSize, amountBetweenNodes);
+  backdrop.angle = lerp(currentPath.bdAngle, nextPath.bdAngle, amountBetweenNodes);
   
   let newcolorBack = {};
   let newcolorFront = {};
   
-  newcolorBack.s = lerp(currentPath.backdropData.colorBack.s, nextPath.backdropData.colorBack.s, amountBetweenNodes);
-  newcolorBack.b = lerp(currentPath.backdropData.colorBack.b, nextPath.backdropData.colorBack.b, amountBetweenNodes);
+  newcolorBack.s = lerp(currentPath.bdColorBack.s, nextPath.bdColorBack.s, amountBetweenNodes);
+  newcolorBack.b = lerp(currentPath.bdColorBack.b, nextPath.bdColorBack.b, amountBetweenNodes);
   
-  newcolorFront.s = lerp(currentPath.backdropData.colorFront.s, nextPath.backdropData.colorFront.s, amountBetweenNodes);
-  newcolorFront.b = lerp(currentPath.backdropData.colorFront.b, nextPath.backdropData.colorFront.b, amountBetweenNodes);
+  newcolorFront.s = lerp(currentPath.bdColorFront.s, nextPath.bdColorFront.s, amountBetweenNodes);
+  newcolorFront.b = lerp(currentPath.bdColorFront.b, nextPath.bdColorFront.b, amountBetweenNodes);
   
   backdrop.colorBack = newcolorBack;
   backdrop.colorFront = newcolorFront;
@@ -539,5 +537,16 @@ class Portal {
         }
       }
     }
+  }
+}
+
+class Level {
+  constructor(name, minorKey, tempo, colorH, nodes) {
+    this.name = name;
+    this.minorKey = minorKey;
+    this.tempo = tempo;
+    this.colorH = colorH;
+    this.nodes = nodes;
+    this.progress = false;
   }
 }
