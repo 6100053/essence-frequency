@@ -10,8 +10,8 @@
 
 
 //LEVEL CLASS OR JUST OBJECTS??? line 110ish
-//Same kind of data file setup with world objects
-//See if constants needed (shapes???default world player/background etc??)
+//Same kind of data file setup with world objects - level player + capsule + path, transition, view size?
+//See if constants needed - probably not, maybe text displays later
 //other world walls also classes
 //download copy of collide2d?
 //fonts?
@@ -40,21 +40,13 @@ const STATES = {
   level: "level",
 };
 
-//////// Data variables for the game's world and levels ////////
+//////// Data variables for the game's levels and world ////////
 
-let gameLevelData;
+let gameData;
+
 let allLevels = [];
 
-let worldBorder = {color: {h: 0, s: 0, b: 25}, corners: [
-  {x: 0, y: -500},
-  {x: 300, y: -500},
-  {x: 300, y: 0},
-  {x: 600, y: 0},
-  {x: 600, y: 200},
-  {x: -400, y: 200},
-  {x: -400, y: -500},
-]};
-
+let worldBorder;
 let worldPortals = [];
 
 //////// Variables for playing the game ////////
@@ -67,7 +59,7 @@ let player;
 let backdrop;
 
 // Holds the player's information for when the world state is switched (so they return to the same place when finished a level)
-let worldPlayer = {x: 0, y: 0, size: 10, speed: 5, color: {h: 0, s: 0, b: 100}};
+let worldPlayer;
 
 // This object holds all the information for when a level is being played
 let levelState = {};
@@ -82,7 +74,7 @@ let screenSize;
 
 function preload() {
   // Load game data
-  gameLevelData = loadJSON("gameleveldata.json");
+  gameData = loadJSON("gamedata.json");
 }
 
 function setup() {
@@ -95,7 +87,7 @@ function setup() {
   textAlign(CENTER, CENTER);
 
   // Set up game data
-  for (let levelData of gameLevelData.array) {
+  for (let levelData of gameData.levels) {
     // The points on the path of the capsule through each level
     let newCapsuleNodes = [];
     let previousNode = levelData.capsulePath[0];
@@ -108,19 +100,26 @@ function setup() {
       newCapsuleNodes.push(newNode);
       previousNode = newNode;
     }
-
+    
     // Add the level to the global array
     let newInfo = levelData.info;
     newInfo.nodes = newCapsuleNodes;
     newInfo.progress = false;
     allLevels.push(newInfo);
-
+    
     // let levelInfo = levelData.info;
     // allLevels.push(new Level(levelInfo.name, levelInfo.minorKey, levelInfo.tempo, levelInfo.colorH, newCapsuleNodes));
   }
 
-  worldPortals.push(new Portal(allLevels[0], 400, 100));
-  worldPortals.push(new Portal(allLevels[1], -200, -300));
+  let worldData = gameData.world;
+
+  worldBorder = worldData.border;
+
+  for (let portalData of worldData.portals) {
+    worldPortals.push(new Portal(allLevels[portalData.levelIndex], portalData.x, portalData.y));
+  }
+
+  worldPlayer = worldData.startPlayer;
   
   setGameState(STATES.world);
 }
@@ -177,7 +176,7 @@ function setGameState(state, level = []) {
   
   if (state === STATES.world) {
     player = worldPlayer;
-    backdrop = {shape: "circle", spacing: 100, size: 50, angle: 0, colorBack: {h: 0, s: 0, b: 0}, colorFront: {h: 0, s: 0, b: 10}};
+    backdrop = gameData.world.backdrop;
     
   } else if (state === STATES.level) {
     worldPlayer = structuredClone(player);

@@ -1,4 +1,4 @@
-# CSC30 Major Project Proposal
+# CSC30 Major Project Proposal and Progress
 
 For this project, I plan to create a music-based dodging game using some music I made in the past. The set of twelve songs I made were built around the idea that the musical elements of tempo and pitch are related because they are both just measures of frequency, and how there's only a finite set of unique ones (because doubling or halving a frequency keeps it the same in a way, only changing the octave). Each song is in a different one of the twelve musical keys, and each one has a different tempo (relitavely evenly spaced by frequency in a similar way to how the keys are). I plan to have my game, The Essence of Frequency, reflect the order and simplicity of these patterns. It will likely also work well with my style of creating games, with simple but funcitonal game mechanics and visuals.
 
@@ -14,7 +14,7 @@ The player will be able to explore a main world area, and play levels from porta
         - [x] World border wall
         - [ ] Other world walls
         - [x] Level portals
-            - [ ] Level completed indicator
+            - [x] Level completed indicator
             - [x] Song info
     - [ ] Completed levels count
     - [x] Background

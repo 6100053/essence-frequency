@@ -1,9 +1,28 @@
-{"array": 
-    [
+{
+    "world": {
+        "border": {
+            "color": {"h": 0, "s": 0, "b": 25},
+            "corners": [
+                {"x": 0, "y": -500},
+                {"x": 300, "y": -500},
+                {"x": 300, "y": 0},
+                {"x": 600, "y": 0},
+                {"x": 600, "y": 200},
+                {"x": -400, "y": 200},
+                {"x": -400, "y": -500}
+            ]
+        },
+        "portals": [
+            {"levelIndex": 0, "x": 400, "y": 100},
+            {"levelIndex": 1, "x": -200, "y": -300}
+        ],
+        "backdrop": {"shape": "circle", "spacing": 100, "size": 50, "angle": 0, "colorBack": {"h": 0, "s": 0, "b": 0}, "colorFront": {"h": 0, "s": 0, "b": 10}},
+        "startPlayer": {"x": 0, "y": 0, "size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}}
+    },
+    "levels": [
         {
             "info": {"name": "Test name", "minorKey": "C#", "tempo": 120, "colorH": 240},
-            "capsulePath":
-            [
+            "capsulePath": [
                 {"timeBeats": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}},
                 {"timeBeats": 4},
                 {"timeBeats": 8, "x": 400, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 50, "b": 20}},
@@ -17,8 +36,7 @@
         },
         {
             "info": {"name": "Another level", "minorKey": "Bb", "tempo": 168, "colorH": 120},
-            "capsulePath":
-            [
+            "capsulePath": [
                 {"timeBeats": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 75, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 25, "b": 10}},
                 {"timeBeats": 8, "x": -200, "y": 100, "bdAngle": 45, "bdColorFront": {"s": 50, "b": 10}},
                 {"timeBeats": 16, "y": 300, "capsuleW": 50, "capsuleH": 150, "bdColorFront": {"s": 10, "b": 10}},
