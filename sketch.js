@@ -10,7 +10,7 @@
 
 
 //LEVEL CLASS OR JUST OBJECTS??? line 110ish
-//Same kind of data file setup with world objects - level player + capsule + path, transition, view size?
+//Same kind of data file setup with world objects - transition, view size?
 //See if constants needed - probably not, maybe text displays later
 //other world walls also classes
 //download copy of collide2d?
@@ -87,7 +87,7 @@ function setup() {
   textAlign(CENTER, CENTER);
 
   // Set up game data
-  for (let levelData of gameData.levels) {
+  for (let levelData of gameData.levels.levelProperties) {
     // The points on the path of the capsule through each level
     let newCapsuleNodes = [];
     let previousNode = levelData.capsulePath[0];
@@ -180,20 +180,25 @@ function setGameState(state, level = []) {
     
   } else if (state === STATES.level) {
     worldPlayer = structuredClone(player);
+
+    let levelsData = gameData.levels;
     
-    player = {x: 0, y: 0, size: 10, speed: 5, color: {h: 0, s: 0, b: 100}};
+    player = levelsData.player;
     backdrop = {};
     
-    levelState.capsule = {border: 5, color: {h: 0, s: 0, b: 40}};
-    levelState.path = {border: 5, color: {h: 0, s: 0, b: 30}};
+    levelState.capsule = levelsData.capsule;
+    levelState.path = levelsData.path;
     
     levelState.levelObject = level;
     
-    // Register the first frame of the level
+    // Set up and register the first frame of the level
     levelState.startTime = millis();
     levelProgress();
     moveCapsule();
+    player.x = levelState.capsule.x;
+    player.y = levelState.capsule.y;
     
+    // Start transition
     levelState.startTime = millis() + transition.duration;
   }
 }
