@@ -32,7 +32,7 @@ The player will be able to explore a main world area, and play levels from porta
     - Progress
         - [ ] Start transition
         - [ ] Progress indicator
-        - [ ] Level completion
+        - [x] Level completion
         - [ ] Level failing
     - [ ] Pause menu
 - Game data

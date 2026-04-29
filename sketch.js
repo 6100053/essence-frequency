@@ -10,7 +10,6 @@
 
 
 //LEVEL CLASS OR JUST OBJECTS??? line 110ish
-//Same kind of data file setup with world objects - transition, view size?
 //See if constants needed - probably not, maybe text displays later
 //other world walls also classes
 //download copy of collide2d?
@@ -58,16 +57,16 @@ let pendingStateLevel = [];
 let player;
 let backdrop;
 
+let transition;
+
 // Holds the player's information for when the world state is switched (so they return to the same place when finished a level)
 let worldPlayer;
 
 // This object holds all the information for when a level is being played
 let levelState = {};
 
-let transition = {duration: 1000, color: {h: 0, s: 0, b: 0}, active: false, switchTime: 0};
-
 // Size of the view that the drawing will be scaled to
-let viewSize = 800;
+let viewSize;
 let screenSize;
 
 //////// Setup and running functions ////////
@@ -120,6 +119,8 @@ function setup() {
   }
 
   worldPlayer = worldData.startPlayer;
+
+  transition = worldData.startTransition;
   
   setGameState(STATES.world);
 }
@@ -175,8 +176,11 @@ function setGameState(state, level = []) {
   gameState = state;
   
   if (state === STATES.world) {
+    let worldData = gameData.world;
+
     player = worldPlayer;
-    backdrop = gameData.world.backdrop;
+    backdrop = worldData.backdrop;
+    viewSize = worldData.viewSize;
     
   } else if (state === STATES.level) {
     worldPlayer = structuredClone(player);
@@ -291,8 +295,8 @@ function drawBackground() {
   let shapeSpacing = backdrop.spacing;
   
   // Draw a grid of shapes, filling just the background of the canvas
-  for (let shapeX = -viewSize/2 + viewSize/2 % (shapeSpacing/2) + floor(focusX / shapeSpacing) * shapeSpacing; shapeX <= viewSize/2 + ceil(focusX / shapeSpacing) * shapeSpacing; shapeX += shapeSpacing) {
-    for (let shapeY = -viewSize/2 + viewSize/2 % (shapeSpacing/2) + floor(focusY / shapeSpacing) * shapeSpacing; shapeY <= viewSize/2 + ceil(focusY / shapeSpacing) * shapeSpacing; shapeY += shapeSpacing) {
+  for (let shapeX = -viewSize/2 - shapeSpacing + viewSize/2 % shapeSpacing + floor(focusX / shapeSpacing) * shapeSpacing; shapeX <= viewSize/2 + shapeSpacing + ceil(focusX / shapeSpacing) * shapeSpacing; shapeX += shapeSpacing) {
+    for (let shapeY = -viewSize/2 - shapeSpacing + viewSize/2 % shapeSpacing + floor(focusY / shapeSpacing) * shapeSpacing; shapeY <= viewSize/2 + shapeSpacing + ceil(focusY / shapeSpacing) * shapeSpacing; shapeY += shapeSpacing) {
       push();
       translate(shapeX, shapeY);
       rotate(backdrop.angle);
@@ -426,6 +430,8 @@ function moveCapsule() {
   
   backdrop.colorBack = newcolorBack;
   backdrop.colorFront = newcolorFront;
+
+  viewSize = lerp(currentPath.viewSize, nextPath.viewSize, amountBetweenNodes);
 }
 
 function drawPaths() {
