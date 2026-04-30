@@ -12,9 +12,8 @@
 //LEVEL CLASS OR JUST OBJECTS??? line 110ish
 //See if constants needed - probably not, maybe text displays later
 //other world walls also classes
-//download copy of collide2d?
-//fonts?
 //MAKE OBSTACLES!!
+//fonts?
 
 
 //////// Constants ////////
@@ -147,6 +146,7 @@ function draw() {
     if (!transition.active) {
       levelProgress();
       moveCapsule();
+      moveAttacks();
       movePlayer();
     }
     
@@ -154,6 +154,7 @@ function draw() {
     drawBackground();
     drawPaths();
     drawCapsule();
+    drawAttacks();
     drawPlayer();
   }
   checkTransition();
@@ -415,7 +416,7 @@ function moveCapsule() {
   levelCapsule.height = lerp(currentPath.capsuleH, nextPath.capsuleH, amountBetweenNodes);
   
   backdrop.shape = currentPath.bdShape;
-  backdrop.spacing = currentPath.bdSpacing;
+  backdrop.spacing = lerp(currentPath.bdSpacing, nextPath.bdSpacing, amountBetweenNodes);
   backdrop.size = lerp(currentPath.bdSize, nextPath.bdSize, amountBetweenNodes);
   backdrop.angle = lerp(currentPath.bdAngle, nextPath.bdAngle, amountBetweenNodes);
   
@@ -432,6 +433,15 @@ function moveCapsule() {
   backdrop.colorFront = newcolorFront;
 
   viewSize = lerp(currentPath.viewSize, nextPath.viewSize, amountBetweenNodes);
+}
+
+function moveAttacks() {
+  // //
+  // for (let attack of ////////) {
+  //   let amountThroughMovement = (millis() - levelState.startTime - beatsToMillis(attack.startTimeBeats, levelState.levelObject.tempo)) / (beatsToMillis(attack.endTimeBeats, levelState.levelObject.tempo) - beatsToMillis(attack.startTimeBeats, levelState.levelObject.tempo));
+
+
+  // }
 }
 
 function drawPaths() {
@@ -457,6 +467,10 @@ function drawCapsule() {
   stroke(currentCapsule.color.h, currentCapsule.color.s, currentCapsule.color.b);
   strokeWeight(currentCapsule.border);
   rect(currentCapsule.x, currentCapsule.y, currentCapsule.width + currentCapsule.border, currentCapsule.height + currentCapsule.border);
+}
+
+function drawAttacks() {
+
 }
 
 //////// Classes ////////

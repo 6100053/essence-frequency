@@ -38,6 +38,13 @@
                     {"timeBeats": 30, "x": 0, "y": 400, "bdColorBack": {"s": 100, "b": 20}, "bdColorFront": {"s": 100, "b": 5}},
                     {"timeBeats": 34, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}},
                     {"timeBeats": 36}
+                ],
+                "attacks": [
+                    {
+                        "shape": "square", "color": {"s": 100, "b": 100},
+                        "startTimeBeats": 2, "startX": 200, "startY": 0, "startW": 10, "startH": 5, "startAngle": 0,
+                        "endTimeBeats": 6, "endX": -200, "endY": 0, "endW": 10, "endH": 5, "endAngle": 0
+                    }
                 ]
             },
             {
