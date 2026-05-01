@@ -8,8 +8,8 @@
 // - Using Object.keys() and object bracket notation for setting properties of capsule path nodes from data file
 // - PLACEHOLDER (later look through code to find things)
 
-
-//LEVEL CLASS OR JUST OBJECTS??? line 110ish
+//SHOULD I MAKE CLASSES FOR SINGLE OBJECTS?
+////LEVEL CLASS OR JUST OBJECTS??? line 110ish
 //See if constants needed - probably not, maybe text displays later
 //other world walls also classes
 //MAKE OBSTACLES!!
@@ -98,10 +98,19 @@ function setup() {
       newCapsuleNodes.push(newNode);
       previousNode = newNode;
     }
+
+    // The attacks to avoid during the level
+    let newLevelAttacks = [];
+    for (let attackData of levelData.attacks) {
+      // For each attack, set its properties based on the data object
+      let newAttack = new Attack(attackData);
+      newLevelAttacks.push(newAttack);
+    }
     
     // Add the level to the global array
     let newInfo = levelData.info;
     newInfo.nodes = newCapsuleNodes;
+    newInfo.attacks = newLevelAttacks;
     newInfo.progress = false;
     allLevels.push(newInfo);
     
@@ -436,12 +445,10 @@ function moveCapsule() {
 }
 
 function moveAttacks() {
-  // //
-  // for (let attack of ////////) {
-  //   let amountThroughMovement = (millis() - levelState.startTime - beatsToMillis(attack.startTimeBeats, levelState.levelObject.tempo)) / (beatsToMillis(attack.endTimeBeats, levelState.levelObject.tempo) - beatsToMillis(attack.startTimeBeats, levelState.levelObject.tempo));
-
-
-  // }
+  //
+  for (let attack of levelState.levelObject.attacks) {
+    attack.move();
+  }
 }
 
 function drawPaths() {
@@ -470,7 +477,10 @@ function drawCapsule() {
 }
 
 function drawAttacks() {
-
+  //
+  for (let attack of levelState.levelObject.attacks) {
+    attack.draw();
+  }
 }
 
 //////// Classes ////////
@@ -561,6 +571,22 @@ class Portal {
         }
       }
     }
+  }
+}
+
+class Attack {
+  constructor(data) {
+    for (let property of Object.keys(data)) {
+      this[property] = data[property];
+    }
+  }
+
+  move() {
+    //
+  }
+
+  draw() {
+    //
   }
 }
 
