@@ -22,9 +22,9 @@
         "startTransition": {"duration": 1000, "color": {"h": 0, "s": 0, "b": 0}, "active": false, "switchTime": 0}
     },
     "levels": {
-        "player": {"size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
-        "capsule": {"border": 5, "color": {"h": 0, "s": 0, "b": 40}},
-        "path": {"border": 5, "color": {"h": 0, "s": 0, "b": 30}},
+        "playerProperties": {"size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
+        "capsuleProperties": {"border": 5, "color": {"h": 0, "s": 0, "b": 40}},
+        "pathProperties": {"border": 5, "color": {"h": 0, "s": 0, "b": 30}},
         "levelProperties": [
             {
                 "info": {"name": "Test name", "minorKey": "C#", "tempo": 120, "colorH": 240},
@@ -41,9 +41,9 @@
                 ],
                 "attacks": [
                     {
-                        "startTimeBeats": 2, "totalTimeBeats": 4, "color": {"s": 100, "b": 100},
-                        "startX": 200, "startY": 0, "startW": 10, "startH": 5, "startAngle": 0,
-                        "endX": -200, "endY": 0, "endW": 10, "endH": 5, "endAngle": 0
+                        "startTimeBeats": 4, "totalTimeBeats": 4, "color": {"s": 100, "b": 100},
+                        "startX": 400, "startY": 0, "startW": 50, "startH": 20,
+                        "endX": 0, "endY": 0, "endW": 50, "endH": 20
                     }
                 ]
             },
@@ -62,11 +62,7 @@
                     {"timeBeats": 48, "x": 0, "bdSize": 0, "viewSize": 800}
                 ],
                 "attacks": [
-                    {
-                        "startTimeBeats": 2, "totalTimeBeats": 4, "color": {"s": 100, "b": 100},
-                        "startX": 200, "startY": 0, "startW": 10, "startH": 5, "startAngle": 0,
-                        "endX": -200, "endY": 0, "endW": 10, "endH": 5, "endAngle": 0
-                    }
+
                 ]
             }
         ]

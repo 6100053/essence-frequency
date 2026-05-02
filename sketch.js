@@ -5,14 +5,14 @@
 // Extras for Experts:
 // - Handling of window resizing while the project is running (windowResized function)
 // - p5.collide2d library for collision between shapes
-// - Using Object.keys() and object bracket notation for setting properties of capsule path nodes from data file
+// - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-//SHOULD I MAKE CLASSES FOR SINGLE OBJECTS?
-////LEVEL CLASS OR JUST OBJECTS??? line 110ish
+
+//MAKE OBSTACLES!! need a good way to write attacks in data file
+////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can thinl about it, maybe will need classes when levels have more complex function)
 //See if constants needed - probably not, maybe text displays later
-//other world walls also classes
-//MAKE OBSTACLES!!
+//other world walls (also classes)
 //fonts?
 
 
@@ -100,12 +100,12 @@ function setup() {
     }
 
     // The attacks to avoid during the level
-    let newLevelAttacks = [];
-    for (let attackData of levelData.attacks) {
-      // For each attack, set its properties based on the data object
-      let newAttack = new Attack(attackData);
-      newLevelAttacks.push(newAttack);
-    }
+    let newLevelAttacks = levelData.attacks;
+    // let newLevelAttacks = [];
+    // for (let attackData of levelData.attacks) { //Loop for if I want to do the same thing as the nodes
+    //   let newAttack = attackData;
+    //   newLevelAttacks.push(newAttack);
+    // }
     
     // Add the level to the global array
     let newInfo = levelData.info;
@@ -155,7 +155,7 @@ function draw() {
     if (!transition.active) {
       levelProgress();
       moveCapsule();
-      moveAttacks();
+      moveObstacles();
       movePlayer();
     }
     
@@ -163,7 +163,7 @@ function draw() {
     drawBackground();
     drawPaths();
     drawCapsule();
-    drawAttacks();
+    drawObstacles();
     drawPlayer();
   }
   checkTransition();
@@ -197,11 +197,17 @@ function setGameState(state, level = []) {
 
     let levelsData = gameData.levels;
     
-    player = levelsData.player;
+    player = levelsData.playerProperties;
     backdrop = {};
     
-    levelState.capsule = levelsData.capsule;
-    levelState.path = levelsData.path;
+    levelState.capsule = levelsData.capsuleProperties;
+    levelState.path = levelsData.pathProperties;
+
+    levelState.obstacles = [];
+    for (let attackData of level.attacks) {
+      let newObstacle = new Obstacle(attackData);
+      levelState.obstacles.push(newObstacle);
+    }
     
     levelState.levelObject = level;
     
@@ -209,6 +215,7 @@ function setGameState(state, level = []) {
     levelState.startTime = millis();
     levelProgress();
     moveCapsule();
+    moveObstacles();
     player.x = levelState.capsule.x;
     player.y = levelState.capsule.y;
     
@@ -418,7 +425,7 @@ function moveCapsule() {
   // Amount from the last node to the next one (0 to 1)
   let amountBetweenNodes = (millis() - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeats, levelState.levelObject.tempo) - beatsToMillis(currentPath.timeBeats, levelState.levelObject.tempo));
   
-  // Set capsule and backdrop properties to values between those of the last and next node
+  // Set capsule, backdrop, and view properties to values between those of the last and next node
   levelCapsule.x = lerp(currentPath.x, nextPath.x, amountBetweenNodes);
   levelCapsule.y = lerp(currentPath.y, nextPath.y, amountBetweenNodes);
   levelCapsule.width = lerp(currentPath.capsuleW, nextPath.capsuleW, amountBetweenNodes);
@@ -444,10 +451,10 @@ function moveCapsule() {
   viewSize = lerp(currentPath.viewSize, nextPath.viewSize, amountBetweenNodes);
 }
 
-function moveAttacks() {
+function moveObstacles() {
   //
-  for (let attack of levelState.levelObject.attacks) {
-    attack.move();
+  for (let obstacle of levelState.obstacles) {
+    obstacle.move();
   }
 }
 
@@ -476,10 +483,10 @@ function drawCapsule() {
   rect(currentCapsule.x, currentCapsule.y, currentCapsule.width + currentCapsule.border, currentCapsule.height + currentCapsule.border);
 }
 
-function drawAttacks() {
+function drawObstacles() {
   //
-  for (let attack of levelState.levelObject.attacks) {
-    attack.draw();
+  for (let obstacle of levelState.obstacles) {
+    obstacle.draw();
   }
 }
 
@@ -574,19 +581,38 @@ class Portal {
   }
 }
 
-class Attack {
+class Obstacle {
   constructor(data) {
-    for (let property of Object.keys(data)) {
-      this[property] = data[property];
-    }
+    this.data = data;
   }
 
   move() {
-    //
+    // Move the obstacle by setting the position based on its attack data
+    if (this.isActive()) {
+      // Amount from the attack start to end (0 to 1)
+      let amountThroughMovement = (millis() - levelState.startTime - beatsToMillis(this.data.startTimeBeats, levelState.levelObject.tempo)) / beatsToMillis(this.data.totalTimeBeats, levelState.levelObject.tempo);
+
+      // Set obstacle properties to values between those of the start and end properties
+      this.x = lerp(this.data.startX, this.data.endX, amountThroughMovement);
+      this.y = lerp(this.data.startY, this.data.endY, amountThroughMovement);
+      this.width = lerp(this.data.startW, this.data.endW, amountThroughMovement);
+      this.height = lerp(this.data.startH, this.data.endH, amountThroughMovement);
+    }
   }
 
   draw() {
-    //
+    // Draw the obstacle
+    if (this.isActive()) {
+      noStroke();
+      fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b);
+      rect(this.x, this.y, this.width, this.height);
+    }
+  }
+
+  isActive() {
+    // Checks if it's time for the obstacle to exist in the level
+    let levelTempo = levelState.levelObject.tempo;
+    return millis() - levelState.startTime >= beatsToMillis(this.data.startTimeBeats, levelTempo) && millis() - levelState.startTime <= beatsToMillis(this.data.startTimeBeats, levelTempo) + beatsToMillis(this.data.totalTimeBeats, levelTempo);
   }
 }
 
