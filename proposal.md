@@ -26,14 +26,14 @@ The player will be able to explore a main world area, and play levels from porta
         - [ ] Music
         - [x] Capsule movement
             - [x] Background animation
-        - [ ] Obstacles
-            - [ ] Basic movement
-            - [ ] Player collision
+        - [x] Obstacles
+            - [x] Basic movement
+            - [x] Player collision
     - Progress
         - [ ] Start transition
         - [ ] Progress indicator
         - [x] Level completion
-        - [ ] Level failing
+        - [x] Level failing
     - [ ] Pause menu
 - Game data
     - [ ] Prototype world area
@@ -79,8 +79,10 @@ The player will be able to explore a main world area, and play levels from porta
         - Progress indicator
         - Level completion
             - [ ] **Different amounts of points (Either for getting further in level or getting hit less)**
+            - [ ] **Completion animation**
         - Level failing
             - [ ] **Multiple tries (Lives/Checkpoints)**
+            - [ ] **Failing animation**
     - Pause menu
 - Game data
     - [ ] **Fninshed world area**

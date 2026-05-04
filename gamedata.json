@@ -40,11 +40,8 @@
                     {"timeBeats": 36}
                 ],
                 "attacks": [
-                    {
-                        "startTimeBeats": 4, "totalTimeBeats": 4, "color": {"s": 100, "b": 100},
-                        "startX": 400, "startY": 0, "startW": 50, "startH": 20,
-                        "endX": 0, "endY": 0, "endW": 50, "endH": 20
-                    }
+                    {"startTimeBeats": 4, "totalTimeBeats": 4, "color": {"s": 100, "b": 100}, "startX": 400, "startY": 0, "startSize": 50, "endX": 0, "endY": 0, "endSize": 50},
+                    {"startTimeBeats": 6}
                 ]
             },
             {

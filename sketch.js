@@ -5,11 +5,12 @@
 // Extras for Experts:
 // - Handling of window resizing while the project is running (windowResized function)
 // - p5.collide2d library for collision between shapes
+// - Storing game data in JSON file
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
 
-//MAKE OBSTACLES!! need a good way to write attacks in data file
+//MAKE OBSTACLES: relitavetocapsule (decide how to do this), switch to polys for shapes
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can thinl about it, maybe will need classes when levels have more complex function)
 //See if constants needed - probably not, maybe text displays later
 //other world walls (also classes)
@@ -100,12 +101,17 @@ function setup() {
     }
 
     // The attacks to avoid during the level
-    let newLevelAttacks = levelData.attacks;
-    // let newLevelAttacks = [];
-    // for (let attackData of levelData.attacks) { //Loop for if I want to do the same thing as the nodes
-    //   let newAttack = attackData;
-    //   newLevelAttacks.push(newAttack);
-    // }
+    let newLevelAttacks = [];
+    let previousAttack = levelData.attacks[0];
+    for (let attack of levelData.attacks) {
+      // For each attack, set its properties based on the data object, or the previous attack's properties if not specified
+      let newAttack = structuredClone(previousAttack);
+      for (let property of Object.keys(attack)) {
+        newAttack[property] = attack[property];
+      }
+      newLevelAttacks.push(newAttack);
+      previousAttack = newAttack;
+    }
     
     // Add the level to the global array
     let newInfo = levelData.info;
@@ -247,11 +253,11 @@ function movePlayer() {
     // Move player and collide with world border
     if (inputRight !== inputLeft || inputDown !== inputUp) {
       player.x += cos(angle) * player.speed;
-      if (collideRectPoly(player.x - player.size / 2, player.y - player.size / 2, player.size, player.size, worldBorder.corners)) {
+      if (collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, worldBorder.corners)) {
         player.x -= cos(angle) * player.speed;
       }
       player.y += sin(angle) * player.speed;
-      if (collideRectPoly(player.x - player.size / 2, player.y - player.size / 2, player.size, player.size, worldBorder.corners)) {
+      if (collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, worldBorder.corners)) {
         player.y -= sin(angle) * player.speed;
       }
     }
@@ -595,8 +601,13 @@ class Obstacle {
       // Set obstacle properties to values between those of the start and end properties
       this.x = lerp(this.data.startX, this.data.endX, amountThroughMovement);
       this.y = lerp(this.data.startY, this.data.endY, amountThroughMovement);
-      this.width = lerp(this.data.startW, this.data.endW, amountThroughMovement);
-      this.height = lerp(this.data.startH, this.data.endH, amountThroughMovement);
+      this.size = lerp(this.data.startSize, this.data.endSize, amountThroughMovement);
+
+      // Check for player collision
+      if (collideRectRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x - this.size/2, this.y - this.size/2, this.size, this.size)) {
+        // Exit to the world state
+        pendGameState(STATES.world, 0);
+      }
     }
   }
 
@@ -605,7 +616,7 @@ class Obstacle {
     if (this.isActive()) {
       noStroke();
       fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b);
-      rect(this.x, this.y, this.width, this.height);
+      rect(this.x, this.y, this.size);
     }
   }
 
