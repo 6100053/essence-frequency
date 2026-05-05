@@ -29,34 +29,34 @@
             {
                 "info": {"name": "Test name", "minorKey": "C#", "tempo": 120, "colorH": 240},
                 "capsulePath": [
-                    {"timeBeats": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}, "viewSize": 800},
-                    {"timeBeats": 4},
-                    {"timeBeats": 8, "x": 400, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 50, "b": 20}},
-                    {"timeBeats": 12, "y": -200, "bdAngle": 360},
-                    {"timeBeats": 20, "x": -400, "capsuleW": 200},
-                    {"timeBeats": 24, "y": 0, "capsuleH": 200, "bdSize": 75},
-                    {"timeBeats": 30, "x": 0, "y": 400, "bdColorBack": {"s": 100, "b": 20}, "bdColorFront": {"s": 100, "b": 5}},
-                    {"timeBeats": 34, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}},
-                    {"timeBeats": 36}
+                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}, "viewSize": 800},
+                    {"timeBeat": 4},
+                    {"timeBeat": 8, "x": 400, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 50, "b": 20}},
+                    {"timeBeat": 12, "y": -200, "bdAngle": 360},
+                    {"timeBeat": 20, "x": -400, "capsuleW": 200},
+                    {"timeBeat": 24, "y": 0, "capsuleH": 200, "bdSize": 75},
+                    {"timeBeat": 30, "x": 0, "y": 400, "bdColorBack": {"s": 100, "b": 20}, "bdColorFront": {"s": 100, "b": 5}},
+                    {"timeBeat": 34, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}},
+                    {"timeBeat": 36}
                 ],
                 "attacks": [
-                    {"startTimeBeats": 4, "totalTimeBeats": 4, "color": {"s": 100, "b": 100}, "startX": 400, "startY": 0, "startSize": 50, "endX": 0, "endY": 0, "endSize": 50},
-                    {"startTimeBeats": 6}
+                    {"startBeat": 4, "moveBeats": 4, "color": {"s": 100, "b": 100}, "moveWithCapsule": true, "xStart": 100, "yStart": 0, "sizeStart": 50, "xMove": 100, "yMove": 0, "sizeMove": 0},
+                    {"startBeat": 6}
                 ]
             },
             {
                 "info": {"name": "Another level", "minorKey": "Bb", "tempo": 168, "colorH": 120},
                 "capsulePath": [
-                    {"timeBeats": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 75, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 25, "b": 10}, "viewSize": 800},
-                    {"timeBeats": 8, "x": -200, "y": 100, "bdAngle": 45, "bdColorFront": {"s": 50, "b": 10}},
-                    {"timeBeats": 16, "y": 300, "capsuleW": 50, "capsuleH": 150, "bdColorFront": {"s": 10, "b": 10}},
-                    {"timeBeats": 18, "x": -150, "y": 350, "bdAngle": -45},
-                    {"timeBeats": 20, "x": -100, "y": 300, "bdAngle": 45},
-                    {"timeBeats": 22, "x": -50, "y": 350, "bdAngle": -45},
-                    {"timeBeats": 24, "x": 0, "y": 300, "bdAngle": 45},
-                    {"timeBeats": 32, "x": 200, "y": 200, "capsuleW": 100, "capsuleH": 100, "bdColorFront": {"s": 50, "b": 10}},
-                    {"timeBeats": 40, "x": 300, "y": 0, "bdAngle": 0, "bdColorFront": {"s": 25, "b": 10}, "viewSize": 400},
-                    {"timeBeats": 48, "x": 0, "bdSize": 0, "viewSize": 800}
+                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 75, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 25, "b": 10}, "viewSize": 800},
+                    {"timeBeat": 8, "x": -200, "y": 100, "bdAngle": 45, "bdColorFront": {"s": 50, "b": 10}},
+                    {"timeBeat": 16, "y": 300, "capsuleW": 50, "capsuleH": 150, "bdColorFront": {"s": 10, "b": 10}},
+                    {"timeBeat": 18, "x": -150, "y": 350, "bdAngle": -45},
+                    {"timeBeat": 20, "x": -100, "y": 300, "bdAngle": 45},
+                    {"timeBeat": 22, "x": -50, "y": 350, "bdAngle": -45},
+                    {"timeBeat": 24, "x": 0, "y": 300, "bdAngle": 45},
+                    {"timeBeat": 32, "x": 200, "y": 200, "capsuleW": 100, "capsuleH": 100, "bdColorFront": {"s": 50, "b": 10}},
+                    {"timeBeat": 40, "x": 300, "y": 0, "bdAngle": 0, "bdColorFront": {"s": 25, "b": 10}, "viewSize": 400},
+                    {"timeBeat": 48, "x": 0, "bdSize": 0, "viewSize": 800}
                 ],
                 "attacks": [
 

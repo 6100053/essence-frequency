@@ -4,12 +4,12 @@
 //
 // Extras for Experts:
 // - Handling of window resizing while the project is running (windowResized function)
-// - p5.collide2d library for collision between shapes
+// - p5.collide2d library for collision between shapes (added before in-class demo)
 // - Storing game data in JSON file
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-
+//RERREANGE OBSTACLE ISACTIVE METHOD
 //MAKE OBSTACLES: relitavetocapsule (decide how to do this), switch to polys for shapes
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can thinl about it, maybe will need classes when levels have more complex function)
 //See if constants needed - probably not, maybe text displays later
@@ -402,11 +402,11 @@ function levelProgress() {
   // Check the level's nodes in order
   for (let nodeIndex = 0; nodeIndex < levelState.levelObject.nodes.length; nodeIndex += 1) {
     
-    if (millis() - levelState.startTime >= beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeats, levelState.levelObject.tempo)) {
+    if (millis() - levelState.startTime >= beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeat, levelState.levelObject.tempo)) {
       // If the time before the capsule reaches the node has passed, set the capsule's current node as that one (but not if it's the last one)
       if (nodeIndex < levelState.levelObject.nodes.length - 1) {
         levelState.currentNodeIndex = nodeIndex;
-        levelState.lastNodeTime = levelState.startTime + beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeats, levelState.levelObject.tempo);
+        levelState.lastNodeTime = levelState.startTime + beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeat, levelState.levelObject.tempo);
         
       } else {
         // If the last node in the level has been passed, exit to the world state
@@ -429,7 +429,7 @@ function moveCapsule() {
   let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
   
   // Amount from the last node to the next one (0 to 1)
-  let amountBetweenNodes = (millis() - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeats, levelState.levelObject.tempo) - beatsToMillis(currentPath.timeBeats, levelState.levelObject.tempo));
+  let amountBetweenNodes = (millis() - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeat, levelState.levelObject.tempo) - beatsToMillis(currentPath.timeBeat, levelState.levelObject.tempo));
   
   // Set capsule, backdrop, and view properties to values between those of the last and next node
   levelCapsule.x = lerp(currentPath.x, nextPath.x, amountBetweenNodes);
@@ -593,15 +593,25 @@ class Obstacle {
   }
 
   move() {
+    // Check if it's time for the obstacle to exist in the level REARRANGE?????????????????????????????????????
+    this.active = this.isActive();
+
     // Move the obstacle by setting the position based on its attack data
-    if (this.isActive()) {
+    if (this.active) {
       // Amount from the attack start to end (0 to 1)
-      let amountThroughMovement = (millis() - levelState.startTime - beatsToMillis(this.data.startTimeBeats, levelState.levelObject.tempo)) / beatsToMillis(this.data.totalTimeBeats, levelState.levelObject.tempo);
+      let amountThroughMovement = (millis() - levelState.startTime - beatsToMillis(this.data.startBeat, levelState.levelObject.tempo)) / beatsToMillis(this.data.moveBeats, levelState.levelObject.tempo);
 
       // Set obstacle properties to values between those of the start and end properties
-      this.x = lerp(this.data.startX, this.data.endX, amountThroughMovement);
-      this.y = lerp(this.data.startY, this.data.endY, amountThroughMovement);
-      this.size = lerp(this.data.startSize, this.data.endSize, amountThroughMovement);
+      let xFocus = 0;
+      let yFocus = 0;
+      if (this.data.moveWithCapsule) {
+        xFocus = levelState.capsule.x;
+        yFocus = levelState.capsule.y;
+      }
+
+      this.x = lerp(xFocus + this.data.xStart, xFocus + this.data.xStart + this.data.xMove, amountThroughMovement);
+      this.y = lerp(yFocus + this.data.yStart, yFocus + this.data.yStart + this.data.yMove, amountThroughMovement);
+      this.size = lerp(this.data.sizeStart, this.data.sizeStart + this.data.sizeMove, amountThroughMovement);
 
       // Check for player collision
       if (collideRectRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x - this.size/2, this.y - this.size/2, this.size, this.size)) {
@@ -613,7 +623,7 @@ class Obstacle {
 
   draw() {
     // Draw the obstacle
-    if (this.isActive()) {
+    if (this.active) {
       noStroke();
       fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b);
       rect(this.x, this.y, this.size);
@@ -623,7 +633,7 @@ class Obstacle {
   isActive() {
     // Checks if it's time for the obstacle to exist in the level
     let levelTempo = levelState.levelObject.tempo;
-    return millis() - levelState.startTime >= beatsToMillis(this.data.startTimeBeats, levelTempo) && millis() - levelState.startTime <= beatsToMillis(this.data.startTimeBeats, levelTempo) + beatsToMillis(this.data.totalTimeBeats, levelTempo);
+    return millis() - levelState.startTime >= beatsToMillis(this.data.startBeat, levelTempo) && millis() - levelState.startTime <= beatsToMillis(this.data.startBeat, levelTempo) + beatsToMillis(this.data.moveBeats, levelTempo);
   }
 }
 
