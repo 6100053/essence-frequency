@@ -9,8 +9,7 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-//RERREANGE OBSTACLE ISACTIVE METHOD
-//MAKE OBSTACLES: relitavetocapsule (decide how to do this), switch to polys for shapes
+//Obstacles: movewithcapsule (decide how to do this), switch to polys for shapes (have background use shapes too, figure out how to have circle?), more properties
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can thinl about it, maybe will need classes when levels have more complex function)
 //See if constants needed - probably not, maybe text displays later
 //other world walls (also classes)
@@ -37,6 +36,16 @@ const STATES = {
   none: "",
   world: "world",
   level: "level",
+};
+
+// Shapes
+const SHAPES = {
+  square: [
+    {x: -1/2, y: -1/2},
+    {x: 1/2, y: -1/2},
+    {x: 1/2, y: 1/2},
+    {x: -1/2, y: 1/2},
+  ]
 };
 
 //////// Data variables for the game's levels and world ////////
@@ -591,10 +600,11 @@ class Obstacle {
   constructor(data) {
     this.data = data;
   }
-
+  
   move() {
-    // Check if it's time for the obstacle to exist in the level REARRANGE?????????????????????????????????????
-    this.active = this.isActive();
+    // Check if it's time for the obstacle to exist in the level
+    let levelTempo = levelState.levelObject.tempo;
+    this.active = millis() - levelState.startTime >= beatsToMillis(this.data.startBeat, levelTempo) && millis() - levelState.startTime <= beatsToMillis(this.data.startBeat, levelTempo) + beatsToMillis(this.data.moveBeats, levelTempo);
 
     // Move the obstacle by setting the position based on its attack data
     if (this.active) {
@@ -614,6 +624,7 @@ class Obstacle {
       this.size = lerp(this.data.sizeStart, this.data.sizeStart + this.data.sizeMove, amountThroughMovement);
 
       // Check for player collision
+      //console.log(SHAPES[this.data.shape]); MAKING shapeS SOON!
       if (collideRectRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x - this.size/2, this.y - this.size/2, this.size, this.size)) {
         // Exit to the world state
         pendGameState(STATES.world, 0);
@@ -628,12 +639,6 @@ class Obstacle {
       fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b);
       rect(this.x, this.y, this.size);
     }
-  }
-
-  isActive() {
-    // Checks if it's time for the obstacle to exist in the level
-    let levelTempo = levelState.levelObject.tempo;
-    return millis() - levelState.startTime >= beatsToMillis(this.data.startBeat, levelTempo) && millis() - levelState.startTime <= beatsToMillis(this.data.startBeat, levelTempo) + beatsToMillis(this.data.moveBeats, levelTempo);
   }
 }
 
