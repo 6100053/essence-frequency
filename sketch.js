@@ -12,7 +12,7 @@
 //Obstacles?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can thinl about it, maybe will need classes when levels have more complex function)
 //See if constants needed - probably not, maybe text displays later
-//other world walls (also classes)
+//other world walls (also classes) REMANE WALL.CHECKPLAYER??
 //use deltaTime for pausing
 //fonts?
 
@@ -60,7 +60,7 @@ let gameData;
 
 let allLevels = [];
 
-let worldBorder;
+let worldWalls = [];
 let worldPortals = [];
 
 //////// Variables for playing the game ////////
@@ -101,7 +101,7 @@ function setup() {
   textAlign(CENTER, CENTER);
 
   // Set up game data
-  for (let levelData of gameData.levels.levelProperties) {
+  for (let levelData of structuredClone(gameData.levels.levelProperties)) {
     // The points on the path of the capsule through each level
     let newCapsuleNodes = [];
     let previousNode = levelData.capsulePath[0];
@@ -139,9 +139,11 @@ function setup() {
     // allLevels.push(new Level(levelInfo.name, levelInfo.minorKey, levelInfo.tempo, levelInfo.colorH, newCapsuleNodes));
   }
 
-  let worldData = gameData.world;
+  let worldData = structuredClone(gameData.world);
 
-  worldBorder = worldData.border;
+  for (let wallData of worldData.walls) {
+    worldWalls.push(new Wall(wallData.invert, wallData.color, wallData.corners));
+  }
 
   for (let portalData of worldData.portals) {
     worldPortals.push(new Portal(allLevels[portalData.levelIndex], portalData.x, portalData.y));
@@ -168,7 +170,7 @@ function draw() {
     
     prepareDrawing();
     drawBackground();
-    drawBorder();
+    drawWalls();
     drawPortals();
     drawPlayer();
     
@@ -207,7 +209,7 @@ function setGameState(state, level = []) {
   gameState = state;
   
   if (state === STATES.world) {
-    let worldData = gameData.world;
+    let worldData = structuredClone(gameData.world);
 
     player = worldPlayer;
     backdrop = worldData.backdrop;
@@ -216,7 +218,7 @@ function setGameState(state, level = []) {
   } else if (state === STATES.level) {
     worldPlayer = structuredClone(player);
 
-    let levelsData = gameData.levels;
+    let levelsData = structuredClone(gameData.levels);
     
     player = levelsData.playerProperties;
     backdrop = {};
@@ -265,14 +267,27 @@ function movePlayer() {
   }
   
   if (gameState === STATES.world) {
-    // Move player and collide with world border
+    // Move player and collide with world walls
     if (inputRight !== inputLeft || inputDown !== inputUp) {
+      let collide = false;
       player.x += cos(angle) * player.speed;
-      if (collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, worldBorder.corners)) {
+      for (let wall of worldWalls) {
+        if (wall.checkPlayer()) {
+          collide = true;
+        }
+      }
+      if (collide) {
         player.x -= cos(angle) * player.speed;
       }
+
+      collide = false;
       player.y += sin(angle) * player.speed;
-      if (collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, worldBorder.corners)) {
+      for (let wall of worldWalls) {
+        if (wall.checkPlayer()) {
+          collide = true;
+        }
+      }
+      if (collide) {
         player.y -= sin(angle) * player.speed;
       }
     }
@@ -389,22 +404,15 @@ function checkPortals() {
   }
 }
 
-function drawBorder() {
-  // Draw the world border polygon by filling everything outside of it using a mask
-  push();
-  beginClip({invert: true});
-  beginShape();
-  for (let corner of worldBorder.corners) {
-    vertex(corner.x, corner.y);
+function drawWalls() {
+  // Draw the world's walls
+  for (let wall of worldWalls) {
+    wall.draw();
   }
-  endShape(CLOSE);
-  endClip();
-  background(worldBorder.color.h, worldBorder.color.s, worldBorder.color.b);
-  pop();
 }
 
 function drawPortals() {
-  // Draw the world's portals ////This will include other world features eventually, in a seperate loop or its own function
+  // Draw the world's portals
   for (let portal of worldPortals) {
     portal.draw();
   }
@@ -516,6 +524,32 @@ function drawObstacles() {
 }
 
 //////// Classes ////////
+
+class Wall {
+  constructor(invert, color, corners) {
+    this.invert = invert,
+    this.color = color;
+    this.corners = corners;
+  }
+  
+  draw() {
+  // Draw the wall polygon, if it's a border fill everything outside of it using a mask
+    push();
+    beginClip({invert: this.invert});
+    beginShape();
+    for (let corner of this.corners) {
+      vertex(corner.x, corner.y);
+    }
+    endShape(CLOSE);
+    endClip();
+    background(this.color.h, this.color.s, this.color.b);
+    pop();
+  }
+
+  checkPlayer() {
+    return collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.corners); 
+  }
+}
 
 class Portal {
   constructor(levelObject, x, y) {
