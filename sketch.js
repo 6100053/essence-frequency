@@ -9,10 +9,11 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-//Obstacles: movewithcapsule (decide how to do this), switch to polys for shapes (have background use shapes too, figure out how to have circle?), more properties
+//Obstacles?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can thinl about it, maybe will need classes when levels have more complex function)
 //See if constants needed - probably not, maybe text displays later
 //other world walls (also classes)
+//use deltaTime for pausing
 //fonts?
 
 
@@ -40,10 +41,15 @@ const STATES = {
 
 // Shapes
 const SHAPES = {
-  square: [
+  "square": [
     {x: -1/2, y: -1/2},
     {x: 1/2, y: -1/2},
     {x: 1/2, y: 1/2},
+    {x: -1/2, y: 1/2},
+  ],
+  "wedge": [
+    {x: -1/2, y: -1/2},
+    {x: 1/2, y: -1/2},
     {x: -1/2, y: 1/2},
   ]
 };
@@ -234,14 +240,14 @@ function setGameState(state, level = []) {
     player.x = levelState.capsule.x;
     player.y = levelState.capsule.y;
     
-    // Start transition
+    // Start of transition
     levelState.startTime = millis() + transition.duration;
   }
 }
 
-function beatsToMillis(beats, bpm) {
-  // Calculates the number of milliseconds that the given number of beats at the given tempo take
-  return beats * (60000 / bpm);
+function beatsToMillis(beats) {
+  // Calculates the number of milliseconds that the given number of beats in the current level take
+  return beats * (60000 / levelState.levelObject.tempo);
 }
 
 //////// Draw loop functions used in all game states ////////
@@ -332,11 +338,15 @@ function drawBackground() {
       push();
       translate(shapeX, shapeY);
       rotate(backdrop.angle);
-      
-      if (backdrop.shape === "square") {
-        square(0, 0, backdrop.size);
-      } else if (backdrop.shape === "circle") {
+      if (backdrop.shape === "circle") {
         circle(0, 0, backdrop.size);
+      } else {
+        scale(backdrop.size);
+        beginShape();
+        for (let corner of SHAPES[backdrop.shape]) {
+          vertex(corner.x, corner.y);
+        }
+        endShape(CLOSE);
       }
       pop();
     }
@@ -411,11 +421,11 @@ function levelProgress() {
   // Check the level's nodes in order
   for (let nodeIndex = 0; nodeIndex < levelState.levelObject.nodes.length; nodeIndex += 1) {
     
-    if (millis() - levelState.startTime >= beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeat, levelState.levelObject.tempo)) {
+    if (millis() - levelState.startTime >= beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeat)) {
       // If the time before the capsule reaches the node has passed, set the capsule's current node as that one (but not if it's the last one)
       if (nodeIndex < levelState.levelObject.nodes.length - 1) {
         levelState.currentNodeIndex = nodeIndex;
-        levelState.lastNodeTime = levelState.startTime + beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeat, levelState.levelObject.tempo);
+        levelState.lastNodeTime = levelState.startTime + beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeat);
         
       } else {
         // If the last node in the level has been passed, exit to the world state
@@ -438,7 +448,7 @@ function moveCapsule() {
   let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
   
   // Amount from the last node to the next one (0 to 1)
-  let amountBetweenNodes = (millis() - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeat, levelState.levelObject.tempo) - beatsToMillis(currentPath.timeBeat, levelState.levelObject.tempo));
+  let amountBetweenNodes = (millis() - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat));
   
   // Set capsule, backdrop, and view properties to values between those of the last and next node
   levelCapsule.x = lerp(currentPath.x, nextPath.x, amountBetweenNodes);
@@ -467,7 +477,7 @@ function moveCapsule() {
 }
 
 function moveObstacles() {
-  //
+  // Move the obstacles
   for (let obstacle of levelState.obstacles) {
     obstacle.move();
   }
@@ -499,7 +509,7 @@ function drawCapsule() {
 }
 
 function drawObstacles() {
-  //
+  // Draw the obstacles
   for (let obstacle of levelState.obstacles) {
     obstacle.draw();
   }
@@ -555,7 +565,6 @@ class Portal {
       this.hoverInfo[1].textLines[0] = "Incomplete";
     }
 
-
     noStroke();
 
     // Draw the portal circles
@@ -599,33 +608,61 @@ class Portal {
 class Obstacle {
   constructor(data) {
     this.data = data;
+    this.active = false;
+    this.startPositionFound = !(this.data.withCapsule === "start");
   }
   
   move() {
     // Check if it's time for the obstacle to exist in the level
-    let levelTempo = levelState.levelObject.tempo;
-    this.active = millis() - levelState.startTime >= beatsToMillis(this.data.startBeat, levelTempo) && millis() - levelState.startTime <= beatsToMillis(this.data.startBeat, levelTempo) + beatsToMillis(this.data.moveBeats, levelTempo);
+    this.active = millis() - levelState.startTime >= beatsToMillis(this.data.startBeat) && millis() - levelState.startTime <= beatsToMillis(this.data.startBeat) + beatsToMillis(this.data.moveBeats);
 
     // Move the obstacle by setting the position based on its attack data
     if (this.active) {
+      if (!this.startPositionFound) {
+        // Find the capsule's position at the obstacle start time
+        let currentPath = levelState.levelObject.nodes[levelState.currentNodeIndex];
+        let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
+        let amountBetweenNodes = (beatsToMillis(this.data.startBeat) - (levelState.lastNodeTime - levelState.startTime)) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat));
+  
+        // Set the obstacle position relative to the calculated capsule position
+        this.data.xStart = lerp(currentPath.x, nextPath.x, amountBetweenNodes) + this.data.xStart;
+        this.data.yStart = lerp(currentPath.y, nextPath.y, amountBetweenNodes) + this.data.yStart;
+        this.startPositionFound = true;
+      }
+
       // Amount from the attack start to end (0 to 1)
-      let amountThroughMovement = (millis() - levelState.startTime - beatsToMillis(this.data.startBeat, levelState.levelObject.tempo)) / beatsToMillis(this.data.moveBeats, levelState.levelObject.tempo);
+      let amountThroughMovement = (millis() - levelState.startTime - beatsToMillis(this.data.startBeat)) / beatsToMillis(this.data.moveBeats);
 
       // Set obstacle properties to values between those of the start and end properties
       let xFocus = 0;
       let yFocus = 0;
-      if (this.data.moveWithCapsule) {
+      if (this.data.withCapsule === "move") {
         xFocus = levelState.capsule.x;
         yFocus = levelState.capsule.y;
       }
 
       this.x = lerp(xFocus + this.data.xStart, xFocus + this.data.xStart + this.data.xMove, amountThroughMovement);
       this.y = lerp(yFocus + this.data.yStart, yFocus + this.data.yStart + this.data.yMove, amountThroughMovement);
-      this.size = lerp(this.data.sizeStart, this.data.sizeStart + this.data.sizeMove, amountThroughMovement);
-
+      this.width = lerp(this.data.wStart, this.data.wStart + this.data.wMove, amountThroughMovement);
+      this.height = lerp(this.data.hStart, this.data.hStart + this.data.hMove, amountThroughMovement);
+      this.angle = lerp(this.data.angleStart, this.data.angleStart + this.data.angleMove, amountThroughMovement);
+      
       // Check for player collision
-      //console.log(SHAPES[this.data.shape]); MAKING shapeS SOON!
-      if (collideRectRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x - this.size/2, this.y - this.size/2, this.size, this.size)) {
+      let collision;
+      if (this.data.shape === "circle") {
+        collision = collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x, this.y, this.width);
+      } else {
+        let polygon = structuredClone(SHAPES[this.data.shape]);
+        for (let corner of polygon) {
+          let originalX = corner.x * this.width;
+          let originalY = corner.y * this.height;
+          corner.x = originalX * cos(-this.angle) + originalY * sin(-this.angle) + this.x;
+          corner.y = -originalX * sin(-this.angle) + originalY * cos(-this.angle) + this.y;
+        }
+        collision = collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, polygon);
+      }
+      
+      if (collision) {
         // Exit to the world state
         pendGameState(STATES.world, 0);
       }
@@ -637,7 +674,21 @@ class Obstacle {
     if (this.active) {
       noStroke();
       fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b);
-      rect(this.x, this.y, this.size);
+
+      push();
+      translate(this.x, this.y);
+      rotate(this.angle);
+      if (this.data.shape === "circle") {
+        circle(0, 0, this.width);
+      } else {
+        scale(this.width, this.height);
+        beginShape();
+        for (let corner of SHAPES[this.data.shape]) {
+          vertex(corner.x, corner.y);
+        }
+        endShape(CLOSE);
+      }
+      pop();
     }
   }
 }
