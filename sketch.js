@@ -9,10 +9,8 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-//Obstacles?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can thinl about it, maybe will need classes when levels have more complex function)
 //See if constants needed - probably not, maybe text displays later
-//other world walls (also classes) REMANE WALL.CHECKPLAYER??
 //use deltaTime for pausing
 //fonts?
 
@@ -188,6 +186,7 @@ function draw() {
     drawCapsule();
     drawObstacles();
     drawPlayer();
+    drawInfo();
   }
   checkTransition();
   drawTransition();
@@ -272,7 +271,7 @@ function movePlayer() {
       let collide = false;
       player.x += cos(angle) * player.speed;
       for (let wall of worldWalls) {
-        if (wall.checkPlayer()) {
+        if (wall.isCollidingPlayer()) {
           collide = true;
         }
       }
@@ -283,7 +282,7 @@ function movePlayer() {
       collide = false;
       player.y += sin(angle) * player.speed;
       for (let wall of worldWalls) {
-        if (wall.checkPlayer()) {
+        if (wall.isCollidingPlayer()) {
           collide = true;
         }
       }
@@ -523,6 +522,16 @@ function drawObstacles() {
   }
 }
 
+function drawInfo() {
+  // Prototype for progress drawing
+  let amountThroughLevel = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
+  let rectWidth = lerp(0, viewSize, amountThroughLevel);
+
+  noStroke();
+  fill(255);
+  rect(levelState.capsule.x - viewSize/2 + rectWidth/2, levelState.capsule.y + viewSize/2 - 10, rectWidth, 20);
+}
+
 //////// Classes ////////
 
 class Wall {
@@ -546,7 +555,7 @@ class Wall {
     pop();
   }
 
-  checkPlayer() {
+  isCollidingPlayer() {
     return collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.corners); 
   }
 }

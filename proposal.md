@@ -12,7 +12,7 @@ The player will be able to explore a main world area, and play levels from porta
         - [x] Movement
     - Player interaction features
         - [x] World border wall
-        - [ ] Other world walls
+        - [x] Other world walls
         - [x] Level portals
             - [x] Level completed indicator
             - [x] Song info
@@ -73,7 +73,7 @@ The player will be able to explore a main world area, and play levels from porta
         - Obstacles
             - Basic movement
             - Player collision
-            - [ ] **Different obstacle shapes**
+            - [x] **Different obstacle shapes**
     - Progress
         - Start transition
         - Progress indicator
