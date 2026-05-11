@@ -175,6 +175,7 @@ function draw() {
     drawWalls();
     drawPortals();
     drawPlayer();
+    drawGui();
     
   } else if (gameState === STATES.level) {
     if (!transition.active) {
@@ -190,7 +191,7 @@ function draw() {
     drawCapsule();
     drawObstacles();
     drawPlayer();
-    drawInfo();
+    drawGui();
   }
   checkTransition();
   drawTransition();
@@ -378,6 +379,18 @@ function drawPlayer() {
   square(player.x, player.y, player.size);
 }
 
+function drawGui() {
+  if (gameState === STATES.level) {
+    // Prototype for progress drawing
+    let amountThroughLevel = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
+    let rectWidth = lerp(0, viewSize, amountThroughLevel);
+  
+    noStroke();
+    fill(255);
+    rect(levelState.capsule.x - viewSize/2 + rectWidth/2, levelState.capsule.y + viewSize/2 - 10, rectWidth, 20);
+  }
+}
+
 function checkTransition() {
   // Check if it's time to change the game state or finish the transition
   if (pendingState !== STATES.none && millis() >= transition.switchTime) {
@@ -417,6 +430,7 @@ function drawWalls() {
 function drawPortals() {
   // Draw the world's portals
   for (let portal of worldPortals) {
+    portal.updateInfo();
     portal.draw();
   }
 }
@@ -526,16 +540,6 @@ function drawObstacles() {
   }
 }
 
-function drawInfo() {
-  // Prototype for progress drawing
-  let amountThroughLevel = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
-  let rectWidth = lerp(0, viewSize, amountThroughLevel);
-
-  noStroke();
-  fill(255);
-  rect(levelState.capsule.x - viewSize/2 + rectWidth/2, levelState.capsule.y + viewSize/2 - 10, rectWidth, 20);
-}
-
 //////// Classes ////////
 
 class Wall {
@@ -594,24 +598,27 @@ class Portal {
     // Check if the player is touching the portal
     if (collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x, this.y, this.size)) {
       this.playerHover += this.hoverSpeed;
-
-      // Enter the level if space key is pressed and the portal is fully open
-      if (keyIsDown(KEYS.space) && this.playerHover >= 1) {
-        pendGameState(STATES.level, this.levelObject);
-      }
     } else {
       this.playerHover -= this.hoverSpeed;
     }
     this.playerHover = constrain(this.playerHover, 0, 1);
+
+    // Enter the level if space key is pressed and the portal is fully open
+    if (keyIsDown(KEYS.space) && this.playerHover >= 1) {
+      pendGameState(STATES.level, this.levelObject);
+    }
   }
 
-  draw() {
+  updateInfo() {
+    // Update portal info for drawing
     if (this.levelObject.progress) {
-      this.hoverInfo[1].textLines[0] = "Completed";//move out of draw method?
+      this.hoverInfo[1].textLines[0] = "Completed";
     } else {
       this.hoverInfo[1].textLines[0] = "Incomplete";
     }
+  }
 
+  draw() {
     noStroke();
 
     // Draw the portal circles
@@ -693,19 +700,20 @@ class Obstacle {
       this.width = lerp(this.data.wStart, this.data.wStart + this.data.wMove, amountThroughMovement);
       this.height = lerp(this.data.hStart, this.data.hStart + this.data.hMove, amountThroughMovement);
       this.angle = lerp(this.data.angleStart, this.data.angleStart + this.data.angleMove, amountThroughMovement);
-      this.offset = lerp(this.data.offsetStart, this.data.offsetStart + this.data.offsetMove, amountThroughMovement);
+      this.offsetX = lerp(this.data.offsetXStart, this.data.offsetXStart + this.data.offsetXMove, amountThroughMovement);
+      this.offsetY = lerp(this.data.offsetYStart, this.data.offsetYStart + this.data.offsetYMove, amountThroughMovement);
       
-      // Check for player collision
+      // Check for player collision with the obstacle
       let collision;
       if (this.data.shape === "circle") {
-        collision = collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x + this.offset * sin(this.angle), this.y + this.offset * cos(this.angle), this.width);
+        collision = collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x + (this.offsetX * cos(-this.angle) + this.offsetY * sin(-this.angle)), this.y + (-this.offsetX * sin(-this.angle) + this.offsetY * cos(-this.angle)), this.width);
       } else {
         let polygon = structuredClone(SHAPES[this.data.shape]);
         for (let corner of polygon) {
-          let originalX = corner.x * this.width + this.offset;
-          let originalY = corner.y * this.height;
-          corner.x = originalX * cos(-this.angle) + originalY * sin(-this.angle) + this.x;
-          corner.y = -originalX * sin(-this.angle) + originalY * cos(-this.angle) + this.y;
+          let originalX = corner.x * this.width + this.offsetX;
+          let originalY = corner.y * this.height + this.offsetY;
+          corner.x = this.x + (originalX * cos(-this.angle) + originalY * sin(-this.angle));
+          corner.y = this.y + (-originalX * sin(-this.angle) + originalY * cos(-this.angle));
         }
         collision = collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, polygon);
       }
@@ -718,7 +726,7 @@ class Obstacle {
   }
 
   draw() {
-    // Draw the obstacle
+    // Draw the obstacle in its proper position and orientaton
     if (this.active) {
       noStroke();
       fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b);
@@ -726,7 +734,7 @@ class Obstacle {
       push();
       translate(this.x, this.y);
       rotate(this.angle);
-      translate(this.offset, 0);
+      translate(this.offsetX, this.offsetY);
       if (this.data.shape === "circle") {
         circle(0, 0, this.width);
       } else {

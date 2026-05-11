@@ -53,7 +53,7 @@
                     {"timeBeat": 36}
                 ],
                 "attacks": [
-                    {"startBeat": 4, "moveBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "none", "xStart": 200, "yStart": 0, "wStart": 25, "hStart": 25, "angleStart": 0, "offsetStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetMove": 400},
+                    {"startBeat": 4, "moveBeats": 8, "color": {"s": 100, "b": 100}, "shape": "circle", "withCapsule": "none", "xStart": 400, "yStart": 0, "wStart": 25, "hStart": 25, "angleStart": 0, "offsetXStart": 0, "offsetYStart": 200, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 180, "offsetXMove": 0, "offsetYMove": 0},
                     {"angleStart": 45},
                     {"angleStart": 90},
                     {"angleStart": 135},
