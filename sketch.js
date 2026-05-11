@@ -9,7 +9,11 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can thinl about it, maybe will need classes when levels have more complex function)
+//make sure comments are good
+//Does the player need to move with capsule somehow? maybe not if it moves slow enough
+//make sequences system for attacks data file?
+//work on gui system - level starting, progress, pause, title, etc
+////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
 //See if constants needed - probably not, maybe text displays later
 //use deltaTime for pausing
 //fonts?
@@ -603,7 +607,7 @@ class Portal {
 
   draw() {
     if (this.levelObject.progress) {
-      this.hoverInfo[1].textLines[0] = "Completed";
+      this.hoverInfo[1].textLines[0] = "Completed";//move out of draw method?
     } else {
       this.hoverInfo[1].textLines[0] = "Incomplete";
     }
@@ -689,15 +693,16 @@ class Obstacle {
       this.width = lerp(this.data.wStart, this.data.wStart + this.data.wMove, amountThroughMovement);
       this.height = lerp(this.data.hStart, this.data.hStart + this.data.hMove, amountThroughMovement);
       this.angle = lerp(this.data.angleStart, this.data.angleStart + this.data.angleMove, amountThroughMovement);
+      this.offset = lerp(this.data.offsetStart, this.data.offsetStart + this.data.offsetMove, amountThroughMovement);
       
       // Check for player collision
       let collision;
       if (this.data.shape === "circle") {
-        collision = collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x, this.y, this.width);
+        collision = collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x + this.offset * sin(this.angle), this.y + this.offset * cos(this.angle), this.width);
       } else {
         let polygon = structuredClone(SHAPES[this.data.shape]);
         for (let corner of polygon) {
-          let originalX = corner.x * this.width;
+          let originalX = corner.x * this.width + this.offset;
           let originalY = corner.y * this.height;
           corner.x = originalX * cos(-this.angle) + originalY * sin(-this.angle) + this.x;
           corner.y = -originalX * sin(-this.angle) + originalY * cos(-this.angle) + this.y;
@@ -721,6 +726,7 @@ class Obstacle {
       push();
       translate(this.x, this.y);
       rotate(this.angle);
+      translate(this.offset, 0);
       if (this.data.shape === "circle") {
         circle(0, 0, this.width);
       } else {

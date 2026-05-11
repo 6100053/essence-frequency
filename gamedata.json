@@ -42,19 +42,25 @@
             {
                 "info": {"name": "Test name", "minorKey": "C#", "tempo": 120, "colorH": 240},
                 "capsulePath": [
-                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}, "viewSize": 800},
+                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdShape": "square", "bdSpacing": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}, "viewSize": 800},
                     {"timeBeat": 4},
                     {"timeBeat": 8, "x": 400, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 50, "b": 20}},
                     {"timeBeat": 12, "y": -200, "bdAngle": 360},
-                    {"timeBeat": 20, "x": -400, "capsuleW": 200},
-                    {"timeBeat": 24, "y": 0, "capsuleH": 200, "bdSize": 75},
+                    {"timeBeat": 20, "x": -400, "capsuleW": 300},
+                    {"timeBeat": 24, "y": 0, "capsuleH": 300, "bdSize": 75},
                     {"timeBeat": 30, "x": 0, "y": 400, "bdColorBack": {"s": 100, "b": 20}, "bdColorFront": {"s": 100, "b": 5}},
-                    {"timeBeat": 34, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}},
+                    {"timeBeat": 34, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}},
                     {"timeBeat": 36}
                 ],
                 "attacks": [
-                    {"startBeat": 4, "moveBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "move", "xStart": 0, "yStart": 200, "wStart": 25, "hStart": 50, "angleStart": 0, "xMove": 0, "yMove": -400, "wMove": 0, "hMove": 0, "angleMove": 0},
-                    {"startBeat": 6}
+                    {"startBeat": 4, "moveBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "none", "xStart": 200, "yStart": 0, "wStart": 25, "hStart": 25, "angleStart": 0, "offsetStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetMove": 400},
+                    {"angleStart": 45},
+                    {"angleStart": 90},
+                    {"angleStart": 135},
+                    {"angleStart": 180},
+                    {"angleStart": 225},
+                    {"angleStart": 270},
+                    {"angleStart": 315}
                 ]
             },
             {
