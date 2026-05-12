@@ -9,12 +9,10 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-//make sure comments are good
-//Does the player need to move with capsule somehow? maybe not if it moves slow enough
+//WHERE TO SPECIFY NUMBERS FOR TEXT DRAWING? - in info drawing function? make drawing function and pass in numbers? text objects and json file?
+//work on info drawing system - level starting, progress, pause, title, etc
 //make sequences system for attacks data file?
-//work on gui system - level starting, progress, pause, title, etc
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
-//See if constants needed - probably not, maybe text displays later
 //use deltaTime for pausing
 //fonts?
 
@@ -175,7 +173,7 @@ function draw() {
     drawWalls();
     drawPortals();
     drawPlayer();
-    drawGui();
+    drawInfo();
     
   } else if (gameState === STATES.level) {
     if (!transition.active) {
@@ -191,7 +189,7 @@ function draw() {
     drawCapsule();
     drawObstacles();
     drawPlayer();
-    drawGui();
+    drawInfo();
   }
   checkTransition();
   drawTransition();
@@ -379,8 +377,10 @@ function drawPlayer() {
   square(player.x, player.y, player.size);
 }
 
-function drawGui() {
-  if (gameState === STATES.level) {
+function drawInfo() {
+  if (gameState === STATES.world) {
+    
+  } else if (gameState === STATES.level) {
     // Prototype for progress drawing
     let amountThroughLevel = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
     let rectWidth = lerp(0, viewSize, amountThroughLevel);
@@ -719,7 +719,7 @@ class Obstacle {
       }
       
       if (collision) {
-        // Exit to the world state
+        // Exit to the world state if player is hit
         pendGameState(STATES.world, 0);
       }
     }
