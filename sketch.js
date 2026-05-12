@@ -9,7 +9,7 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-//WHERE TO SPECIFY NUMBERS FOR TEXT DRAWING? - in info drawing function? make drawing function and pass in numbers? text objects and json file?
+//WHERE TO SPECIFY NUMBERS FOR TEXT DRAWING? - consts!
 //work on info drawing system - level starting, progress, pause, title, etc
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
@@ -701,19 +701,23 @@ class Obstacle {
       this.height = lerp(this.data.hStart, this.data.hStart + this.data.hMove, amountThroughMovement);
       this.angle = lerp(this.data.angleStart, this.data.angleStart + this.data.angleMove, amountThroughMovement);
       this.offsetX = lerp(this.data.offsetXStart, this.data.offsetXStart + this.data.offsetXMove, amountThroughMovement);
-      this.offsetY = lerp(this.data.offsetYStart, this.data.offsetYStart + this.data.offsetYMove, amountThroughMovement);
+      this.offsetAngle = lerp(this.data.offsetAngleStart, this.data.offsetAngleStart + this.data.offsetAngleMove, amountThroughMovement);
       
       // Check for player collision with the obstacle
       let collision;
       if (this.data.shape === "circle") {
-        collision = collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x + (this.offsetX * cos(-this.angle) + this.offsetY * sin(-this.angle)), this.y + (-this.offsetX * sin(-this.angle) + this.offsetY * cos(-this.angle)), this.width);
+        collision = collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x + this.offsetX * cos(this.offsetAngle), this.y + this.offsetX * sin(this.offsetAngle), this.width);
       } else {
         let polygon = structuredClone(SHAPES[this.data.shape]);
         for (let corner of polygon) {
-          let originalX = corner.x * this.width + this.offsetX;
-          let originalY = corner.y * this.height + this.offsetY;
-          corner.x = this.x + (originalX * cos(-this.angle) + originalY * sin(-this.angle));
-          corner.y = this.y + (-originalX * sin(-this.angle) + originalY * cos(-this.angle));
+          let originalX = corner.x * this.width;
+          let originalY = corner.y * this.height;
+          
+          originalX = originalX * cos(-this.angle) + originalY * sin(-this.angle);
+          originalY = this.offsetX + (-originalX * sin(-this.angle) + originalY * cos(-this.angle));
+
+          corner.x = this.x + (originalX * cos(-this.offsetAngle) + originalY * sin(-this.offsetAngle));
+          corner.y = this.y + (-originalX * sin(-this.offsetAngle) + originalY * cos(-this.offsetAngle));
         }
         collision = collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, polygon);
       }
@@ -733,8 +737,9 @@ class Obstacle {
 
       push();
       translate(this.x, this.y);
+      rotate(this.offsetAngle);
+      translate(this.offsetX, 0);
       rotate(this.angle);
-      translate(this.offsetX, this.offsetY);
       if (this.data.shape === "circle") {
         circle(0, 0, this.width);
       } else {
