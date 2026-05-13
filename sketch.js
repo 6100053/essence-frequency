@@ -9,8 +9,10 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-//WHERE TO SPECIFY NUMBERS FOR TEXT DRAWING? - consts!
+
 //work on info drawing system - level starting, progress, pause, title, etc
+//--add stuff for update function checking visiblity, progress, etc - strings in json to signify behavior
+
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
 //use deltaTime for pausing
@@ -58,10 +60,12 @@ const SHAPES = {
 
 let gameData;
 
-let allLevels = [];
+let gameInfo = [];
 
 let worldWalls = [];
 let worldPortals = [];
+
+let allLevels = [];
 
 //////// Variables for playing the game ////////
 
@@ -101,6 +105,8 @@ function setup() {
   textAlign(CENTER, CENTER);
 
   // Set up game data
+
+  // Level data
   for (let levelData of structuredClone(gameData.levels.levelProperties)) {
     // The points on the path of the capsule through each level
     let newCapsuleNodes = [];
@@ -139,6 +145,7 @@ function setup() {
     // allLevels.push(new Level(levelInfo.name, levelInfo.minorKey, levelInfo.tempo, levelInfo.colorH, newCapsuleNodes));
   }
 
+  // World data
   let worldData = structuredClone(gameData.world);
 
   for (let wallData of worldData.walls) {
@@ -152,6 +159,11 @@ function setup() {
   worldPlayer = worldData.startPlayer;
 
   transition = worldData.startTransition;
+
+  // Info data
+  for (let infoData of structuredClone(gameData.info)) {
+    gameInfo.push(new Info(infoData));
+  }
   
   setGameState(STATES.world);
 }
@@ -166,13 +178,16 @@ function draw() {
     if (!transition.active) {
       movePlayer();
       checkPortals();
+      updateInfo();
     }
     
+    push();
     prepareDrawing();
     drawBackground();
     drawWalls();
     drawPortals();
     drawPlayer();
+    pop();
     drawInfo();
     
   } else if (gameState === STATES.level) {
@@ -181,14 +196,17 @@ function draw() {
       moveCapsule();
       moveObstacles();
       movePlayer();
+      updateInfo();
     }
     
+    push();
     prepareDrawing();
     drawBackground();
     drawPaths();
     drawCapsule();
     drawObstacles();
     drawPlayer();
+    pop();
     drawInfo();
   }
   checkTransition();
@@ -309,6 +327,13 @@ function movePlayer() {
   }
 }
 
+function updateInfo() {
+  // Update the current on-screen info
+  for (let info of gameInfo) {
+    info.update();
+  }
+}
+
 function prepareDrawing() {
   // Scale the scene so things take up the same space in the window regardless of how big it is
   scale(screenSize / viewSize);
@@ -319,7 +344,6 @@ function prepareDrawing() {
     
   } else if (gameState === STATES.level) {
     translate(viewSize/2 - levelState.capsule.x, viewSize/2 - levelState.capsule.y);
-    
   }
 }
 
@@ -378,16 +402,9 @@ function drawPlayer() {
 }
 
 function drawInfo() {
-  if (gameState === STATES.world) {
-    
-  } else if (gameState === STATES.level) {
-    // Prototype for progress drawing
-    let amountThroughLevel = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
-    let rectWidth = lerp(0, viewSize, amountThroughLevel);
-  
-    noStroke();
-    fill(255);
-    rect(levelState.capsule.x - viewSize/2 + rectWidth/2, levelState.capsule.y + viewSize/2 - 10, rectWidth, 20);
+  // Draw the current on-screen info
+  for (let info of gameInfo) {
+    info.draw();
   }
 }
 
@@ -541,6 +558,24 @@ function drawObstacles() {
 }
 
 //////// Classes ////////
+
+class Info {
+  constructor(data) {
+    this.data = data;
+  }
+
+  update() {
+    this.visible = true;
+  }
+
+  draw() {
+    if (this.visible) {
+      noStroke();
+      fill(255);
+      rect(this.data.rectX * screenSize, this.data.rectY * screenSize, this.data.rectW * screenSize, this.data.rectH * screenSize);
+    }
+  }
+}
 
 class Wall {
   constructor(invert, color, corners) {
@@ -755,13 +790,21 @@ class Obstacle {
   }
 }
 
-class Level {
-  constructor(name, minorKey, tempo, colorH, nodes) {
-    this.name = name;
-    this.minorKey = minorKey;
-    this.tempo = tempo;
-    this.colorH = colorH;
-    this.nodes = nodes;
-    this.progress = false;
-  }
-}
+// class Level {
+//   constructor(name, minorKey, tempo, colorH, nodes) {
+//     this.name = name;
+//     this.minorKey = minorKey;
+//     this.tempo = tempo;
+//     this.colorH = colorH;
+//     this.nodes = nodes;
+//     this.progress = false;
+//   }
+// }
+
+// // Prototype for progress bar drawing
+// let amountThroughLevel = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
+// let rectWidth = lerp(0, viewSize, amountThroughLevel);
+  
+// noStroke();
+// fill(255);
+// rect(levelState.capsule.x - viewSize/2 + rectWidth/2, levelState.capsule.y + viewSize/2 - 10, rectWidth, 20);
