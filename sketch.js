@@ -181,13 +181,11 @@ function draw() {
       updateInfo();
     }
     
-    push();
     prepareDrawing();
     drawBackground();
     drawWalls();
     drawPortals();
     drawPlayer();
-    pop();
     drawInfo();
     
   } else if (gameState === STATES.level) {
@@ -199,14 +197,12 @@ function draw() {
       updateInfo();
     }
     
-    push();
     prepareDrawing();
     drawBackground();
     drawPaths();
     drawCapsule();
     drawObstacles();
     drawPlayer();
-    pop();
     drawInfo();
   }
   checkTransition();
@@ -234,6 +230,9 @@ function setGameState(state, level = []) {
     player = worldPlayer;
     backdrop = worldData.backdrop;
     viewSize = worldData.viewSize;
+
+    // Register info
+    updateInfo();
     
   } else if (state === STATES.level) {
     worldPlayer = structuredClone(player);
@@ -259,6 +258,7 @@ function setGameState(state, level = []) {
     levelProgress();
     moveCapsule();
     moveObstacles();
+    updateInfo();
     player.x = levelState.capsule.x;
     player.y = levelState.capsule.y;
     
@@ -565,14 +565,25 @@ class Info {
   }
 
   update() {
-    this.visible = true;
+    if (this.data.showState === "level") {
+      this.visible = gameState === STATES.level;
+      if (this.visible) {
+        this.focusX = levelState.capsule.x;
+        this.focusY = levelState.capsule.y;
+      }
+    } else {
+      this.visible = true;
+      this.focusX = player.x;
+      this.focusY = player.y;
+    }
+    
   }
 
   draw() {
     if (this.visible) {
       noStroke();
       fill(255);
-      rect(this.data.rectX * screenSize, this.data.rectY * screenSize, this.data.rectW * screenSize, this.data.rectH * screenSize);
+      rect(this.focusX + this.data.rectX * screenSize, this.focusY + this.data.rectY * screenSize, this.data.rectW * screenSize, this.data.rectH * screenSize);
     }
   }
 }
