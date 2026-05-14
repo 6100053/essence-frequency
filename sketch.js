@@ -161,8 +161,15 @@ function setup() {
   transition = worldData.startTransition;
 
   // Info data
+  let previousInfo = gameData.info[0];
   for (let infoData of structuredClone(gameData.info)) {
-    gameInfo.push(new Info(infoData));
+    // For each info item, set its properties based on the data object, or the previous item's properties if not specified
+    let newInfo = structuredClone(previousInfo);
+    for (let property of Object.keys(infoData)) {
+      newInfo[property] = infoData[property];
+    }
+    gameInfo.push(new Info(newInfo));
+    previousInfo = newInfo;
   }
   
   setGameState(STATES.world);
@@ -565,25 +572,49 @@ class Info {
   }
 
   update() {
-    if (this.data.showState === "level") {
+    if (this.data.showState === "world") {
+      this.visible = gameState === STATES.world;
+      if (this.visible) {
+        this.focusX = player.x;
+        this.focusY = player.y;
+      }
+    } else if (this.data.showState === "level") {
       this.visible = gameState === STATES.level;
       if (this.visible) {
         this.focusX = levelState.capsule.x;
         this.focusY = levelState.capsule.y;
       }
-    } else {
-      this.visible = true;
-      this.focusX = player.x;
-      this.focusY = player.y;
     }
-    
+
+    if (this.visible) {
+      if (this.data.type === "rect") {
+        this.x = this.data.x;
+        this.y = this.data.y;
+        this.width = this.data.width;
+        this.height = this.data.height;
+        this.color = color(this.data.color.h, this.data.color.s, this.data.color.b);
+        
+      } else if (this.data.type === "rectResize") {
+        let resizeAmount;
+        if (this.data.variable === "levelProgress") {
+          resizeAmount = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
+        }
+
+        this.x = lerp(this.data.x, this.data.x + this.data.xChange, resizeAmount);
+        this.y = lerp(this.data.y, this.data.y + this.data.yChange, resizeAmount);
+        this.width = lerp(this.data.width, this.data.width + this.data.widthChange, resizeAmount);
+        this.height = lerp(this.data.height, this.data.height + this.data.heightChange, resizeAmount);
+
+        this.color = color(this.data.color.h, this.data.color.s, this.data.color.b);
+      }
+    }
   }
 
   draw() {
     if (this.visible) {
       noStroke();
-      fill(255);
-      rect(this.focusX + this.data.rectX * screenSize, this.focusY + this.data.rectY * screenSize, this.data.rectW * screenSize, this.data.rectH * screenSize);
+      fill(this.color);
+      rect(this.focusX + this.x * viewSize, this.focusY + this.y * viewSize, this.width * viewSize, this.height * viewSize);
     }
   }
 }
@@ -811,11 +842,3 @@ class Obstacle {
 //     this.progress = false;
 //   }
 // }
-
-// // Prototype for progress bar drawing
-// let amountThroughLevel = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
-// let rectWidth = lerp(0, viewSize, amountThroughLevel);
-  
-// noStroke();
-// fill(255);
-// rect(levelState.capsule.x - viewSize/2 + rectWidth/2, levelState.capsule.y + viewSize/2 - 10, rectWidth, 20);
