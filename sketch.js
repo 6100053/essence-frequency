@@ -11,7 +11,6 @@
 
 
 //work on info drawing system - level starting, progress, pause, title, etc
-//--add stuff for update function checking visiblity, progress, etc - strings in json to signify behavior
 
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
@@ -161,15 +160,14 @@ function setup() {
   transition = worldData.startTransition;
 
   // Info data
-  let previousInfo = gameData.info[0];
+  let defaultInfo = gameData.info[0];
   for (let infoData of structuredClone(gameData.info)) {
-    // For each info item, set its properties based on the data object, or the previous item's properties if not specified
-    let newInfo = structuredClone(previousInfo);
+    // For each info item, set its properties based on the data object, or default properties if not specified
+    let newInfo = structuredClone(defaultInfo);
     for (let property of Object.keys(infoData)) {
       newInfo[property] = infoData[property];
     }
     gameInfo.push(new Info(newInfo));
-    previousInfo = newInfo;
   }
   
   setGameState(STATES.world);
@@ -575,7 +573,7 @@ class Info {
     if (this.data.showState === "world") {
       this.visible = gameState === STATES.world;
       if (this.visible) {
-        this.focusX = player.x;
+        this.focusX = player.x;//somwhere involve the portal info!!!!
         this.focusY = player.y;
       }
     } else if (this.data.showState === "level") {
@@ -584,29 +582,24 @@ class Info {
         this.focusX = levelState.capsule.x;
         this.focusY = levelState.capsule.y;
       }
+    } else {
+      this.visible = false;
     }
 
     if (this.visible) {
-      if (this.data.type === "rect") {
-        this.x = this.data.x;
-        this.y = this.data.y;
-        this.width = this.data.width;
-        this.height = this.data.height;
-        this.color = color(this.data.color.h, this.data.color.s, this.data.color.b);
-        
-      } else if (this.data.type === "rectResize") {
-        let resizeAmount;
-        if (this.data.variable === "levelProgress") {
-          resizeAmount = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
-        }
-
-        this.x = lerp(this.data.x, this.data.x + this.data.xChange, resizeAmount);
-        this.y = lerp(this.data.y, this.data.y + this.data.yChange, resizeAmount);
-        this.width = lerp(this.data.width, this.data.width + this.data.widthChange, resizeAmount);
-        this.height = lerp(this.data.height, this.data.height + this.data.heightChange, resizeAmount);
-
-        this.color = color(this.data.color.h, this.data.color.s, this.data.color.b);
+      let resizeAmount;
+      if (this.data.variable === "") {
+        resizeAmount = 0;
+      } else if (this.data.variable === "levelProgress") {
+        resizeAmount = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
       }
+
+      this.x = lerp(this.data.x, this.data.x + this.data.xChange, resizeAmount);
+      this.y = lerp(this.data.y, this.data.y + this.data.yChange, resizeAmount);
+      this.width = lerp(this.data.width, this.data.width + this.data.widthChange, resizeAmount);
+      this.height = lerp(this.data.height, this.data.height + this.data.heightChange, resizeAmount);
+
+      this.color = color(this.data.color.h, this.data.color.s, this.data.color.b);
     }
   }
 

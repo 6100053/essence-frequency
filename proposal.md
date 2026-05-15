@@ -31,7 +31,7 @@ The player will be able to explore a main world area, and play levels from porta
             - [x] Player collision
     - Progress
         - [ ] Start transition
-        - [ ] Progress indicator
+        - [x] Progress indicator
         - [x] Level completion
         - [x] Level failing
     - [ ] Pause menu

@@ -1,8 +1,13 @@
 {
     "info": [
-        {"showState": "level", "type": "rect", "x": 0, "y": 0.48, "width": 1, "height": 0.04, "color": {"h": 0, "s": 0, "b": 50}},
-        {"width": 0.98, "height": 0.02, "color": {"h": 0, "s": 0, "b": 25}},
-        {"showState": "level", "type": "rectResize", "variable": "levelProgress", "x": -0.49, "xChange": 0.49, "yChange": 0, "width": 0, "widthChange": 0.98, "heightChange": 0, "color": {"h": 0, "s": 0, "b": 100}}
+        {"showState": "", "variable": "", "followFocus": true, "x": 0, "xChange": 0, "y": 0, "yChange": 0, "width": 0, "widthChange": 0, "height": 0, "heightChange": 0, "color": {"h": 0, "s": 0, "b": 100}},
+
+        {"showState": "", "x": 0, "y": 0.49, "width": 1, "height": 0.02, "color": {"h": 0, "s": 0, "b": 25}},
+        {"showState": "", "x": 0, "y": 0.49, "width": 0.99, "height": 0.01, "color": {"h": 0, "s": 0, "b": 0}},
+        {"showState": "", "variable": "levelProgress", "x": -0.495, "xChange": 0.495, "y": 0.49, "width": 0, "widthChange": 0.99, "height": 0.01, "color": {"h": 0, "s": 0, "b": 75}},
+
+        {"showState": "level", "x": 0, "y": 0.49, "width": 1, "height": 0.02, "color": {"h": 0, "s": 0, "b": 25}},
+        {"showState": "level", "variable": "levelProgress", "x": -0.5, "xChange": 0.5, "y": 0.49, "width": 0, "widthChange": 1, "height": 0.02, "color": {"h": 0, "s": 0, "b": 75}}
     ],
     "world": {
         "walls": [
