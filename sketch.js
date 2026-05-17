@@ -11,10 +11,12 @@
 
 
 //work on info drawing system - level starting, progress, pause, title, etc
+//currently need to add text then finish replacing portal info, then make rest of infos
+////constants for some info properties??
 
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
-//use deltaTime for pausing
+//use deltaTime for pausing?
 //fonts?
 
 
@@ -156,13 +158,14 @@ function setup() {
   }
 
   worldPlayer = worldData.startPlayer;
+  worldPlayer.nearestPortal = worldPortals[0];
 
   transition = worldData.startTransition;
 
   // Info data
   let defaultInfo = gameData.info[0];
   for (let infoData of structuredClone(gameData.info)) {
-    // For each info item, set its properties based on the data object, or default properties if not specified
+    // For each info item, set its properties based on the data object, or the first item (default properties) if not specified
     let newInfo = structuredClone(defaultInfo);
     for (let property of Object.keys(infoData)) {
       newInfo[property] = infoData[property];
@@ -314,6 +317,13 @@ function movePlayer() {
       }
       if (collide) {
         player.y -= sin(angle) * player.speed;
+      }
+    }
+
+    // Update nearest portal
+    for (let portal of worldPortals) {
+      if (dist(player.x, player.y, portal.x, portal.y) < dist(player.x, player.y, player.nearestPortal.x, player.nearestPortal.y)) {
+        player.nearestPortal = portal;
       }
     }
     
@@ -570,28 +580,39 @@ class Info {
   }
 
   update() {
-    if (this.data.showState === "world") {
-      this.visible = gameState === STATES.world;
-      if (this.visible) {
-        this.focusX = player.x;//somwhere involve the portal info!!!!
-        this.focusY = player.y;
-      }
-    } else if (this.data.showState === "level") {
-      this.visible = gameState === STATES.level;
-      if (this.visible) {
-        this.focusX = levelState.capsule.x;
-        this.focusY = levelState.capsule.y;
-      }
-    } else {
-      this.visible = false;
-    }
+    // Check if the info should be shown
+    this.visible = gameState === STATES[this.data.showState];
 
     if (this.visible) {
+      // Set drawing properties based on the data object and current game variables
+
+      // Position
+      if (this.data.focus === "view") {
+        if (this.data.showState === STATES.world) {
+          this.focusX = player.x;
+          this.focusY = player.y;
+          
+        } else if (this.data.showState === STATES.level) {
+          this.focusX = levelState.capsule.x;
+          this.focusY = levelState.capsule.y;
+          
+        } else {
+          this.focusX = 0;
+          this.focusY = 0;
+        }
+      } else if (this.data.focus === "portal") {
+        this.focusX = player.nearestPortal.x;
+        this.focusY = player.nearestPortal.y;
+      }
+
+      // Size
       let resizeAmount;
-      if (this.data.variable === "") {
+      if (this.data.resizeVariable === "") {
         resizeAmount = 0;
-      } else if (this.data.variable === "levelProgress") {
+      } else if (this.data.resizeVariable === "levelProgress") {
         resizeAmount = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
+      } else if (this.data.resizeVariable === "portalPlayerHover") {
+        resizeAmount = player.nearestPortal.playerHover;
       }
 
       this.x = lerp(this.data.x, this.data.x + this.data.xChange, resizeAmount);
@@ -599,11 +620,17 @@ class Info {
       this.width = lerp(this.data.width, this.data.width + this.data.widthChange, resizeAmount);
       this.height = lerp(this.data.height, this.data.height + this.data.heightChange, resizeAmount);
 
-      this.color = color(this.data.color.h, this.data.color.s, this.data.color.b);
+      // Color
+      if (this.data.color.h === "portalColorH") {
+        this.color = color(player.nearestPortal.levelObject.colorH, this.data.color.s, this.data.color.b);
+      } else {
+        this.color = color(this.data.color.h, this.data.color.s, this.data.color.b);
+      }
     }
   }
 
   draw() {
+    // Draw the info item
     if (this.visible) {
       noStroke();
       fill(this.color);
@@ -634,6 +661,7 @@ class Wall {
   }
 
   isCollidingPlayer() {
+    // Check if the player is touching the wall
     return collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.corners); 
   }
 }

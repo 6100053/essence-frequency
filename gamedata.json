@@ -1,13 +1,12 @@
 {
     "info": [
-        {"showState": "", "variable": "", "followFocus": true, "x": 0, "xChange": 0, "y": 0, "yChange": 0, "width": 0, "widthChange": 0, "height": 0, "heightChange": 0, "color": {"h": 0, "s": 0, "b": 100}},
-
-        {"showState": "", "x": 0, "y": 0.49, "width": 1, "height": 0.02, "color": {"h": 0, "s": 0, "b": 25}},
-        {"showState": "", "x": 0, "y": 0.49, "width": 0.99, "height": 0.01, "color": {"h": 0, "s": 0, "b": 0}},
-        {"showState": "", "variable": "levelProgress", "x": -0.495, "xChange": 0.495, "y": 0.49, "width": 0, "widthChange": 0.99, "height": 0.01, "color": {"h": 0, "s": 0, "b": 75}},
+        {"showState": "", "focus": "view", "resizeVariable": "", "x": 0, "xChange": 0, "y": 0, "yChange": 0, "width": 0, "widthChange": 0, "height": 0, "heightChange": 0, "color": {"h": 0, "s": 0, "b": 100}},
 
         {"showState": "level", "x": 0, "y": 0.49, "width": 1, "height": 0.02, "color": {"h": 0, "s": 0, "b": 25}},
-        {"showState": "level", "variable": "levelProgress", "x": -0.5, "xChange": 0.5, "y": 0.49, "width": 0, "widthChange": 1, "height": 0.02, "color": {"h": 0, "s": 0, "b": 75}}
+        {"showState": "level", "x": 0, "y": 0.49, "width": 0.99, "height": 0.01, "color": {"h": 0, "s": 0, "b": 0}},
+        {"showState": "level", "resizeVariable": "levelProgress", "x": -0.495, "xChange": 0.495, "y": 0.49, "width": 0, "widthChange": 0.99, "height": 0.01, "color": {"h": 0, "s": 0, "b": 75}},
+    
+        {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "x": 0.25, "width": 0, "widthChange": 0.1, "height": 0, "heightChange": 0.1, "color": {"h": "portalColorH", "s": 100, "b": 50}}
     ],
     "world": {
         "walls": [
