@@ -621,10 +621,54 @@ class Info {
       this.height = lerp(this.data.height, this.data.height + this.data.heightChange, resizeAmount);
 
       // Color
-      if (this.data.color.h === "portalColorH") {
-        this.color = color(player.nearestPortal.levelObject.colorH, this.data.color.s, this.data.color.b);
+      if (this.data.rectColor.h === "portalColorH") {
+        this.rectColor = color(player.nearestPortal.levelObject.colorH, this.data.rectColor.s, this.data.rectColor.b);
       } else {
-        this.color = color(this.data.color.h, this.data.color.s, this.data.color.b);
+        this.rectColor = color(this.data.rectColor.h, this.data.rectColor.s, this.data.rectColor.b);
+      }
+
+      // Text string
+      if (this.data.textVariable === "") {
+        this.textString = this.data.textString;
+
+      } else {
+        let textVariable;
+        if (this.data.textVariable === "four") {//change to levelcompleted, prtal names, etcc.
+          textVariable = 4;
+        }
+
+
+        if (this.data.textString === "") {
+          this.textString = textVariable;
+
+        } else {
+          let newString = "";
+          for (let char of this.data.textString) {
+            if (char === "#") {
+              newString += textVariable;
+            } else {
+              newString += char;
+            }
+          }
+
+          this.textString = newString;
+        }
+      }
+
+      // Text size
+      let textPadding = this.height * this.data.textPaddingScale;
+
+      this.textSize = viewSize * (this.height - textPadding);
+      textSize(this.textSize);
+      if (textWidth(this.textString) > viewSize * (this.width - textPadding)) {
+        this.textSize = this.textSize / textWidth(this.textString) * viewSize * (this.width - textPadding);
+      }
+
+      // Text color
+      if (this.data.textColor.h === "portalColorH") {
+        this.textColor = color(player.nearestPortal.levelObject.colorH, this.data.textColor.s, this.data.textColor.b);
+      } else {
+        this.textColor = color(this.data.textColor.h, this.data.textColor.s, this.data.textColor.b);
       }
     }
   }
@@ -632,9 +676,16 @@ class Info {
   draw() {
     // Draw the info item
     if (this.visible) {
+      let drawX = this.focusX + this.x * viewSize;
+      let drawY = this.focusY + this.y * viewSize;
+
       noStroke();
-      fill(this.color);
-      rect(this.focusX + this.x * viewSize, this.focusY + this.y * viewSize, this.width * viewSize, this.height * viewSize);
+      fill(this.rectColor);
+      rect(drawX, drawY, this.width * viewSize, this.height * viewSize);
+
+      textSize(this.textSize);
+      fill(this.textColor);
+      text(this.textString, drawX, drawY);
     }
   }
 }
