@@ -11,7 +11,7 @@
 
 
 //work on info drawing system - level starting, progress, pause, title, etc
-//currently need to add text then finish replacing portal info, then make rest of infos
+//finish replacing portal info, then make rest of infos
 ////constants for some info properties??
 
 //make sequences system for attacks data file?
@@ -622,9 +622,9 @@ class Info {
 
       // Color
       if (this.data.rectColor.h === "portalColorH") {
-        this.rectColor = color(player.nearestPortal.levelObject.colorH, this.data.rectColor.s, this.data.rectColor.b);
+        this.rectColor = color(player.nearestPortal.levelObject.colorH, this.data.rectColor.s, this.data.rectColor.b, this.data.rectColor.a);
       } else {
-        this.rectColor = color(this.data.rectColor.h, this.data.rectColor.s, this.data.rectColor.b);
+        this.rectColor = color(this.data.rectColor.h, this.data.rectColor.s, this.data.rectColor.b, this.data.rectColor.a);
       }
 
       // Text string
@@ -633,10 +633,15 @@ class Info {
 
       } else {
         let textVariable;
-        if (this.data.textVariable === "four") {//change to levelcompleted, prtal names, etcc.
-          textVariable = 4;
+        if (this.data.textVariable === "portalLevelName") {
+          textVariable = player.nearestPortal.levelObject.name;
+        } else if (this.data.textVariable === "portalLevelTempo") {
+          textVariable = player.nearestPortal.levelObject.tempo;
+        } else if (this.data.textVariable === "portalLevelKey") {
+          textVariable = player.nearestPortal.levelObject.minorKey;
+        // } else if (this.data.textVariable === "portalLevelCompleted") {
+        //   textVariable = player.nearestPortal.levelObject.minorKey;
         }
-
 
         if (this.data.textString === "") {
           this.textString = textVariable;
@@ -683,9 +688,11 @@ class Info {
       fill(this.rectColor);
       rect(drawX, drawY, this.width * viewSize, this.height * viewSize);
 
-      textSize(this.textSize);
-      fill(this.textColor);
-      text(this.textString, drawX, drawY);
+      if (this.textSize > 0) {
+        textSize(this.textSize);
+        fill(this.textColor);
+        text(this.textString, drawX, drawY);
+      }
     }
   }
 }
@@ -785,10 +792,10 @@ class Portal {
         let infoHeight = infoObject.textSpacing * (infoObject.textLines.length + 1);
         let infoY = this.y + infoObject.yDirection * (this.size + infoHeight/2);
 
-        fill(this.levelObject.colorH, this.colorPrimary.s, this.colorPrimary.b);
+        fill(0, this.colorPrimary.s, this.colorPrimary.b);
         rect(this.x, infoY, infoObject.width * this.playerHover, infoHeight * this.playerHover);
 
-        fill(this.levelObject.colorH, this.colorSecondary.s, this.colorSecondary.b);
+        fill(0, this.colorSecondary.s, this.colorSecondary.b);
         textSize(infoObject.textSize * this.playerHover);
 
         // Draw the text
