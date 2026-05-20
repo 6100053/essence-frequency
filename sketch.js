@@ -11,8 +11,6 @@
 
 
 //work on info drawing system - level starting, progress, pause, title, etc
-//finish replacing portal info, then make rest of infos
-////constants for some info properties??
 
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
@@ -239,7 +237,8 @@ function setGameState(state, level = []) {
     backdrop = worldData.backdrop;
     viewSize = worldData.viewSize;
 
-    // Register info
+    // Set up and register first frame of world state
+    checkPortals();
     updateInfo();
     
   } else if (state === STATES.level) {
@@ -248,6 +247,7 @@ function setGameState(state, level = []) {
     let levelsData = structuredClone(gameData.levels);
     
     player = levelsData.playerProperties;
+    
     backdrop = {};
     
     levelState.capsule = levelsData.capsuleProperties;
@@ -266,9 +266,9 @@ function setGameState(state, level = []) {
     levelProgress();
     moveCapsule();
     moveObstacles();
-    updateInfo();
     player.x = levelState.capsule.x;
     player.y = levelState.capsule.y;
+    updateInfo();
     
     // Start of transition
     levelState.startTime = millis() + transition.duration;
@@ -319,14 +319,6 @@ function movePlayer() {
         player.y -= sin(angle) * player.speed;
       }
     }
-
-    // Update nearest portal
-    for (let portal of worldPortals) {
-      if (dist(player.x, player.y, portal.x, portal.y) < dist(player.x, player.y, player.nearestPortal.x, player.nearestPortal.y)) {
-        player.nearestPortal = portal;
-      }
-    }
-    
   } else if (gameState === STATES.level) {
     // Move player
     if (inputRight !== inputLeft || inputDown !== inputUp) {
@@ -446,6 +438,15 @@ function drawTransition() {
 //////// Draw loop funcitons used in the world game state ////////
 
 function checkPortals() {
+  // Update player's nearest portal
+  let newNearestPortal;
+  for (let portal of worldPortals) {
+    if (newNearestPortal === undefined || dist(player.x, player.y, portal.x, portal.y) < dist(player.x, player.y, newNearestPortal.x, newNearestPortal.y)) {
+      newNearestPortal = portal;
+    }
+  }
+  player.nearestPortal = newNearestPortal;
+
   // Check all the portals for player collision
   for (let portal of worldPortals) {
     portal.checkPlayer();
@@ -462,7 +463,6 @@ function drawWalls() {
 function drawPortals() {
   // Draw the world's portals
   for (let portal of worldPortals) {
-    portal.updateInfo();
     portal.draw();
   }
 }
@@ -639,8 +639,8 @@ class Info {
           textVariable = player.nearestPortal.levelObject.tempo;
         } else if (this.data.textVariable === "portalLevelKey") {
           textVariable = player.nearestPortal.levelObject.minorKey;
-        // } else if (this.data.textVariable === "portalLevelCompleted") {
-        //   textVariable = player.nearestPortal.levelObject.minorKey;
+        } else if (this.data.textVariable === "portalLevelCompleted") {
+          textVariable = player.nearestPortal.levelObject.progress;
         }
 
         if (this.data.textString === "") {
@@ -734,20 +734,6 @@ class Portal {
     this.levelObject = levelObject;
     this.playerHover = 0;
     this.hoverSpeed = 0.1;
-    this.hoverInfo = [
-      {yDirection: -1, width: 450, textSize: 25, textSpacing: 35,
-        textLines: [
-          this.levelObject.name,
-          this.levelObject.tempo + " BPM    " + this.levelObject.minorKey + " minor",
-        ]
-      },
-      {yDirection: 1, width: 350, textSize: 30, textSpacing: 40,
-        textLines: [
-          "[Level progress]",
-          "Press space to enter",
-        ]
-      },
-    ];
   }
 
   checkPlayer() {
@@ -765,15 +751,6 @@ class Portal {
     }
   }
 
-  updateInfo() {
-    // Update portal info for drawing
-    if (this.levelObject.progress) {
-      this.hoverInfo[1].textLines[0] = "Completed";
-    } else {
-      this.hoverInfo[1].textLines[0] = "Incomplete";
-    }
-  }
-
   draw() {
     noStroke();
 
@@ -783,35 +760,6 @@ class Portal {
 
     fill(this.levelObject.colorH, this.colorSecondary.s, this.colorSecondary.b);
     circle(this.x, this.y, this.size * this.playerHover);
-
-    // Display info about the level if the player is on the portal
-    if (this.playerHover > 0) {
-      // Draw both the top and bottom info boxes
-      for (let infoObject of this.hoverInfo) {
-        // Draw the base rectangle
-        let infoHeight = infoObject.textSpacing * (infoObject.textLines.length + 1);
-        let infoY = this.y + infoObject.yDirection * (this.size + infoHeight/2);
-
-        fill(0, this.colorPrimary.s, this.colorPrimary.b);
-        rect(this.x, infoY, infoObject.width * this.playerHover, infoHeight * this.playerHover);
-
-        fill(0, this.colorSecondary.s, this.colorSecondary.b);
-        textSize(infoObject.textSize * this.playerHover);
-
-        // Draw the text
-        let textY;
-        if (infoObject.yDirection === -1) {
-          textY = this.y - (this.size + infoObject.textSpacing * infoObject.textLines.length);
-        } else if (infoObject.yDirection === 1) {
-          textY = this.y + (this.size + infoObject.textSpacing);
-        }
-
-        for (let textString of infoObject.textLines) {
-          text(textString, this.x, lerp(infoY, textY, this.playerHover));
-          textY += infoObject.textSpacing;
-        }
-      }
-    }
   }
 }
 
