@@ -10,7 +10,7 @@
 // - PLACEHOLDER (later look through code to find things)
 
 
-//work on info drawing system - level starting, progress, pause, title, etc
+//work on info drawing system - level starting, pause, title, etc
 
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
@@ -633,7 +633,15 @@ class Info {
 
       } else {
         let textVariable;
-        if (this.data.textVariable === "portalLevelName") {
+        if (this.data.textVariable === "totalLevelsCompleted") {
+          let completedCount = 0;
+          for (let level of allLevels) {
+            if (level.progress) {
+              completedCount++;
+            }
+          }
+          textVariable = completedCount;
+        } else if (this.data.textVariable === "portalLevelName") {
           textVariable = player.nearestPortal.levelObject.name;
         } else if (this.data.textVariable === "portalLevelTempo") {
           textVariable = player.nearestPortal.levelObject.tempo;
