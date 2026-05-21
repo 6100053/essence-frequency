@@ -2,7 +2,7 @@
     "info": [
         {"showState": "", "focus": "view", "resizeVariable": "", "x": 0, "xChange": 0, "y": 0, "yChange": 0, "width": 0, "widthChange": 0, "height": 0, "heightChange": 0, "rectColor": {"h": 0, "s": 0, "b": 100, "a": 100}, "textString": "", "textVariable": "", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 0}},
 
-        {"showState": "world", "focus": "view", "x": 0.4, "width": 0.2, "y": -0.475, "height": 0.05, "rectColor": {"h": 0, "s": 0, "b": 80, "a": 100}, "textString": "Levels completed: #", "textVariable": "totalLevelsCompleted", "textColor": {"h": 0, "s": 0, "b": 0, "a": 100}},
+        {"showState": "world", "focus": "view", "x": 0.35, "y": -0.4625, "width": 0.3, "height": 0.075, "rectColor": {"h": 0, "s": 0, "b": 80, "a": 100}, "textString": "Levels completed: #", "textVariable": "totalLevelsCompleted", "textColor": {"h": 0, "s": 0, "b": 0, "a": 100}},
 
         {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "y": -0.25, "widthChange": 0.5, "heightChange": 0.18, "rectColor": {"h": "portalColorH", "s": 50, "b": 40, "a": 100}},
         {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "y": -0.25, "yChange": -0.04, "widthChange": 0.5, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textVariable": "portalLevelName", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},

@@ -87,6 +87,9 @@ let levelState = {};
 let viewSize;
 let screenSize;
 
+let gameTime = 0;
+let gameTimeOffset = 0;
+
 //////// Setup and running functions ////////
 
 function preload() {
@@ -180,6 +183,13 @@ function windowResized() {
 }
 
 function draw() {
+  // Pausing prototype, should transitions use millis instead of gameTime? /////////////////////////////////////////////
+  if (keyIsDown(80)) {
+    gameTimeOffset += deltaTime;
+  } else {
+    gameTime = millis() - gameTimeOffset;
+  }
+
   if (gameState === STATES.world) {
     if (!transition.active) {
       movePlayer();
@@ -222,7 +232,7 @@ function pendGameState(state, level = []) {
     pendingStateLevel = level;
     
     transition.active = true;
-    transition.switchTime = millis() + transition.duration;
+    transition.switchTime = gameTime + transition.duration;
   }
 }
 
@@ -262,7 +272,7 @@ function setGameState(state, level = []) {
     levelState.levelObject = level;
     
     // Set up and register the first frame of the level
-    levelState.startTime = millis();
+    levelState.startTime = gameTime;
     levelProgress();
     moveCapsule();
     moveObstacles();
@@ -271,7 +281,7 @@ function setGameState(state, level = []) {
     updateInfo();
     
     // Start of transition
-    levelState.startTime = millis() + transition.duration;
+    levelState.startTime = gameTime + transition.duration;
   }
 }
 
@@ -417,13 +427,13 @@ function drawInfo() {
 
 function checkTransition() {
   // Check if it's time to change the game state or finish the transition
-  if (pendingState !== STATES.none && millis() >= transition.switchTime) {
+  if (pendingState !== STATES.none && gameTime >= transition.switchTime) {
     setGameState(pendingState, pendingStateLevel);
     
     pendingState = STATES.none;
     pendingStateLevel = [];
   }
-  if (transition.active && millis() >= transition.switchTime + transition.duration) {
+  if (transition.active && gameTime >= transition.switchTime + transition.duration) {
     transition.active = false;
   }
 }
@@ -431,7 +441,7 @@ function checkTransition() {
 function drawTransition() {
   // Draw the transition as a fade to black based on how close the current time is to the switch time
   if (transition.active) {
-    background(transition.color.h, transition.color.s, transition.color.b, 1 - abs(millis() - transition.switchTime) / transition.duration);
+    background(transition.color.h, transition.color.s, transition.color.b, 1 - abs(gameTime - transition.switchTime) / transition.duration);
   }
 }
 
@@ -478,7 +488,7 @@ function levelProgress() {
   // Check the level's nodes in order
   for (let nodeIndex = 0; nodeIndex < levelState.levelObject.nodes.length; nodeIndex += 1) {
     
-    if (millis() - levelState.startTime >= beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeat)) {
+    if (gameTime - levelState.startTime >= beatsToMillis(levelState.levelObject.nodes[nodeIndex].timeBeat)) {
       // If the time before the capsule reaches the node has passed, set the capsule's current node as that one (but not if it's the last one)
       if (nodeIndex < levelState.levelObject.nodes.length - 1) {
         levelState.currentNodeIndex = nodeIndex;
@@ -505,7 +515,7 @@ function moveCapsule() {
   let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
   
   // Amount from the last node to the next one (0 to 1)
-  let amountBetweenNodes = (millis() - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat));
+  let amountBetweenNodes = (gameTime - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat));
   
   // Set capsule, backdrop, and view properties to values between those of the last and next node
   levelCapsule.x = lerp(currentPath.x, nextPath.x, amountBetweenNodes);
@@ -610,7 +620,7 @@ class Info {
       if (this.data.resizeVariable === "") {
         resizeAmount = 0;
       } else if (this.data.resizeVariable === "levelProgress") {
-        resizeAmount = (millis() - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
+        resizeAmount = (gameTime - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
       } else if (this.data.resizeVariable === "portalPlayerHover") {
         resizeAmount = player.nearestPortal.playerHover;
       }
@@ -780,7 +790,7 @@ class Obstacle {
   
   move() {
     // Check if it's time for the obstacle to exist in the level
-    this.active = millis() - levelState.startTime >= beatsToMillis(this.data.startBeat) && millis() - levelState.startTime <= beatsToMillis(this.data.startBeat) + beatsToMillis(this.data.moveBeats);
+    this.active = gameTime - levelState.startTime >= beatsToMillis(this.data.startBeat) && gameTime - levelState.startTime <= beatsToMillis(this.data.startBeat) + beatsToMillis(this.data.moveBeats);
 
     // Move the obstacle by setting the position based on its attack data
     if (this.active) {
@@ -797,7 +807,7 @@ class Obstacle {
       }
 
       // Amount from the attack start to end (0 to 1)
-      let amountThroughMovement = (millis() - levelState.startTime - beatsToMillis(this.data.startBeat)) / beatsToMillis(this.data.moveBeats);
+      let amountThroughMovement = (gameTime - levelState.startTime - beatsToMillis(this.data.startBeat)) / beatsToMillis(this.data.moveBeats);
 
       // Set obstacle properties to values between those of the start and end properties
       let xFocus = 0;
