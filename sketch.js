@@ -10,7 +10,7 @@
 // - PLACEHOLDER (later look through code to find things)
 
 
-//work on info drawing system - level starting, pause, title, etc //// pause screen info!!
+//work on info drawing system - level starting, pause, title, etc
 
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
@@ -70,6 +70,9 @@ let allLevels = [];
 //////// Variables for playing the game ////////
 
 // Game states and objects
+
+let gameTime;
+
 let gameState;
 let pendingState = STATES.none;
 let pendingStateLevel = [];
@@ -78,7 +81,6 @@ let player;
 let backdrop;
 
 let transition;
-let gameTime;
 
 // Holds the player's information for when the world state is switched (so they return to the same place when finished a level)
 let worldPlayer;
@@ -158,11 +160,12 @@ function setup() {
     worldPortals.push(new Portal(allLevels[portalData.levelIndex], portalData.x, portalData.y));
   }
 
+  gameTime = worldData.startGameTime;
+
   worldPlayer = worldData.startPlayer;
   worldPlayer.nearestPortal = worldPortals[0];
 
   transition = worldData.startTransition;
-  gameTime = worldData.startGameTime;
 
   // Info data
   let defaultInfo = gameData.info[0];
@@ -638,11 +641,17 @@ class Info {
 
       // Size
       let resizeAmount;
-      if (this.data.resizeVariable === "") {
+      if (this.data.changeVariable === "") {
         resizeAmount = 0;
-      } else if (this.data.resizeVariable === "levelProgress") {
+      } else if (this.data.changeVariable === "paused") {
+        if (gameTime.paused) {
+          resizeAmount = 1;
+        } else {
+          resizeAmount = 0;
+        }
+      } else if (this.data.changeVariable === "levelProgress") {
         resizeAmount = (gameTime.time - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
-      } else if (this.data.resizeVariable === "portalPlayerHover") {
+      } else if (this.data.changeVariable === "portalPlayerHover") {
         resizeAmount = player.nearestPortal.playerHover;
       }
 

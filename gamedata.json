@@ -1,21 +1,24 @@
 {
     "info": [
-        {"showState": "", "focus": "view", "resizeVariable": "", "x": 0, "xChange": 0, "y": 0, "yChange": 0, "width": 0, "widthChange": 0, "height": 0, "heightChange": 0, "rectColor": {"h": 0, "s": 0, "b": 100, "a": 100}, "textString": "", "textVariable": "", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 0}},
-
-        {"showState": "world", "focus": "view", "x": 0.35, "y": -0.4625, "width": 0.3, "height": 0.075, "rectColor": {"h": 0, "s": 0, "b": 80, "a": 100}, "textString": "Levels completed: #", "textVariable": "totalLevelsCompleted", "textColor": {"h": 0, "s": 0, "b": 0, "a": 100}},
-
-        {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "y": -0.25, "widthChange": 0.5, "heightChange": 0.18, "rectColor": {"h": "portalColorH", "s": 50, "b": 40, "a": 100}},
-        {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "y": -0.25, "yChange": -0.04, "widthChange": 0.5, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textVariable": "portalLevelName", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
-        {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "xChange": -0.125, "y": -0.25, "yChange": 0.04, "widthChange": 0.25, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "# BPM", "textVariable": "portalLevelTempo", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
-        {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "xChange": 0.125, "y": -0.25, "yChange": 0.04, "widthChange": 0.25, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "# minor", "textVariable": "portalLevelKey", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
-
-        {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "y": 0.25, "widthChange": 0.5, "heightChange": 0.18, "rectColor": {"h": "portalColorH", "s": 50, "b": 40, "a": 100}},
-        {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "y": 0.25, "yChange": -0.04, "widthChange": 0.5, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "Completed: #", "textVariable": "portalLevelCompleted", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
-        {"showState": "world", "focus": "portal", "resizeVariable": "portalPlayerHover", "y": 0.25, "yChange": 0.04, "widthChange": 0.5, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "Press space to play", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
+        {"showState": "", "focus": "view", "changeVariable": "", "x": 0, "xChange": 0, "y": 0, "yChange": 0, "width": 0, "widthChange": 0, "height": 0, "heightChange": 0, "rectColor": {"h": 0, "s": 0, "b": 100, "a": 1}, "textString": "", "textVariable": "", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 0}},
         
-        {"showState": "level", "x": 0, "y": 0.49, "width": 1, "height": 0.02, "rectColor": {"h": 0, "s": 0, "b": 30, "a": 100}},
-        {"showState": "level", "x": 0, "y": 0.49, "width": 0.99, "height": 0.01, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 100}},
-        {"showState": "level", "resizeVariable": "levelProgress", "x": -0.495, "xChange": 0.495, "y": 0.49, "width": 0, "widthChange": 0.99, "height": 0.01, "rectColor": {"h": 0, "s": 0, "b": 75, "a": 100}}
+        {"showState": "world", "focus": "view", "x": 0.35, "y": -0.4625, "width": 0.3, "height": 0.075, "rectColor": {"h": 0, "s": 0, "b": 80, "a": 1}, "textString": "Levels completed: #", "textVariable": "totalLevelsCompleted", "textColor": {"h": 0, "s": 0, "b": 0, "a": 1}},
+        
+        {"showState": "world", "focus": "portal", "changeVariable": "portalPlayerHover", "y": -0.25, "widthChange": 0.5, "heightChange": 0.18, "rectColor": {"h": "portalColorH", "s": 50, "b": 40, "a": 1}},
+        {"showState": "world", "focus": "portal", "changeVariable": "portalPlayerHover", "y": -0.25, "yChange": -0.04, "widthChange": 0.5, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textVariable": "portalLevelName", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
+        {"showState": "world", "focus": "portal", "changeVariable": "portalPlayerHover", "xChange": -0.125, "y": -0.25, "yChange": 0.04, "widthChange": 0.25, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "# BPM", "textVariable": "portalLevelTempo", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
+        {"showState": "world", "focus": "portal", "changeVariable": "portalPlayerHover", "xChange": 0.125, "y": -0.25, "yChange": 0.04, "widthChange": 0.25, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "# minor", "textVariable": "portalLevelKey", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
+        
+        {"showState": "world", "focus": "portal", "changeVariable": "portalPlayerHover", "y": 0.25, "widthChange": 0.5, "heightChange": 0.18, "rectColor": {"h": "portalColorH", "s": 50, "b": 40, "a": 1}},
+        {"showState": "world", "focus": "portal", "changeVariable": "portalPlayerHover", "y": 0.25, "yChange": -0.04, "widthChange": 0.5, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "Completed: #", "textVariable": "portalLevelCompleted", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
+        {"showState": "world", "focus": "portal", "changeVariable": "portalPlayerHover", "y": 0.25, "yChange": 0.04, "widthChange": 0.5, "heightChange": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "Press space to play", "textColor": {"h": "portalColorH", "s": 50, "b": 80}},
+        
+        {"showState": "level", "x": 0, "y": 0.49, "width": 1, "height": 0.02, "rectColor": {"h": 0, "s": 0, "b": 30, "a": 1}},
+        {"showState": "level", "x": 0, "y": 0.49, "width": 0.99, "height": 0.01, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 1}},
+        {"showState": "level", "changeVariable": "levelProgress", "x": -0.495, "xChange": 0.495, "y": 0.49, "width": 0, "widthChange": 0.99, "height": 0.01, "rectColor": {"h": 0, "s": 0, "b": 75, "a": 1}},
+
+        {"showState": "world", "focus": "view", "changeVariable": "paused", "widthChange": 1, "heightChange": 1, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0.5}, "textString": "Game paused", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 100}},
+        {"showState": "level", "focus": "view", "changeVariable": "paused", "widthChange": 1, "heightChange": 1, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0.5}, "textString": "Game paused", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 100}}
     ],
     "world": {
         "walls": [
@@ -49,9 +52,9 @@
         ],
         "backdrop": {"shape": "circle", "spacing": 100, "size": 50, "angle": 0, "colorBack": {"h": 0, "s": 0, "b": 0}, "colorFront": {"h": 0, "s": 0, "b": 10}},
         "viewSize": 800,
+        "startGameTime": {"time": 0, "timeOffset": 0, "paused": false, "pauseTime": 0, "canTogglePause": true},
         "startPlayer": {"x": 0, "y": 0, "size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
-        "startTransition": {"duration": 1000, "color": {"h": 0, "s": 0, "b": 0}, "active": false, "switchTime": 0},
-        "startGameTime": {"time": 0, "timeOffset": 0, "paused": false, "pauseTime": 0, "canTogglePause": true}
+        "startTransition": {"duration": 1000, "color": {"h": 0, "s": 0, "b": 0}, "active": false, "switchTime": 0}
     },
     "levels": {
         "playerProperties": {"size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
