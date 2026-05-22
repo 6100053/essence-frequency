@@ -50,7 +50,8 @@
         "backdrop": {"shape": "circle", "spacing": 100, "size": 50, "angle": 0, "colorBack": {"h": 0, "s": 0, "b": 0}, "colorFront": {"h": 0, "s": 0, "b": 10}},
         "viewSize": 800,
         "startPlayer": {"x": 0, "y": 0, "size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
-        "startTransition": {"duration": 1000, "color": {"h": 0, "s": 0, "b": 0}, "active": false, "switchTime": 0}
+        "startTransition": {"duration": 1000, "color": {"h": 0, "s": 0, "b": 0}, "active": false, "switchTime": 0},
+        "startGameTime": {"time": 0, "timeOffset": 0, "paused": false, "pauseTime": 0, "canTogglePause": true}
     },
     "levels": {
         "playerProperties": {"size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
