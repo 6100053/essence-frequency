@@ -70,7 +70,6 @@ let allLevels = [];
 //////// Variables for playing the game ////////
 
 // Game states and objects
-
 let gameTime;
 
 let gameState;
@@ -91,6 +90,9 @@ let levelState = {};
 // Size of the view that the drawing will be scaled to
 let viewSize;
 let screenSize;
+
+// Regulates mouse clicking on things
+let mouseCanClick;
 
 //////// Setup and running functions ////////
 
@@ -279,7 +281,7 @@ function setGameState(state, level = []) {
     player.y = levelState.capsule.y;
     updateInfo();
     
-    // Start of transition
+    // Start the level after the transition
     levelState.startTime = gameTime.time + transition.duration;
   }
 }
@@ -373,6 +375,8 @@ function updateInfo() {
   for (let info of gameInfo) {
     info.update();
   }
+  
+  mouseCanClick = !(mouseIsPressed && mouseButton === LEFT);
 }
 
 function prepareDrawing() {
@@ -660,11 +664,38 @@ class Info {
       this.width = lerp(this.data.width, this.data.width + this.data.widthChange, resizeAmount);
       this.height = lerp(this.data.height, this.data.height + this.data.heightChange, resizeAmount);
 
+      // Check for interaction with the info
+      let mouseHover = false;
+      if (!transition.active && this.data.buttonAction !== "" && !(this.data.buttonAction === "enterLevel" && player.nearestPortal.playerHover < 1)) {
+        let viewOffsetX;
+        let viewOffsetY;
+        if (this.data.showState === STATES.world) {
+          viewOffsetX = player.x - this.focusX;
+          viewOffsetY = player.y - this.focusY;
+            
+        } else if (this.data.showState === STATES.level) {
+          viewOffsetX = levelState.capsule.x - this.focusX;
+          viewOffsetY = levelState.capsule.y - this.focusY;
+            
+        } else {
+          viewOffsetX = 0;
+          viewOffsetY = 0;
+        }
+
+        mouseHover = collidePointRect(mouseX / screenSize * viewSize - viewSize/2, mouseY / screenSize * viewSize - viewSize/2, (this.x - this.width/2) * viewSize - viewOffsetX, (this.y - this.height/2) * viewSize - viewOffsetY, this.width * viewSize, this.height * viewSize);
+      }
+
       // Color
-      if (this.data.rectColor.h === "portalColorH") {
-        this.rectColor = color(player.nearestPortal.levelObject.colorH, this.data.rectColor.s, this.data.rectColor.b, this.data.rectColor.a);
+      if (mouseHover) {
+        this.rectColor = this.data.hoverColor;
       } else {
-        this.rectColor = color(this.data.rectColor.h, this.data.rectColor.s, this.data.rectColor.b, this.data.rectColor.a);
+        this.rectColor = this.data.rectColor;
+      }
+
+      if (this.rectColor.h === "portalColorH") {
+        this.rectColor = color(player.nearestPortal.levelObject.colorH, this.rectColor.s, this.rectColor.b, this.rectColor.a);
+      } else {
+        this.rectColor = color(this.rectColor.h, this.rectColor.s, this.rectColor.b, this.rectColor.a);
       }
 
       // Text string
@@ -718,10 +749,19 @@ class Info {
       }
 
       // Text color
-      if (this.data.textColor.h === "portalColorH") {
-        this.textColor = color(player.nearestPortal.levelObject.colorH, this.data.textColor.s, this.data.textColor.b);
+      this.textColor = this.data.textColor;
+      if (this.textColor.h === "portalColorH") {
+        this.textColor = color(player.nearestPortal.levelObject.colorH, this.textColor.s, this.textColor.b, this.textColor.a);
       } else {
-        this.textColor = color(this.data.textColor.h, this.data.textColor.s, this.data.textColor.b);
+        this.textColor = color(this.textColor.h, this.textColor.s, this.textColor.b, this.textColor.a);
+      }
+
+      // Carry out button actions
+      if (mouseHover && mouseIsPressed && mouseButton === LEFT && mouseCanClick) {
+        mouseCanClick = false;
+        if (this.data.buttonAction === "enterLevel") {
+          pendGameState(STATES.level, player.nearestPortal.levelObject);
+        }
       }
     }
   }
@@ -792,11 +832,6 @@ class Portal {
       this.playerHover -= this.hoverSpeed;
     }
     this.playerHover = constrain(this.playerHover, 0, 1);
-
-    // Enter the level if space key is pressed and the portal is fully open
-    if (keyIsDown(KEYS.space) && this.playerHover >= 1) {
-      pendGameState(STATES.level, this.levelObject);
-    }
   }
 
   draw() {
