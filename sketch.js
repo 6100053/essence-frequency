@@ -22,14 +22,12 @@
 
 // Key codes
 const KEYS = {
-  space: 32,
   left: 37,
   up: 38,
   right: 39,
   down: 40,
   a: 65,
   d: 68,
-  p: 80,
   s: 83,
   w: 87,
 };
@@ -228,7 +226,7 @@ function draw() {
 
 function pendGameState(state, level = []) {
   if (!transition.active) {
-    // Store the next game state so it can be set at the end of the draw loop
+    // Store the next game state so it can be set by the transition
     pendingState = state;
     pendingStateLevel = level;
     
@@ -294,25 +292,7 @@ function beatsToMillis(beats) {
 //////// Draw loop functions used in all game states ////////
 
 function updateGameTime() {
-  // Handle pause toggling
-  if (keyIsDown(KEYS.p)) {
-    if (gameTime.canTogglePause) {
-      gameTime.canTogglePause = false;
-
-      if (!transition.active) {
-        gameTime.paused = !gameTime.paused;
-        if (gameTime.paused) {
-          gameTime.pauseTime = millis();
-        } else {
-          gameTime.timeOffset += millis() - gameTime.pauseTime;
-        }
-      }
-    }
-  } else {
-    gameTime.canTogglePause = true;
-  }
-
-  // Update game time
+  // Update the game time for the current frame
   if (!gameTime.paused) {
     gameTime.time = millis() - gameTime.timeOffset;
   }
@@ -759,8 +739,22 @@ class Info {
       // Carry out button actions
       if (mouseHover && mouseIsPressed && mouseButton === LEFT && mouseCanClick) {
         mouseCanClick = false;
+
+        if (this.data.buttonAction === "togglePause" || this.data.buttonAction === "exitLevel") {
+          gameTime.paused = !gameTime.paused;
+          if (gameTime.paused) {
+            gameTime.pauseTime = millis();
+          } else {
+            gameTime.timeOffset += millis() - gameTime.pauseTime;
+          }
+        }
+
         if (this.data.buttonAction === "enterLevel") {
           pendGameState(STATES.level, player.nearestPortal.levelObject);
+
+        } else if (this.data.buttonAction === "exitLevel") {
+          pendGameState(STATES.world);
+
         }
       }
     }
