@@ -10,7 +10,9 @@
 // - PLACEHOLDER (later look through code to find things)
 
 
-//work on info drawing system - level starting, pause, title, etc
+//work on info drawing system - level starting, title, etc
+
+//Title state own background etc?
 
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
@@ -35,6 +37,7 @@ const KEYS = {
 // Game states
 const STATES = {
   none: "",
+  title: "title",
   world: "world",
   level: "level",
 };
@@ -178,7 +181,7 @@ function setup() {
     gameInfo.push(new Info(newInfo));
   }
   
-  setGameState(STATES.world);
+  setGameState(STATES.title);
 }
 
 function windowResized() {
@@ -189,7 +192,14 @@ function windowResized() {
 function draw() {
   updateGameTime();
 
-  if (gameState === STATES.world) {
+  if (gameState === STATES.title) {
+    updateInfo();
+    
+    prepareDrawing();
+    drawBackground();
+    drawInfo();
+    
+  } else if (gameState === STATES.world) {
     if (!gameTime.paused && !transition.active) {
       movePlayer();
       checkPortals();
@@ -239,7 +249,20 @@ function setGameState(state, level = []) {
   // Change the game state and set up the new state
   gameState = state;
   
-  if (state === STATES.world) {
+  if (state === STATES.title) {
+    if (player !== undefined) {
+      worldPlayer = structuredClone(player);
+    }
+
+    let worldData = structuredClone(gameData.world);
+
+    backdrop = worldData.backdrop;
+    viewSize = worldData.viewSize;
+
+    // Register first frame of title state
+    updateInfo();
+    
+  } else if (state === STATES.world) {
     let worldData = structuredClone(gameData.world);
 
     player = worldPlayer;
@@ -251,7 +274,9 @@ function setGameState(state, level = []) {
     updateInfo();
     
   } else if (state === STATES.level) {
-    worldPlayer = structuredClone(player);
+    if (player !== undefined) {
+      worldPlayer = structuredClone(player);
+    }
 
     let levelsData = structuredClone(gameData.levels);
     
@@ -363,8 +388,11 @@ function prepareDrawing() {
   // Scale the scene so things take up the same space in the window regardless of how big it is
   scale(screenSize / viewSize);
   
-  // Translate the scene so everything is centered on the player (in world state) or the capsule (in game state)
-  if (gameState === STATES.world) {
+  // Translate the scene so everything is centered, on the player in world state or the capsule in game state
+  if (gameState === STATES.title) {
+    translate(viewSize/2, viewSize/2);
+    
+  } else if (gameState === STATES.world) {
     translate(viewSize/2 - player.x, viewSize/2 - player.y);
     
   } else if (gameState === STATES.level) {
@@ -379,7 +407,13 @@ function drawBackground() {
   let colorFrontH;
   let colorBackH;
   
-  if (gameState === STATES.world) {
+  if (gameState === STATES.title) {
+    focusX = 0;
+    focusY = 0;
+    colorFrontH = backdrop.colorFront.h;
+    colorBackH = backdrop.colorBack.h;
+    
+  } else if (gameState === STATES.world) {
     focusX = player.x;
     focusY = player.y;
     colorFrontH = backdrop.colorFront.h;
@@ -606,7 +640,11 @@ class Info {
 
       // Position
       if (this.data.focus === "view") {
-        if (this.data.showState === STATES.world) {
+        if (this.data.showState === STATES.title) {
+          this.focusX = 0;
+          this.focusY = 0;
+          
+        } else if (this.data.showState === STATES.world) {
           this.focusX = player.x;
           this.focusY = player.y;
           
@@ -649,7 +687,11 @@ class Info {
       if (!transition.active && this.data.buttonAction !== "" && !(this.data.buttonAction === "enterLevel" && player.nearestPortal.playerHover < 1)) {
         let viewOffsetX;
         let viewOffsetY;
-        if (this.data.showState === STATES.world) {
+        if (this.data.showState === STATES.title) { //I DONT THINK THIS WHOLE THING IS NECESSARY, IT IS ALWAYS -FOCUS so WHATEVER IS USING IT WILL ALWAYS BE 0
+          viewOffsetX = 0 - this.focusX;             //CAN REDO THIS!!!! INSTEAD OF CHECKING STATE HERE AND ABOVE, JUST CHECK ONCE (above), CAN STORE TWO VALUES FOR this.INFO FOCUS AND let VIEW FOCUS
+          viewOffsetY = 0 - this.focusY;                                                //so subtract if focus is not view, otherwise ignore one (keep offset local variables, just calculate simpler)
+            
+        } else if (this.data.showState === STATES.world) {
           viewOffsetX = player.x - this.focusX;
           viewOffsetY = player.y - this.focusY;
             
@@ -661,6 +703,7 @@ class Info {
           viewOffsetX = 0;
           viewOffsetY = 0;
         }
+        console.log(viewOffsetX);
 
         mouseHover = collidePointRect(mouseX / screenSize * viewSize - viewSize/2, mouseY / screenSize * viewSize - viewSize/2, (this.x - this.width/2) * viewSize - viewOffsetX, (this.y - this.height/2) * viewSize - viewOffsetY, this.width * viewSize, this.height * viewSize);
       }
@@ -740,7 +783,9 @@ class Info {
       if (mouseHover && mouseIsPressed && mouseButton === LEFT && mouseCanClick) {
         mouseCanClick = false;
 
-        if (this.data.buttonAction === "togglePause" || this.data.buttonAction === "exitLevel") {
+        let action = this.data.buttonAction;
+
+        if (action === "togglePause" || action === "exitWorld" || action === "exitLevel") {
           gameTime.paused = !gameTime.paused;
           if (gameTime.paused) {
             gameTime.pauseTime = millis();
@@ -749,11 +794,14 @@ class Info {
           }
         }
 
-        if (this.data.buttonAction === "enterLevel") {
+        if (action === "enterLevel") {
           pendGameState(STATES.level, player.nearestPortal.levelObject);
 
-        } else if (this.data.buttonAction === "exitLevel") {
+        } else if (action === "enterWorld" || action === "exitLevel") {
           pendGameState(STATES.world);
+
+        } else if (action === "exitWorld") {
+          pendGameState(STATES.title);
 
         }
       }

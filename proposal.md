@@ -18,7 +18,7 @@ The player will be able to explore a main world area, and play levels from porta
             - [x] Song info
     - [x] Completed levels count
     - [x] Background
-    - [ ] Pause menu
+    - [x] Pause menu
 - Levels
     - Player
         - [x] Movement
@@ -34,7 +34,7 @@ The player will be able to explore a main world area, and play levels from porta
         - [x] Progress indicator
         - [x] Level completion
         - [x] Level failing
-    - [ ] Pause menu
+    - [x] Pause menu
 - Game data
     - [ ] Prototype world area
     - [ ] Prototype levels (1-3 levels, partial songs)
