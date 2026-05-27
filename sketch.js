@@ -15,8 +15,7 @@
 //Title state own background etc?
 
 //make sequences system for attacks data file?
-////LEVEL CLASS OR JUST OBJECTS??? line 110ish (can think about it, maybe will need classes when levels have more complex function)
-//use deltaTime for pausing?
+////LEVEL CLASS OR JUST OBJECTS??? line 150ish end of setup (can think about it, maybe will need classes when levels have more complex function)
 //fonts?
 
 
@@ -80,6 +79,7 @@ let pendingStateLevel = [];
 let player;
 let backdrop;
 
+let view;
 let transition;
 
 // Holds the player's information for when the world state is switched (so they return to the same place when finished a level)
@@ -88,8 +88,7 @@ let worldPlayer;
 // This object holds all the information for when a level is being played
 let levelState = {};
 
-// Size of the view that the drawing will be scaled to
-let viewSize;
+// Holds size of the canvas
 let screenSize;
 
 // Regulates mouse clicking on things
@@ -169,6 +168,7 @@ function setup() {
   worldPlayer.nearestPortal = worldPortals[0];
 
   transition = worldData.startTransition;
+  view = worldData.startView;
 
   // Info data
   let defaultInfo = gameData.info[0];
@@ -193,9 +193,9 @@ function draw() {
   updateGameTime();
 
   if (gameState === STATES.title) {
+    updateView();
     updateInfo();
     
-    prepareDrawing();
     drawBackground();
     drawInfo();
     
@@ -204,9 +204,9 @@ function draw() {
       movePlayer();
       checkPortals();
     }
+    updateView();
     updateInfo();
     
-    prepareDrawing();
     drawBackground();
     drawWalls();
     drawPortals();
@@ -220,9 +220,9 @@ function draw() {
       moveObstacles();
       movePlayer();
     }
+    updateView();
     updateInfo();
     
-    prepareDrawing();
     drawBackground();
     drawPaths();
     drawCapsule();
@@ -257,7 +257,7 @@ function setGameState(state, level = []) {
     let worldData = structuredClone(gameData.world);
 
     backdrop = worldData.backdrop;
-    viewSize = worldData.viewSize;
+    view = worldData.startView;
 
     // Register first frame of title state
     updateInfo();
@@ -267,7 +267,7 @@ function setGameState(state, level = []) {
 
     player = worldPlayer;
     backdrop = worldData.backdrop;
-    viewSize = worldData.viewSize;
+    view = worldData.startView;
 
     // Set up and register first frame of world state
     checkPortals();
@@ -384,20 +384,25 @@ function updateInfo() {
   mouseCanClick = !(mouseIsPressed && mouseButton === LEFT);
 }
 
-function prepareDrawing() {
+function updateView() {
   // Scale the scene so things take up the same space in the window regardless of how big it is
-  scale(screenSize / viewSize);
+  scale(screenSize / view.size);
   
-  // Translate the scene so everything is centered, on the player in world state or the capsule in game state
+  // Translate the scene so everything is centered, on the player in world state or the capsule in game state  
   if (gameState === STATES.title) {
-    translate(viewSize/2, viewSize/2);
+    view.x = 0;
+    view.y = 0;
     
   } else if (gameState === STATES.world) {
-    translate(viewSize/2 - player.x, viewSize/2 - player.y);
-    
+    view.x = player.x;
+    view.y = player.y;
+
   } else if (gameState === STATES.level) {
-    translate(viewSize/2 - levelState.capsule.x, viewSize/2 - levelState.capsule.y);
+    view.x = levelState.capsule.x;
+    view.y = levelState.capsule.y;
   }
+
+  translate(view.size/2 - view.x, view.size/2 - view.y);
 }
 
 function drawBackground() {
@@ -433,8 +438,8 @@ function drawBackground() {
   let shapeSpacing = backdrop.spacing;
   
   // Draw a grid of shapes, filling just the background of the canvas
-  for (let shapeX = -viewSize/2 - shapeSpacing + viewSize/2 % shapeSpacing + floor(focusX / shapeSpacing) * shapeSpacing; shapeX <= viewSize/2 + shapeSpacing + ceil(focusX / shapeSpacing) * shapeSpacing; shapeX += shapeSpacing) {
-    for (let shapeY = -viewSize/2 - shapeSpacing + viewSize/2 % shapeSpacing + floor(focusY / shapeSpacing) * shapeSpacing; shapeY <= viewSize/2 + shapeSpacing + ceil(focusY / shapeSpacing) * shapeSpacing; shapeY += shapeSpacing) {
+  for (let shapeX = -view.size/2 - shapeSpacing + view.size/2 % shapeSpacing + floor(focusX / shapeSpacing) * shapeSpacing; shapeX <= view.size/2 + shapeSpacing + ceil(focusX / shapeSpacing) * shapeSpacing; shapeX += shapeSpacing) {
+    for (let shapeY = -view.size/2 - shapeSpacing + view.size/2 % shapeSpacing + floor(focusY / shapeSpacing) * shapeSpacing; shapeY <= view.size/2 + shapeSpacing + ceil(focusY / shapeSpacing) * shapeSpacing; shapeY += shapeSpacing) {
       push();
       translate(shapeX, shapeY);
       rotate(backdrop.angle);
@@ -582,7 +587,7 @@ function moveCapsule() {
   backdrop.colorBack = newcolorBack;
   backdrop.colorFront = newcolorFront;
 
-  viewSize = lerp(currentPath.viewSize, nextPath.viewSize, amountBetweenNodes);
+  view.size = lerp(currentPath.viewSize, nextPath.viewSize, amountBetweenNodes);
 }
 
 function moveObstacles() {
@@ -640,22 +645,9 @@ class Info {
 
       // Position
       if (this.data.focus === "view") {
-        if (this.data.showState === STATES.title) {
-          this.focusX = 0;
-          this.focusY = 0;
-          
-        } else if (this.data.showState === STATES.world) {
-          this.focusX = player.x;
-          this.focusY = player.y;
-          
-        } else if (this.data.showState === STATES.level) {
-          this.focusX = levelState.capsule.x;
-          this.focusY = levelState.capsule.y;
-          
-        } else {
-          this.focusX = 0;
-          this.focusY = 0;
-        }
+        this.focusX = view.x;
+        this.focusY = view.y;
+
       } else if (this.data.focus === "portal") {
         this.focusX = player.nearestPortal.x;
         this.focusY = player.nearestPortal.y;
@@ -685,27 +677,14 @@ class Info {
       // Check for interaction with the info
       let mouseHover = false;
       if (!transition.active && this.data.buttonAction !== "" && !(this.data.buttonAction === "enterLevel" && player.nearestPortal.playerHover < 1)) {
-        let viewOffsetX;
-        let viewOffsetY;
-        if (this.data.showState === STATES.title) { //I DONT THINK THIS WHOLE THING IS NECESSARY, IT IS ALWAYS -FOCUS so WHATEVER IS USING IT WILL ALWAYS BE 0
-          viewOffsetX = 0 - this.focusX;             //CAN REDO THIS!!!! INSTEAD OF CHECKING STATE HERE AND ABOVE, JUST CHECK ONCE (above), CAN STORE TWO VALUES FOR this.INFO FOCUS AND let VIEW FOCUS
-          viewOffsetY = 0 - this.focusY;                                                //so subtract if focus is not view, otherwise ignore one (keep offset local variables, just calculate simpler)
-            
-        } else if (this.data.showState === STATES.world) {
-          viewOffsetX = player.x - this.focusX;
-          viewOffsetY = player.y - this.focusY;
-            
-        } else if (this.data.showState === STATES.level) {
-          viewOffsetX = levelState.capsule.x - this.focusX;
-          viewOffsetY = levelState.capsule.y - this.focusY;
-            
-        } else {
-          viewOffsetX = 0;
-          viewOffsetY = 0;
+        let viewOffsetX = 0;
+        let viewOffsetY = 0;
+        if (this.data.focus !== "view") {
+          viewOffsetX = view.x - this.focusX;
+          viewOffsetY = view.y - this.focusY;
         }
-        console.log(viewOffsetX);
 
-        mouseHover = collidePointRect(mouseX / screenSize * viewSize - viewSize/2, mouseY / screenSize * viewSize - viewSize/2, (this.x - this.width/2) * viewSize - viewOffsetX, (this.y - this.height/2) * viewSize - viewOffsetY, this.width * viewSize, this.height * viewSize);
+        mouseHover = collidePointRect(mouseX / screenSize * view.size - view.size/2, mouseY / screenSize * view.size - view.size/2, (this.x - this.width/2) * view.size - viewOffsetX, (this.y - this.height/2) * view.size - viewOffsetY, this.width * view.size, this.height * view.size);
       }
 
       // Color
@@ -765,10 +744,10 @@ class Info {
       // Text size
       let textPadding = this.height * this.data.textPaddingScale;
 
-      this.textSize = viewSize * (this.height - textPadding);
+      this.textSize = view.size * (this.height - textPadding);
       textSize(this.textSize);
-      if (textWidth(this.textString) > viewSize * (this.width - textPadding)) {
-        this.textSize = this.textSize / textWidth(this.textString) * viewSize * (this.width - textPadding);
+      if (textWidth(this.textString) > view.size * (this.width - textPadding)) {
+        this.textSize = this.textSize / textWidth(this.textString) * view.size * (this.width - textPadding);
       }
 
       // Text color
@@ -811,12 +790,12 @@ class Info {
   draw() {
     // Draw the info item
     if (this.visible) {
-      let drawX = this.focusX + this.x * viewSize;
-      let drawY = this.focusY + this.y * viewSize;
+      let drawX = this.focusX + this.x * view.size;
+      let drawY = this.focusY + this.y * view.size;
 
       noStroke();
       fill(this.rectColor);
-      rect(drawX, drawY, this.width * viewSize, this.height * viewSize);
+      rect(drawX, drawY, this.width * view.size, this.height * view.size);
 
       if (this.textSize > 0) {
         textSize(this.textSize);
@@ -891,16 +870,18 @@ class Portal {
 class Obstacle {
   constructor(data) {
     this.data = data;
+    this.visible = false;
     this.active = false;
     this.startPositionFound = !(this.data.withCapsule === "start");
   }
   
   move() {
     // Check if it's time for the obstacle to exist in the level
-    this.active = gameTime.time - levelState.startTime >= beatsToMillis(this.data.startBeat) && gameTime.time - levelState.startTime <= beatsToMillis(this.data.startBeat) + beatsToMillis(this.data.moveBeats);
+    this.visible = gameTime.time - levelState.startTime >= beatsToMillis(this.data.startBeat - this.data.warnBeats) && gameTime.time - levelState.startTime <= beatsToMillis(this.data.startBeat - this.data.warnBeats + this.data.moveBeats);
+    this.active = gameTime.time - levelState.startTime >= beatsToMillis(this.data.startBeat) && gameTime.time - levelState.startTime <= beatsToMillis(this.data.startBeat + this.data.moveBeats);
 
     // Move the obstacle by setting the position based on its attack data
-    if (this.active) {
+    if (this.visible) {
       if (!this.startPositionFound) {
         // Find the capsule's position at the obstacle start time
         let currentPath = levelState.levelObject.nodes[levelState.currentNodeIndex];
@@ -916,7 +897,7 @@ class Obstacle {
       // Amount from the attack start to end (0 to 1)
       let amountThroughMovement = (gameTime.time - levelState.startTime - beatsToMillis(this.data.startBeat)) / beatsToMillis(this.data.moveBeats);
 
-      // Set obstacle properties to values between those of the start and end properties
+      // Set obstacle properties to values based on the start and end properties
       let xFocus = 0;
       let yFocus = 0;
       if (this.data.withCapsule === "move") {
@@ -932,37 +913,46 @@ class Obstacle {
       this.offsetX = lerp(this.data.offsetXStart, this.data.offsetXStart + this.data.offsetXMove, amountThroughMovement);
       this.offsetAngle = lerp(this.data.offsetAngleStart, this.data.offsetAngleStart + this.data.offsetAngleMove, amountThroughMovement);
       
-      // Check for player collision with the obstacle
-      let collision;
-      if (this.data.shape === "circle") {
-        collision = collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x + this.offsetX * cos(this.offsetAngle), this.y + this.offsetX * sin(this.offsetAngle), this.width);
-      } else {
-        let polygon = structuredClone(SHAPES[this.data.shape]);
-        for (let corner of polygon) {
-          let originalX = corner.x * this.width;
-          let originalY = corner.y * this.height;
-          
-          originalX = originalX * cos(-this.angle) + originalY * sin(-this.angle);
-          originalY = this.offsetX + (-originalX * sin(-this.angle) + originalY * cos(-this.angle));
-
-          corner.x = this.x + (originalX * cos(-this.offsetAngle) + originalY * sin(-this.offsetAngle));
-          corner.y = this.y + (-originalX * sin(-this.offsetAngle) + originalY * cos(-this.offsetAngle));
+      if (this.active) {
+        // Check for player collision with the obstacle
+        let collision;
+        if (this.data.shape === "circle") {
+          collision = collideRectCircle(player.x - player.size/2, player.y - player.size/2, player.size, player.size, this.x + this.offsetX * cos(this.offsetAngle), this.y + this.offsetX * sin(this.offsetAngle), this.width);
+        } else {
+          let polygon = structuredClone(SHAPES[this.data.shape]);
+          for (let corner of polygon) {
+            let originalX = corner.x * this.width;
+            let originalY = corner.y * this.height;
+            
+            originalX = originalX * cos(-this.angle) + originalY * sin(-this.angle);
+            originalY = this.offsetX + (-originalX * sin(-this.angle) + originalY * cos(-this.angle));
+  
+            corner.x = this.x + (originalX * cos(-this.offsetAngle) + originalY * sin(-this.offsetAngle));
+            corner.y = this.y + (-originalX * sin(-this.offsetAngle) + originalY * cos(-this.offsetAngle));
+          }
+          collision = collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, polygon);
         }
-        collision = collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, polygon);
-      }
-      
-      if (collision) {
-        // Exit to the world state if player is hit
-        pendGameState(STATES.world, 0);
+        
+        if (collision) {
+          // Exit to the world state if player is hit
+          pendGameState(STATES.world, 0);
+        }
       }
     }
   }
 
   draw() {
     // Draw the obstacle in its proper position and orientaton
-    if (this.active) {
+    if (this.visible) {
       noStroke();
-      fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b);
+
+      let colorA;
+      if (this.active) {
+        colorA = 1;
+      } else {
+        colorA = 0.5;
+      }
+      fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b, colorA);
 
       push();
       translate(this.x, this.y);

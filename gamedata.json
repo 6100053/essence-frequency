@@ -62,7 +62,7 @@
             {"levelIndex": 1, "x": -200, "y": -300}
         ],
         "backdrop": {"shape": "circle", "spacing": 100, "size": 50, "angle": 0, "colorBack": {"h": 0, "s": 0, "b": 0}, "colorFront": {"h": 0, "s": 0, "b": 10}},
-        "viewSize": 800,
+        "startView": {"x": 0, "y": 0, "size": 800},
         "startGameTime": {"time": 0, "timeOffset": 0, "paused": false, "pauseTime": 0, "canTogglePause": true},
         "startPlayer": {"x": 0, "y": 0, "size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
         "startTransition": {"duration": 1000, "color": {"h": 0, "s": 0, "b": 0}, "active": false, "switchTime": 0}
@@ -86,7 +86,7 @@
                     {"timeBeat": 36}
                 ],
                 "attacks": [
-                    {"startBeat": 4, "moveBeats": 8, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "none", "xStart": 400, "yStart": 0, "wStart": 25, "hStart": 25, "angleStart": 0, "offsetXStart": 200, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 180},
+                    {"startBeat": 12, "moveBeats": 8, "warnBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "none", "xStart": 0, "yStart": -200, "wStart": 25, "hStart": 25, "angleStart": 0, "offsetXStart": 200, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 180},
                     {"offsetAngleStart": 45},
                     {"offsetAngleStart": 90},
                     {"offsetAngleStart": 135},
