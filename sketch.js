@@ -10,9 +10,9 @@
 // - PLACEHOLDER (later look through code to find things)
 
 
-//work on info drawing system - level starting, title, etc
+//work on info drawing system - level starting, maybe introduction
 
-//Title state own background etc?
+//Title state own background etc?? maybe not?
 
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 150ish end of setup (can think about it, maybe will need classes when levels have more complex function)
@@ -181,7 +181,7 @@ function setup() {
     gameInfo.push(new Info(newInfo));
   }
   
-  setGameState(STATES.title);
+  setGameState(STATES.world);
 }
 
 function windowResized() {
@@ -193,20 +193,26 @@ function draw() {
   updateGameTime();
 
   if (gameState === STATES.title) {
-    updateView();
-    updateInfo();
+    if (!transition.active) {
+      updateView();
+      updateInfo();
+    }
     
+    drawView();
     drawBackground();
     drawInfo();
     
   } else if (gameState === STATES.world) {
-    if (!gameTime.paused && !transition.active) {
-      movePlayer();
-      checkPortals();
+    if (!transition.active) {
+      if (!gameTime.paused) {
+        movePlayer();
+        checkPortals();
+      }
+      updateView();
+      updateInfo();
     }
-    updateView();
-    updateInfo();
     
+    drawView();
     drawBackground();
     drawWalls();
     drawPortals();
@@ -214,15 +220,18 @@ function draw() {
     drawInfo();
     
   } else if (gameState === STATES.level) {
-    if (!gameTime.paused && !transition.active) {
-      levelProgress();
-      moveCapsule();
-      moveObstacles();
-      movePlayer();
+    if (!transition.active) {
+      if (!gameTime.paused) {
+        levelProgress();
+        moveCapsule();
+        moveObstacles();
+        movePlayer();
+      }
+      updateView();
+      updateInfo();
     }
-    updateView();
-    updateInfo();
     
+    drawView();
     drawBackground();
     drawPaths();
     drawCapsule();
@@ -260,6 +269,7 @@ function setGameState(state, level = []) {
     view = worldData.startView;
 
     // Register first frame of title state
+    updateView();
     updateInfo();
     
   } else if (state === STATES.world) {
@@ -271,6 +281,7 @@ function setGameState(state, level = []) {
 
     // Set up and register first frame of world state
     checkPortals();
+    updateView();
     updateInfo();
     
   } else if (state === STATES.level) {
@@ -302,6 +313,7 @@ function setGameState(state, level = []) {
     moveObstacles();
     player.x = levelState.capsule.x;
     player.y = levelState.capsule.y;
+    updateView();
     updateInfo();
     
     // Start the level after the transition
@@ -375,20 +387,8 @@ function movePlayer() {
   }
 }
 
-function updateInfo() {
-  // Update the current on-screen info
-  for (let info of gameInfo) {
-    info.update();
-  }
-  
-  mouseCanClick = !(mouseIsPressed && mouseButton === LEFT);
-}
-
 function updateView() {
-  // Scale the scene so things take up the same space in the window regardless of how big it is
-  scale(screenSize / view.size);
-  
-  // Translate the scene so everything is centered, on the player in world state or the capsule in game state  
+  // Update the view so that it is centered, on the player in world state or the capsule in game state
   if (gameState === STATES.title) {
     view.x = 0;
     view.y = 0;
@@ -401,7 +401,22 @@ function updateView() {
     view.x = levelState.capsule.x;
     view.y = levelState.capsule.y;
   }
+}
 
+function updateInfo() {
+  // Update the current on-screen info
+  for (let info of gameInfo) {
+    info.update();
+  }
+  
+  mouseCanClick = !(mouseIsPressed && mouseButton === LEFT);
+}
+
+function drawView() {
+  // Scale the scene so things take up the same space in the window regardless of how big it is
+  scale(screenSize / view.size);
+  
+  // Translate the scene so that the current view is shown on the canvas
   translate(view.size/2 - view.x, view.size/2 - view.y);
 }
 
@@ -654,25 +669,31 @@ class Info {
       }
 
       // Size
-      let resizeAmount;
+      let changeAmount;
       if (this.data.changeVariable === "") {
-        resizeAmount = 0;
+        changeAmount = 0;
       } else if (this.data.changeVariable === "paused") {
         if (gameTime.paused) {
-          resizeAmount = 1;
+          changeAmount = 1;
         } else {
-          resizeAmount = 0;
+          changeAmount = 0;
+        }
+      } else if (this.data.changeVariable === "levelStart") {//prototype, will fix numbers
+        if (gameTime.time - levelState.startTime < 1000) {
+          changeAmount = (gameTime.time - levelState.startTime) / 1000;
+        } else {
+          changeAmount = 1;
         }
       } else if (this.data.changeVariable === "levelProgress") {
-        resizeAmount = (gameTime.time - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
+        changeAmount = (gameTime.time - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
       } else if (this.data.changeVariable === "portalPlayerHover") {
-        resizeAmount = player.nearestPortal.playerHover;
+        changeAmount = player.nearestPortal.playerHover;
       }
 
-      this.x = lerp(this.data.x, this.data.x + this.data.xChange, resizeAmount);
-      this.y = lerp(this.data.y, this.data.y + this.data.yChange, resizeAmount);
-      this.width = lerp(this.data.width, this.data.width + this.data.widthChange, resizeAmount);
-      this.height = lerp(this.data.height, this.data.height + this.data.heightChange, resizeAmount);
+      this.x = lerp(this.data.x, this.data.x + this.data.xChange, changeAmount);
+      this.y = lerp(this.data.y, this.data.y + this.data.yChange, changeAmount);
+      this.width = lerp(this.data.width, this.data.width + this.data.widthChange, changeAmount);
+      this.height = lerp(this.data.height, this.data.height + this.data.heightChange, changeAmount);
 
       // Check for interaction with the info
       let mouseHover = false;
@@ -950,7 +971,7 @@ class Obstacle {
       if (this.active) {
         colorA = 1;
       } else {
-        colorA = 0.5;
+        colorA = lerp(0, 0.5, (gameTime.time - levelState.startTime - beatsToMillis(this.data.startBeat - this.data.warnBeats)) / beatsToMillis(this.data.warnBeats));
       }
       fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b, colorA);
 

@@ -6,7 +6,7 @@ The player will be able to explore a main world area, and play levels from porta
 
 ## Required Features
 
-- [ ] Title screen/introduction
+- [x] Title screen/introduction
 - Main world area
     - Player
         - [x] Movement
