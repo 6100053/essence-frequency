@@ -12,8 +12,6 @@
 
 //work on info drawing system - level starting, maybe introduction
 
-//Title state own background etc?? maybe not?
-
 //make sequences system for attacks data file?
 ////LEVEL CLASS OR JUST OBJECTS??? line 150ish end of setup (can think about it, maybe will need classes when levels have more complex function)
 //fonts?
@@ -222,7 +220,9 @@ function draw() {
   } else if (gameState === STATES.level) {
     if (!transition.active) {
       if (!gameTime.paused) {
-        levelProgress();
+        if (gameTime.time - levelState.startTime > 0) {
+          levelProgress();
+        }
         moveCapsule();
         moveObstacles();
         movePlayer();
@@ -317,7 +317,7 @@ function setGameState(state, level = []) {
     updateInfo();
     
     // Start the level after the transition
-    levelState.startTime = gameTime.time + transition.duration;
+    levelState.startTime = gameTime.time + transition.duration + levelsData.introProperties.duration;
   }
 }
 
@@ -678,14 +678,13 @@ class Info {
         } else {
           changeAmount = 0;
         }
-      } else if (this.data.changeVariable === "levelStart") {//prototype, will fix numbers
-        if (gameTime.time - levelState.startTime < 1000) {
-          changeAmount = (gameTime.time - levelState.startTime) / 1000;
-        } else {
-          changeAmount = 1;
-        }
+      } else if (this.data.changeVariable === "levelIntro") {
+        let levelIntroData = gameData.levels.introProperties;
+        changeAmount = (gameTime.time - (levelState.startTime - levelIntroData.infoAnimateTime)) / levelIntroData.infoAnimateTime;
+        changeAmount = constrain(changeAmount, 0, 1);
       } else if (this.data.changeVariable === "levelProgress") {
         changeAmount = (gameTime.time - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
+        changeAmount = constrain(changeAmount, 0, 1);
       } else if (this.data.changeVariable === "portalPlayerHover") {
         changeAmount = player.nearestPortal.playerHover;
       }

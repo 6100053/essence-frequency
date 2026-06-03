@@ -26,7 +26,7 @@
         {"showState": "level", "x": 0, "y": 0.49, "width": 0.99, "height": 0.01, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 1}},
         {"showState": "level", "changeVariable": "levelProgress", "x": -0.495, "xChange": 0.495, "y": 0.49, "width": 0, "widthChange": 0.99, "height": 0.01, "rectColor": {"h": 0, "s": 0, "b": 75, "a": 1}},
 
-        {"showState": "level", "changeVariable": "levelStart", "x": -0.3, "xChange": -0.4, "y": 0.25, "width": 0.4, "height": 0.2, "rectColor": {"h": 0, "s": 0, "b": 100, "a": 0.25}},
+        {"showState": "level", "changeVariable": "levelIntro", "x": -0.3, "xChange": -0.4, "y": 0.25, "width": 0.4, "height": 0.2, "rectColor": {"h": 0, "s": 0, "b": 100, "a": 0.25}},
 
         {"showState": "level", "changeVariable": "paused", "x": -0.48, "xChange": 0.48, "y": -0.48, "yChange": 0.48, "width": 0.04, "widthChange": -0.04, "height": 0.04, "heightChange": -0.04, "rectColor": {"h": 0, "s": 0, "b": 75, "a": 1}, "textString": "☰", "textPaddingScale": 0.25, "textColor": {"h": 0, "s": 0, "b": 0, "a": 1}, "buttonAction": "togglePause", "hoverColor": {"h": 0, "s": 0, "b": 50, "a": 1}},
 
@@ -74,6 +74,7 @@
         "playerProperties": {"size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
         "capsuleProperties": {"border": 5, "color": {"h": 0, "s": 0, "b": 40}},
         "pathProperties": {"border": 5, "color": {"h": 0, "s": 0, "b": 30}},
+        "introProperties": {"duration": 3000, "infoAnimateTime": 1000},
         "levelProperties": [
             {
                 "info": {"name": "Test name", "minorKey": "C#", "tempo": 120, "colorH": 240},
