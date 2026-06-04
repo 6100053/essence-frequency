@@ -30,7 +30,7 @@ The player will be able to explore a main world area, and play levels from porta
             - [x] Basic movement
             - [x] Player collision
     - Progress
-        - [ ] Start transition
+        - [x] Start transition
         - [x] Progress indicator
         - [x] Level completion
         - [x] Level failing

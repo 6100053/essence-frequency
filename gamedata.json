@@ -22,11 +22,14 @@
         {"showState": "world", "changeVariable": "paused", "yChange": 0.15, "widthChange": 0.25, "heightChange": 0.1, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "Resume", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 100, "a": 1}, "buttonAction": "togglePause", "hoverColor": {"h": 0, "s": 0, "b": 50, "a": 0.5}},
         {"showState": "world", "changeVariable": "paused", "yChange": 0.3, "widthChange": 0.25, "heightChange": 0.1, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "Back to title", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 100, "a": 1}, "buttonAction": "exitWorld", "hoverColor": {"h": 0, "s": 0, "b": 50, "a": 0.5}},
 
+        {"showState": "level", "changeVariable": "levelIntro", "x": -0.25, "xChange": -0.5, "y": 0.35, "width": 0.5, "height": 0.2, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0.5}},
+        {"showState": "level", "changeVariable": "levelIntro", "x": -0.25, "xChange": -0.5, "y": 0.31, "width": 0.5, "height": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textVariable": "levelName", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 100, "a": 1}},
+        {"showState": "level", "changeVariable": "levelIntro", "x": -0.375, "xChange": -0.5, "y": 0.39, "width": 0.25, "height": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "# BPM", "textVariable": "levelTempo", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 100, "a": 1}},
+        {"showState": "level", "changeVariable": "levelIntro", "x": -0.125, "xChange": -0.5, "y": 0.39, "width": 0.25, "height": 0.08, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "# minor", "textVariable": "levelKey", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 100, "a": 1}},
+        
         {"showState": "level", "x": 0, "y": 0.49, "width": 1, "height": 0.02, "rectColor": {"h": 0, "s": 0, "b": 30, "a": 1}},
         {"showState": "level", "x": 0, "y": 0.49, "width": 0.99, "height": 0.01, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 1}},
         {"showState": "level", "changeVariable": "levelProgress", "x": -0.495, "xChange": 0.495, "y": 0.49, "width": 0, "widthChange": 0.99, "height": 0.01, "rectColor": {"h": 0, "s": 0, "b": 75, "a": 1}},
-
-        {"showState": "level", "changeVariable": "levelIntro", "x": -0.3, "xChange": -0.4, "y": 0.25, "width": 0.4, "height": 0.2, "rectColor": {"h": 0, "s": 0, "b": 100, "a": 0.25}},
 
         {"showState": "level", "changeVariable": "paused", "x": -0.48, "xChange": 0.48, "y": -0.48, "yChange": 0.48, "width": 0.04, "widthChange": -0.04, "height": 0.04, "heightChange": -0.04, "rectColor": {"h": 0, "s": 0, "b": 75, "a": 1}, "textString": "☰", "textPaddingScale": 0.25, "textColor": {"h": 0, "s": 0, "b": 0, "a": 1}, "buttonAction": "togglePause", "hoverColor": {"h": 0, "s": 0, "b": 50, "a": 1}},
 
@@ -65,29 +68,27 @@
             {"levelIndex": 1, "x": -200, "y": -300}
         ],
         "backdrop": {"shape": "circle", "spacing": 100, "size": 50, "angle": 0, "colorBack": {"h": 0, "s": 0, "b": 0}, "colorFront": {"h": 0, "s": 0, "b": 10}},
+        "startPlayer": {"x": 0, "y": 0, "size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
         "startView": {"x": 0, "y": 0, "size": 800},
         "startGameTime": {"time": 0, "timeOffset": 0, "paused": false, "pauseTime": 0, "canTogglePause": true},
-        "startPlayer": {"x": 0, "y": 0, "size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
         "startTransition": {"duration": 1000, "color": {"h": 0, "s": 0, "b": 0}, "active": false, "switchTime": 0}
     },
     "levels": {
         "playerProperties": {"size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
         "capsuleProperties": {"border": 5, "color": {"h": 0, "s": 0, "b": 40}},
         "pathProperties": {"border": 5, "color": {"h": 0, "s": 0, "b": 30}},
-        "introProperties": {"duration": 3000, "infoAnimateTime": 1000},
+        "introProperties": {"duration": 5000, "infoAnimateTime": 1000},
         "levelProperties": [
             {
                 "info": {"name": "Test name", "minorKey": "C#", "tempo": 120, "colorH": 240},
                 "capsulePath": [
-                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdShape": "square", "bdSpacing": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}, "viewSize": 800},
-                    {"timeBeat": 4},
-                    {"timeBeat": 8, "x": 400, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 50, "b": 20}},
+                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdShape": "square", "bdSpacing": 100, "bdSize": 0, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}, "viewSize": 800},
+                    {"timeBeat": 8, "x": 400, "bdSize": 50, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 50, "b": 20}},
                     {"timeBeat": 12, "y": -200, "bdAngle": 360},
                     {"timeBeat": 20, "x": -400, "capsuleW": 300},
                     {"timeBeat": 24, "y": 0, "capsuleH": 300, "bdSize": 75},
                     {"timeBeat": 30, "x": 0, "y": 400, "bdColorBack": {"s": 100, "b": 20}, "bdColorFront": {"s": 100, "b": 5}},
-                    {"timeBeat": 34, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}},
-                    {"timeBeat": 36}
+                    {"timeBeat": 36, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}}
                 ],
                 "attacks": [
                     {"startBeat": 12, "moveBeats": 8, "warnBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "none", "xStart": 0, "yStart": -200, "wStart": 25, "hStart": 25, "angleStart": 0, "offsetXStart": 200, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 180},
@@ -103,8 +104,8 @@
             {
                 "info": {"name": "Another level", "minorKey": "Bb", "tempo": 168, "colorH": 120},
                 "capsulePath": [
-                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 75, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 25, "b": 10}, "viewSize": 800},
-                    {"timeBeat": 8, "x": -200, "y": 100, "bdAngle": 45, "bdColorFront": {"s": 50, "b": 10}},
+                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 75, "bdSize": 0, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 25, "b": 10}, "viewSize": 800},
+                    {"timeBeat": 8, "x": -200, "y": 100, "bdSize": 50, "bdAngle": 45, "bdColorFront": {"s": 50, "b": 10}},
                     {"timeBeat": 16, "y": 300, "capsuleW": 50, "capsuleH": 150, "bdColorFront": {"s": 10, "b": 10}},
                     {"timeBeat": 18, "x": -150, "y": 350, "bdAngle": -45},
                     {"timeBeat": 20, "x": -100, "y": 300, "bdAngle": 45},

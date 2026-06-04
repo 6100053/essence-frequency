@@ -9,11 +9,8 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-
-//work on info drawing system - level starting, maybe introduction
-
+//Can edit colours slightly
 //make sequences system for attacks data file?
-////LEVEL CLASS OR JUST OBJECTS??? line 150ish end of setup (can think about it, maybe will need classes when levels have more complex function)
 //fonts?
 
 
@@ -144,9 +141,6 @@ function setup() {
     newInfo.attacks = newLevelAttacks;
     newInfo.progress = false;
     allLevels.push(newInfo);
-    
-    // let levelInfo = levelData.info;
-    // allLevels.push(new Level(levelInfo.name, levelInfo.minorKey, levelInfo.tempo, levelInfo.colorH, newCapsuleNodes));
   }
 
   // World data
@@ -220,9 +214,7 @@ function draw() {
   } else if (gameState === STATES.level) {
     if (!transition.active) {
       if (!gameTime.paused) {
-        if (gameTime.time - levelState.startTime > 0) {
-          levelProgress();
-        }
+        levelProgress();
         moveCapsule();
         moveObstacles();
         movePlayer();
@@ -305,9 +297,11 @@ function setGameState(state, level = []) {
     }
     
     levelState.levelObject = level;
+
+    levelState.intro = levelsData.introProperties;
     
-    // Set up and register the first frame of the level
-    levelState.startTime = gameTime.time;
+    // Set up and register the first frame of the level (start the level after the transition and level intro)
+    levelState.startTime = gameTime.time + transition.duration + levelState.intro.duration;
     levelProgress();
     moveCapsule();
     moveObstacles();
@@ -315,9 +309,6 @@ function setGameState(state, level = []) {
     player.y = levelState.capsule.y;
     updateView();
     updateInfo();
-    
-    // Start the level after the transition
-    levelState.startTime = gameTime.time + transition.duration + levelsData.introProperties.duration;
   }
 }
 
@@ -577,7 +568,7 @@ function moveCapsule() {
   let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
   
   // Amount from the last node to the next one (0 to 1)
-  let amountBetweenNodes = (gameTime.time - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat));
+  let amountBetweenNodes = constrain((gameTime.time - levelState.lastNodeTime) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat)), 0, 1);
   
   // Set capsule, backdrop, and view properties to values between those of the last and next node
   levelCapsule.x = lerp(currentPath.x, nextPath.x, amountBetweenNodes);
@@ -658,7 +649,7 @@ class Info {
     if (this.visible) {
       // Set drawing properties based on the data object and current game variables
 
-      // Position
+      // Location focus
       if (this.data.focus === "view") {
         this.focusX = view.x;
         this.focusY = view.y;
@@ -668,23 +659,24 @@ class Info {
         this.focusY = player.nearestPortal.y;
       }
 
-      // Size
+      // Position and size
       let changeAmount;
       if (this.data.changeVariable === "") {
         changeAmount = 0;
+
       } else if (this.data.changeVariable === "paused") {
         if (gameTime.paused) {
           changeAmount = 1;
         } else {
           changeAmount = 0;
         }
+
       } else if (this.data.changeVariable === "levelIntro") {
-        let levelIntroData = gameData.levels.introProperties;
-        changeAmount = (gameTime.time - (levelState.startTime - levelIntroData.infoAnimateTime)) / levelIntroData.infoAnimateTime;
-        changeAmount = constrain(changeAmount, 0, 1);
+        changeAmount = constrain((gameTime.time - (levelState.startTime - levelState.intro.infoAnimateTime)) / levelState.intro.infoAnimateTime, 0, 1);
+
       } else if (this.data.changeVariable === "levelProgress") {
-        changeAmount = (gameTime.time - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat);
-        changeAmount = constrain(changeAmount, 0, 1);
+        changeAmount = constrain((gameTime.time - levelState.startTime) / beatsToMillis(levelState.levelObject.nodes[levelState.levelObject.nodes.length-1].timeBeat), 0, 1);
+
       } else if (this.data.changeVariable === "portalPlayerHover") {
         changeAmount = player.nearestPortal.playerHover;
       }
@@ -696,7 +688,7 @@ class Info {
 
       // Check for interaction with the info
       let mouseHover = false;
-      if (!transition.active && this.data.buttonAction !== "" && !(this.data.buttonAction === "enterLevel" && player.nearestPortal.playerHover < 1)) {
+      if (!transition.active && this.data.buttonAction !== "" && !(this.data.changeVariable === "portalPlayerHover" && player.nearestPortal.playerHover < 1)) {
         let viewOffsetX = 0;
         let viewOffsetY = 0;
         if (this.data.focus !== "view") {
@@ -734,14 +726,27 @@ class Info {
             }
           }
           textVariable = completedCount;
+
         } else if (this.data.textVariable === "portalLevelName") {
           textVariable = player.nearestPortal.levelObject.name;
+
         } else if (this.data.textVariable === "portalLevelTempo") {
           textVariable = player.nearestPortal.levelObject.tempo;
+
         } else if (this.data.textVariable === "portalLevelKey") {
           textVariable = player.nearestPortal.levelObject.minorKey;
+
         } else if (this.data.textVariable === "portalLevelCompleted") {
           textVariable = player.nearestPortal.levelObject.progress;
+
+        } else if (this.data.textVariable === "levelName") {
+          textVariable = levelState.levelObject.name;
+
+        } else if (this.data.textVariable === "levelTempo") {
+          textVariable = levelState.levelObject.tempo;
+
+        } else if (this.data.textVariable === "levelKey") {
+          textVariable = levelState.levelObject.minorKey;
         }
 
         if (this.data.textString === "") {
@@ -993,14 +998,3 @@ class Obstacle {
     }
   }
 }
-
-// class Level {
-//   constructor(name, minorKey, tempo, colorH, nodes) {
-//     this.name = name;
-//     this.minorKey = minorKey;
-//     this.tempo = tempo;
-//     this.colorH = colorH;
-//     this.nodes = nodes;
-//     this.progress = false;
-//   }
-// }
