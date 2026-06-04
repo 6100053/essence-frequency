@@ -10,6 +10,8 @@
 // - PLACEHOLDER (later look through code to find things)
 
 
+//USE CONTOUR FUNCITons TO fFIX WORLD MAP BUG
+
 //////// Constants ////////
 
 // Key codes

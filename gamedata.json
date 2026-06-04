@@ -48,21 +48,36 @@
                     {"x": -600, "y": -200},
                     {"x": -600, "y": -800},
                     {"x": -200, "y": -800},
+                    {"x": -200, "y": -1400},
+                    {"x": -1000, "y": -1400},
+                    {"x": -1000, "y": -1800},
                     {"x": -200, "y": -1800},
-                    {"x": 600, "y": -1800},
+                    {"x": 200, "y": -1800},
+                    {"x": 200, "y": -1400},
+                    {"x": 600, "y": -1400},
                     {"x": 600, "y": -200},
                     {"x": 200, "y": -200},
                     {"x": 200, "y": 200}
                 ]
+            },
+            {
+                "invert": false,
+                "color": {"h": 0, "s": 0, "b": 30},
+                "corners": [
+                    {"x": 0, "y": -600},
+                    {"x": 400, "y": -600},
+                    {"x": 400, "y": -1000},
+                    {"x": 0, "y": -1000}
+                ]
             }
         ],
         "portals": [
-            {"levelIndex": 0, "x": 400, "y": 100},
-            {"levelIndex": 1, "x": -200, "y": -300}
+            {"levelIndex": 0, "x": -400, "y": -400},
+            {"levelIndex": 1, "x": -800, "y": -1600}
         ],
         "backdrop": {"shape": "circle", "spacing": 100, "size": 50, "angle": 0, "colorBack": {"h": 0, "s": 0, "b": 0}, "colorFront": {"h": 0, "s": 0, "b": 10}},
         "startPlayer": {"x": 0, "y": 0, "size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
-        "startView": {"x": 0, "y": 0, "size": 4000},
+        "startView": {"x": 0, "y": 0, "size": 800},
         "startGameTime": {"time": 0, "timeOffset": 0, "paused": false, "pauseTime": 0, "canTogglePause": true},
         "startTransition": {"duration": 1000, "color": {"h": 0, "s": 0, "b": 0}, "active": false, "switchTime": 0}
     },
