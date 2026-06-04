@@ -9,10 +9,6 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
-//Can edit colours slightly
-//make sequences system for attacks data file?
-//fonts?
-
 
 //////// Constants ////////
 
