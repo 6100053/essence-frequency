@@ -169,7 +169,7 @@ function setup() {
     gameInfo.push(new Info(newInfo));
   }
   
-  setGameState(STATES.world);
+  setGameState(STATES.level, allLevels[0]);
 }
 
 function windowResized() {
@@ -909,7 +909,7 @@ class Obstacle {
   
   move() {
     // Check if it's time for the obstacle to exist in the level
-    this.visible = gameTime.time - levelState.startTime >= beatsToMillis(this.data.startBeat - this.data.warnBeats) && gameTime.time - levelState.startTime <= beatsToMillis(this.data.startBeat - this.data.warnBeats + this.data.moveBeats);
+    this.visible = gameTime.time - levelState.startTime >= beatsToMillis(this.data.startBeat - this.data.warnBeats) && gameTime.time - levelState.startTime <= beatsToMillis(this.data.startBeat + this.data.moveBeats + this.data.fadeBeats);
     this.active = gameTime.time - levelState.startTime >= beatsToMillis(this.data.startBeat) && gameTime.time - levelState.startTime <= beatsToMillis(this.data.startBeat + this.data.moveBeats);
 
     // Move the obstacle by setting the position based on its attack data
@@ -982,7 +982,11 @@ class Obstacle {
       if (this.active) {
         colorA = 1;
       } else {
-        colorA = lerp(0, 0.5, (gameTime.time - levelState.startTime - beatsToMillis(this.data.startBeat - this.data.warnBeats)) / beatsToMillis(this.data.warnBeats));
+        if (gameTime.time - levelState.startTime < beatsToMillis(this.data.startBeat)) {
+          colorA = lerp(0, 0.5, (gameTime.time - levelState.startTime - beatsToMillis(this.data.startBeat - this.data.warnBeats)) / beatsToMillis(this.data.warnBeats));
+        } else {
+          colorA = lerp(1, 0, (gameTime.time - levelState.startTime - beatsToMillis(this.data.startBeat + this.data.moveBeats)) / beatsToMillis(this.data.fadeBeats));
+        }
       }
       fill(levelState.levelObject.colorH, this.data.color.s, this.data.color.b, colorA);
 

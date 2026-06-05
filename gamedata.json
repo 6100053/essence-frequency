@@ -45,7 +45,16 @@
                 "corners": [
                     {"x": -200, "y": 200},
                     {"x": -200, "y": -200},
-                    {"x": -600, "y": -200},
+                    {"x": -1200, "y": -200},
+                    {"x": -1200, "y": -400},
+                    {"x": -1600, "y": -400},
+                    {"x": -1600, "y": 0},
+                    {"x": -2000, "y": 0},
+                    {"x": -2000, "y": -200},
+                    {"x": -2000, "y": -800},
+                    {"x": -1000, "y": -800},
+                    {"x": -1000, "y": -600},
+                    {"x": -600, "y": -600},
                     {"x": -600, "y": -800},
                     {"x": -200, "y": -800},
                     {"x": -200, "y": -1400},
@@ -72,7 +81,7 @@
             }
         ],
         "portals": [
-            {"levelIndex": 0, "x": -400, "y": -400},
+            {"levelIndex": 0, "x": -1800, "y": -200},
             {"levelIndex": 1, "x": -800, "y": -1600}
         ],
         "backdrop": {"shape": "circle", "spacing": 100, "size": 50, "angle": 0, "colorBack": {"h": 0, "s": 0, "b": 0}, "colorFront": {"h": 0, "s": 0, "b": 10}},
@@ -88,29 +97,27 @@
         "introProperties": {"duration": 5000, "infoAnimateTime": 1000},
         "levelProperties": [
             {
-                "info": {"name": "Test name", "minorKey": "C#", "tempo": 120, "colorH": 240},
+                "info": {"name": "Test name", "minorKey": "D", "tempo": 134, "colorH": 216},
                 "capsulePath": [
-                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdShape": "square", "bdSpacing": 100, "bdSize": 0, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}, "viewSize": 800},
-                    {"timeBeat": 8, "x": 400, "bdSize": 50, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 50, "b": 20}},
-                    {"timeBeat": 12, "y": -200, "bdAngle": 360},
-                    {"timeBeat": 20, "x": -400, "capsuleW": 300},
-                    {"timeBeat": 24, "y": 0, "capsuleH": 300, "bdSize": 75},
-                    {"timeBeat": 30, "x": 0, "y": 400, "bdColorBack": {"s": 100, "b": 20}, "bdColorFront": {"s": 100, "b": 5}},
-                    {"timeBeat": 36, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 10}}
+                    {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdShape": "square", "bdSpacing": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 0}, "viewSize": 800},
+                    {"timeBeat": 8, "x": 400},
+                    {"timeBeat": 16, "x": 800, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 100, "b": 10}},
+                    {"timeBeat": 32, "x": 1600}
+                    
                 ],
                 "attacks": [
-                    {"startBeat": 12, "moveBeats": 8, "warnBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "none", "xStart": 0, "yStart": -200, "wStart": 25, "hStart": 25, "angleStart": 0, "offsetXStart": 200, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 180},
-                    {"offsetAngleStart": 45},
-                    {"offsetAngleStart": 90},
-                    {"offsetAngleStart": 135},
-                    {"offsetAngleStart": 180},
-                    {"offsetAngleStart": 225},
-                    {"offsetAngleStart": 270},
-                    {"offsetAngleStart": 315}
+                    {"startBeat": 0, "moveBeats": 8, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 200, "yStart": 100, "wStart": 25, "hStart": 200, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                    {"startBeat": 4, "yStart": -100},
+                    {"startBeat": 8, "yStart": 100},
+                    {"startBeat": 12, "yStart": -100},
+                    {"startBeat": 16, "yStart": 100, "hStart": 100},
+                    {"startBeat": 20, "yStart": -100},
+                    {"startBeat": 24, "yStart": 100},
+                    {"startBeat": 28, "yStart": -100}
                 ]
             },
             {
-                "info": {"name": "Another level", "minorKey": "Bb", "tempo": 168, "colorH": 120},
+                "info": {"name": "Another level", "minorKey": "♯♭", "tempo": 168, "colorH": 120},
                 "capsulePath": [
                     {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 100, "capsuleH": 100, "bdShape": "square", "bdSpacing": 75, "bdSize": 0, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 25, "b": 10}, "viewSize": 800},
                     {"timeBeat": 8, "x": -200, "y": 100, "bdSize": 50, "bdAngle": 45, "bdColorFront": {"s": 50, "b": 10}},
