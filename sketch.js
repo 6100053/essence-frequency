@@ -10,8 +10,6 @@
 // - PLACEHOLDER (later look through code to find things)
 
 
-//USE CONTOUR FUNCITons TO fFIX WORLD MAP BUG
-
 //////// Constants ////////
 
 // Key codes
@@ -145,7 +143,7 @@ function setup() {
   let worldData = structuredClone(gameData.world);
 
   for (let wallData of worldData.walls) {
-    worldWalls.push(new Wall(wallData.invert, wallData.color, wallData.corners));
+    worldWalls.push(new Wall(wallData.isWorldBorder, wallData.color, wallData.corners));
   }
 
   for (let portalData of worldData.portals) {
@@ -830,24 +828,35 @@ class Info {
 }
 
 class Wall {
-  constructor(invert, color, corners) {
-    this.invert = invert,
+  constructor(isWorldBorder, color, corners) {
+    this.isWorldBorder = isWorldBorder,
     this.color = color;
     this.corners = corners;
   }
   
   draw() {
-  // Draw the wall polygon, if it's a border fill everything outside of it using a mask
-    push();
-    beginClip({invert: this.invert});
+  // Draw the wall polygon, if it's the world border draw it as a hole
+    fill(this.color.h, this.color.s, this.color.b);
+    
     beginShape();
-    for (let corner of this.corners) {
-      vertex(corner.x, corner.y);
+    if (this.isWorldBorder) {
+      vertex(view.x - view.size/2, view.y - view.size/2);
+      vertex(view.x - view.size/2, view.y + view.size/2);
+      vertex(view.x + view.size/2, view.y + view.size/2);
+      vertex(view.x + view.size/2, view.y - view.size/2);
+
+      beginContour();
+      for (let corner of this.corners) {
+        vertex(corner.x, corner.y);
+      }
+      endContour();
+
+    } else {
+      for (let corner of this.corners) {
+        vertex(corner.x, corner.y);
+      }
     }
     endShape(CLOSE);
-    endClip();
-    background(this.color.h, this.color.s, this.color.b);
-    pop();
   }
 
   isCollidingPlayer() {
