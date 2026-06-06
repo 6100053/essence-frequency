@@ -169,7 +169,7 @@ function setup() {
     gameInfo.push(new Info(newInfo));
   }
   
-  setGameState(STATES.level, allLevels[0]);
+  setGameState(STATES.world, allLevels[0]);
 }
 
 function windowResized() {
@@ -684,7 +684,7 @@ class Info {
 
       // Check for interaction with the info
       let mouseHover = false;
-      if (!transition.active && this.data.buttonAction !== "" && !(this.data.changeVariable === "portalPlayerHover" && player.nearestPortal.playerHover < 1)) {
+      if (!transition.active && this.data.buttonAction !== "" && !(this.data.changeVariable === "portalPlayerHover" && player.nearestPortal.playerHover < 1) && !(this.data.changeVariable !== "paused" && gameTime.paused)) {
         let viewOffsetX = 0;
         let viewOffsetY = 0;
         if (this.data.focus !== "view") {
@@ -904,7 +904,6 @@ class Obstacle {
     this.data = data;
     this.visible = false;
     this.active = false;
-    this.startPositionFound = !(this.data.withCapsule === "start");
   }
   
   move() {
@@ -914,16 +913,21 @@ class Obstacle {
 
     // Move the obstacle by setting the position based on its attack data
     if (this.visible) {
-      if (!this.startPositionFound) {
-        // Find the capsule's position at the obstacle start time
-        let currentPath = levelState.levelObject.nodes[levelState.currentNodeIndex];
-        let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
-        let amountBetweenNodes = (beatsToMillis(this.data.startBeat) - (levelState.lastNodeTime - levelState.startTime)) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat));
-  
-        // Set the obstacle position relative to the calculated capsule position
-        this.data.xStart = lerp(currentPath.x, nextPath.x, amountBetweenNodes) + this.data.xStart;
-        this.data.yStart = lerp(currentPath.y, nextPath.y, amountBetweenNodes) + this.data.yStart;
-        this.startPositionFound = true;
+      if (this.startPosX === undefined || this.startPosY === undefined) {
+        if (this.data.withCapsule === "start") {
+          // Find the capsule's position at the obstacle start time
+          let currentPath = levelState.levelObject.nodes[levelState.currentNodeIndex];
+          let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
+          let amountBetweenNodes = (beatsToMillis(this.data.startBeat) - (levelState.lastNodeTime - levelState.startTime)) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat));
+    
+          // Set the obstacle start position relative to the calculated capsule position
+          this.startPosX = lerp(currentPath.x, nextPath.x, amountBetweenNodes) + this.data.xStart;
+          this.startPosY = lerp(currentPath.y, nextPath.y, amountBetweenNodes) + this.data.yStart;
+          
+        } else {
+          this.startPosX = this.data.xStart;
+          this.startPosY = this.data.yStart;
+        }
       }
 
       // Amount from the attack start to end (0 to 1)
@@ -937,8 +941,8 @@ class Obstacle {
         yFocus = levelState.capsule.y;
       }
 
-      this.x = lerp(xFocus + this.data.xStart, xFocus + this.data.xStart + this.data.xMove, amountThroughMovement);
-      this.y = lerp(yFocus + this.data.yStart, yFocus + this.data.yStart + this.data.yMove, amountThroughMovement);
+      this.x = lerp(xFocus + this.startPosX, xFocus + this.startPosX + this.data.xMove, amountThroughMovement);
+      this.y = lerp(yFocus + this.startPosY, yFocus + this.startPosY + this.data.yMove, amountThroughMovement);
       this.width = lerp(this.data.wStart, this.data.wStart + this.data.wMove, amountThroughMovement);
       this.height = lerp(this.data.hStart, this.data.hStart + this.data.hMove, amountThroughMovement);
       this.angle = lerp(this.data.angleStart, this.data.angleStart + this.data.angleMove, amountThroughMovement);

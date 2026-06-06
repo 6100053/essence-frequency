@@ -97,7 +97,7 @@
         "introProperties": {"duration": 5000, "infoAnimateTime": 1000},
         "levelProperties": [
             {
-                "info": {"name": "Test name", "minorKey": "D", "tempo": 134, "colorH": 216},
+                "info": {"name": "Test name", "minorKey": "D", "tempo": 132, "colorH": 221},
                 "capsulePath": [
                     {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdShape": "square", "bdSpacing": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 0}, "viewSize": 800},
                     {"timeBeat": 8, "x": 400},
