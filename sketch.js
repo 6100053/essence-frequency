@@ -9,6 +9,8 @@
 // - Using Object.keys() and object bracket notation for setting object properties from data file
 // - PLACEHOLDER (later look through code to find things)
 
+//♯♭
+
 
 //////// Constants ////////
 
@@ -51,6 +53,8 @@ const SHAPES = {
 
 let gameData;
 
+let gameMusic = {};
+
 let gameInfo = [];
 
 let worldWalls = [];
@@ -89,7 +93,15 @@ let mouseCanClick;
 
 function preload() {
   // Load game data
-  gameData = loadJSON("gamedata.json");
+  gameData = loadJSON("gamedata.json", preloadMusic);
+}
+
+function preloadMusic() {
+  // Load music after game data is loaded
+  for (let level of gameData.levels.levelProperties) {
+    let musicName = level.details.name;
+    gameMusic[musicName] = loadSound("/music/" + musicName + ".wav");
+  }
 }
 
 function setup() {
@@ -105,7 +117,7 @@ function setup() {
 
   // Level data
   for (let levelData of structuredClone(gameData.levels.levelProperties)) {
-    // The points on the path of the capsule through each level
+    // Set up the path of the capsule through the level
     let newCapsuleNodes = [];
     let previousNode = levelData.capsulePath[0];
     for (let node of levelData.capsulePath) {
@@ -118,7 +130,7 @@ function setup() {
       previousNode = newNode;
     }
 
-    // The attacks to avoid during the level
+    // Set up the attacks to avoid in the level
     let newLevelAttacks = [];
     let previousAttack = levelData.attacks[0];
     for (let attack of levelData.attacks) {
@@ -132,11 +144,12 @@ function setup() {
     }
     
     // Add the level to the global array
-    let newInfo = levelData.info;
-    newInfo.nodes = newCapsuleNodes;
-    newInfo.attacks = newLevelAttacks;
-    newInfo.progress = false;
-    allLevels.push(newInfo);
+    let newLevelDetails = levelData.details;
+    newLevelDetails.music = gameMusic[newLevelDetails.name];
+    newLevelDetails.nodes = newCapsuleNodes;
+    newLevelDetails.attacks = newLevelAttacks;
+    newLevelDetails.progress = false;
+    allLevels.push(newLevelDetails);
   }
 
   // World data
@@ -153,7 +166,6 @@ function setup() {
   gameTime = worldData.startGameTime;
 
   worldPlayer = worldData.startPlayer;
-  worldPlayer.nearestPortal = worldPortals[0];
 
   transition = worldData.startTransition;
   view = worldData.startView;
@@ -243,14 +255,21 @@ function pendGameState(state, level = []) {
 }
 
 function setGameState(state, level = []) {
+  // Clean up the old game state
+  if (gameState === STATES.world) {
+    if (player !== undefined) {
+      player.nearestPortal = undefined;
+      worldPlayer = structuredClone(player);
+    }
+    
+  } else if (gameState === STATES.level) {
+    levelState.levelObject.music.stop();
+  }
+
   // Change the game state and set up the new state
   gameState = state;
   
   if (state === STATES.title) {
-    if (player !== undefined) {
-      worldPlayer = structuredClone(player);
-    }
-
     let worldData = structuredClone(gameData.world);
 
     backdrop = worldData.backdrop;
@@ -273,10 +292,6 @@ function setGameState(state, level = []) {
     updateInfo();
     
   } else if (state === STATES.level) {
-    if (player !== undefined) {
-      worldPlayer = structuredClone(player);
-    }
-
     let levelsData = structuredClone(gameData.levels);
     
     player = levelsData.playerProperties;
@@ -298,6 +313,7 @@ function setGameState(state, level = []) {
     
     // Set up and register the first frame of the level (start the level after the transition and level intro)
     levelState.startTime = gameTime.time + transition.duration + levelState.intro.duration;
+    levelState.levelObject.music.play((transition.duration + levelState.intro.duration) / 1000);
     levelProgress();
     moveCapsule();
     moveObstacles();
