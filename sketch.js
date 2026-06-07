@@ -1,6 +1,6 @@
 // CSC30 Major Project
 // Carsen Waters
-// Mmmmm DD 2026
+// June 12 2026
 //
 // Extras for Experts:
 // - Handling of window resizing while the project is running (windowResized function)
@@ -10,7 +10,7 @@
 // - PLACEHOLDER (later look through code to find things)
 
 //♯♭
-
+//level info in pause menu? show progress bar too?
 
 //////// Constants ////////
 
@@ -191,6 +191,7 @@ function windowResized() {
 
 function draw() {
   updateGameTime();
+  updateMusic();
 
   if (gameState === STATES.title) {
     if (!transition.active) {
@@ -261,9 +262,6 @@ function setGameState(state, level = []) {
       player.nearestPortal = undefined;
       worldPlayer = structuredClone(player);
     }
-    
-  } else if (gameState === STATES.level) {
-    levelState.levelObject.music.stop();
   }
 
   // Change the game state and set up the new state
@@ -313,7 +311,7 @@ function setGameState(state, level = []) {
     
     // Set up and register the first frame of the level (start the level after the transition and level intro)
     levelState.startTime = gameTime.time + transition.duration + levelState.intro.duration;
-    levelState.levelObject.music.play((transition.duration + levelState.intro.duration) / 1000);
+    levelState.musicPlaying = true;
     levelProgress();
     moveCapsule();
     moveObstacles();
@@ -332,9 +330,59 @@ function beatsToMillis(beats) {
 //////// Draw loop functions used in all game states ////////
 
 function updateGameTime() {
+  // Handle pausing
+  if (gameTime.paused !== gameTime.pausedPending) {
+    gameTime.paused = gameTime.pausedPending;
+
+    if (gameTime.paused) {
+      gameTime.pauseTime = millis();
+    } else {
+      gameTime.timeOffset += millis() - gameTime.pauseTime;
+    }
+  }
+
   // Update the game time for the current frame
   if (!gameTime.paused) {
     gameTime.time = millis() - gameTime.timeOffset;
+  }
+}
+
+function updateMusic() {
+  if (gameState === STATES.level) {
+    // Update the level music to play or stop
+    let levelMusic = levelState.levelObject.music;
+
+    if (levelState.musicPlaying !== levelMusic.isPlaying()) {
+      if (levelState.musicPlaying) {
+        // Play the sound file, account for the loading delay so everything stays synchronised
+        let startMusicTime = millis();
+
+        if (gameTime.time < levelState.startTime) {
+          levelMusic.play((levelState.startTime - gameTime.time) / 1000);
+  
+        } else {
+          levelMusic.play(undefined, undefined, undefined, (gameTime.time - levelState.startTime) / 1000);
+        }
+
+        gameTime.timeOffset += millis() - startMusicTime;
+
+      } else {
+        levelMusic.stop();
+      }
+    }
+
+    // Fade the music volume with the transition
+    if (transition.active) {
+      levelMusic.setVolume(abs(gameTime.time - transition.switchTime) / transition.duration);
+    } else {
+      levelMusic.setVolume(1);
+    }
+
+  } else {
+    // Stop level music
+    if (levelState.levelObject !== undefined && levelState.levelObject.music.isPlaying()) {
+      levelState.levelObject.music.stop();
+    }
   }
 }
 
@@ -497,8 +545,7 @@ function checkTransition() {
     
     pendingState = STATES.none;
     pendingStateLevel = [];
-  }
-  if (transition.active && gameTime.time >= transition.switchTime + transition.duration) {
+  } else if (transition.active && gameTime.time >= transition.switchTime + transition.duration) {
     transition.active = false;
   }
 }
@@ -802,11 +849,10 @@ class Info {
         let action = this.data.buttonAction;
 
         if (action === "togglePause" || action === "exitWorld" || action === "exitLevel") {
-          gameTime.paused = !gameTime.paused;
-          if (gameTime.paused) {
-            gameTime.pauseTime = millis();
-          } else {
-            gameTime.timeOffset += millis() - gameTime.pauseTime;
+          gameTime.pausedPending = !gameTime.paused;
+
+          if (action === "togglePause" && gameState === STATES.level) {
+            levelState.musicPlaying = !gameTime.pausedPending;
           }
         }
 

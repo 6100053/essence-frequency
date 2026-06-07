@@ -23,7 +23,7 @@ The player will be able to explore a main world area, and play levels from porta
     - Player
         - [x] Movement
     - Level content
-        - [ ] Music
+        - [x] Music
         - [x] Capsule movement
             - [x] Background animation
         - [x] Obstacles
@@ -69,6 +69,7 @@ The player will be able to explore a main world area, and play levels from porta
         - Music
         - Capsule movement
             - Background animation
+            - [x] **View size animation**
             - [ ] **Additional animations**
         - Obstacles
             - Basic movement
