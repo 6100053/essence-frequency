@@ -11,6 +11,7 @@
 
 //♯♭
 //level info in pause menu? show progress bar too?
+//attack sequences...
 
 //////// Constants ////////
 
@@ -181,7 +182,7 @@ function setup() {
     gameInfo.push(new Info(newInfo));
   }
   
-  setGameState(STATES.world, allLevels[0]);
+  setGameState(STATES.level, allLevels[0]);
 }
 
 function windowResized() {
@@ -1049,7 +1050,7 @@ class Obstacle {
         colorA = 1;
       } else {
         if (gameTime.time - levelState.startTime < beatsToMillis(this.data.startBeat)) {
-          colorA = lerp(0, 0.5, (gameTime.time - levelState.startTime - beatsToMillis(this.data.startBeat - this.data.warnBeats)) / beatsToMillis(this.data.warnBeats));
+          colorA = lerp(0, 0.25, (gameTime.time - levelState.startTime - beatsToMillis(this.data.startBeat - this.data.warnBeats)) / beatsToMillis(this.data.warnBeats));
         } else {
           colorA = lerp(1, 0, (gameTime.time - levelState.startTime - beatsToMillis(this.data.startBeat + this.data.moveBeats)) / beatsToMillis(this.data.fadeBeats));
         }

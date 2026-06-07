@@ -100,20 +100,51 @@
                 "details": {"name": "Maneuvers", "minorKey": "D", "tempo": 132, "colorH": 216},
                 "capsulePath": [
                     {"timeBeat": 0, "x": 0, "y": 0, "capsuleW": 200, "capsuleH": 200, "bdShape": "square", "bdSpacing": 100, "bdSize": 50, "bdAngle": 0, "bdColorBack": {"s": 0, "b": 0}, "bdColorFront": {"s": 0, "b": 0}, "viewSize": 800},
-                    {"timeBeat": 8, "x": 400},
-                    {"timeBeat": 16, "x": 800, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 100, "b": 10}},
-                    {"timeBeat": 32, "x": 1600}
+                    {"timeBeat": 8, "x": 200},
+                    {"timeBeat": 16, "x": 400, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 100, "b": 10}},
+                    {"timeBeat": 24, "x": 600},
+                    {"timeBeat": 32, "x": 800, "capsuleW": 300, "capsuleH": 300},
+                    {"timeBeat": 36, "x": 900, "bdAngle": 180},
+                    {"timeBeat": 40, "x": 1000},
+                    {"timeBeat": 44, "x": 1100, "bdAngle": 0},
+                    {"timeBeat": 48, "x": 1200},
+                    {"timeBeat": 52, "x": 1300, "bdAngle": 180},
+                    {"timeBeat": 56, "x": 1400},
+                    {"timeBeat": 60, "x": 1500, "bdAngle": 0},
+                    {"timeBeat": 64, "x": 1600}
                     
                 ],
                 "attacks": [
-                    {"startBeat": 0, "moveBeats": 8, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 200, "yStart": 100, "wStart": 25, "hStart": 200, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                    {"startBeat": 0, "moveBeats": 8, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 200, "yStart": 100, "wStart": 25, "hStart": 200, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": -200, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
                     {"startBeat": 4, "yStart": -100},
                     {"startBeat": 8, "yStart": 100},
                     {"startBeat": 12, "yStart": -100},
                     {"startBeat": 16, "yStart": 100, "hStart": 100},
                     {"startBeat": 20, "yStart": -100},
                     {"startBeat": 24, "yStart": 100},
-                    {"startBeat": 28, "yStart": -100}
+                    {"startBeat": 28, "yStart": -100},
+
+                    {"startBeat": 16, "moveBeats": 8, "xStart": 400, "yStart": 0, "hStart": 25, "xMove": -800},
+                    {"startBeat": 17, "yStart": 50},
+                    {"startBeat": 18, "yStart": -75},
+                    {"startBeat": 19, "yStart": -25},
+                    {"startBeat": 20, "yStart": 75},
+                    {"startBeat": 21, "yStart": 0},
+                    {"startBeat": 22, "yStart": 25},
+                    {"startBeat": 23, "yStart": -50},
+                    {"startBeat": 24, "yStart": 0},
+                    {"startBeat": 25, "yStart": 50},
+                    {"startBeat": 26, "yStart": -75},
+                    {"startBeat": 27, "yStart": -25},
+                    {"startBeat": 28, "yStart": 75},
+                    {"startBeat": 29, "yStart": 0},
+                    {"startBeat": 30, "yStart": 25},
+                    {"startBeat": 31, "yStart": -50},
+
+                    {"startBeat": 32, "moveBeats": 0.5, "warnBeats": 4, "fadeBeats": 0, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "move", "xStart": 0, "yStart": 0, "wStart": 0, "hStart": 10, "xMove": 0, "wMove": 800},
+                    {"startBeat": 36},
+                    {"startBeat": 40},
+                    {"startBeat": 44}
                 ]
             }
         ]
