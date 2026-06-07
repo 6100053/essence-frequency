@@ -94,16 +94,16 @@ let mouseCanClick;
 
 function preload() {
   // Load game data
-  gameData = loadJSON("gamedata.json"/*, preloadMusic*/);
+  gameData = loadJSON("gamedata.json", preloadMusic);
 }
 
-// function preloadMusic() {
-//   // Load music after game data is loaded
-//   for (let level of gameData.levels.levelProperties) {
-//     let musicName = level.details.name;
-//     gameMusic[musicName] = loadSound("/music/" + musicName + ".wav");
-//   }
-// }
+function preloadMusic() {
+  // Load music after game data is loaded
+  for (let level of gameData.levels.levelProperties) {
+    let musicName = level.details.name;
+    gameMusic[musicName] = loadSound("/music/" + musicName + ".wav");
+  }
+}
 
 function setup() {
   // Make the canvas square, and set modes for drawing
@@ -146,7 +146,7 @@ function setup() {
     
     // Add the level to the global array
     let newLevelDetails = levelData.details;
-    //newLevelDetails.music = gameMusic[newLevelDetails.name];
+    newLevelDetails.music = gameMusic[newLevelDetails.name];
     newLevelDetails.nodes = newCapsuleNodes;
     newLevelDetails.attacks = newLevelAttacks;
     newLevelDetails.progress = false;
@@ -182,7 +182,7 @@ function setup() {
     gameInfo.push(new Info(newInfo));
   }
   
-  setGameState(STATES.world);
+  setGameState(STATES.world, allLevels[0]);
 }
 
 function windowResized() {
@@ -192,7 +192,7 @@ function windowResized() {
 
 function draw() {
   updateGameTime();
-  //updateMusic();
+  updateMusic();
 
   if (gameState === STATES.title) {
     if (!transition.active) {
