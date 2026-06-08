@@ -101,7 +101,7 @@ function preloadMusic() {
   // Load music after game data is loaded
   for (let level of gameData.levels.levelProperties) {
     let musicName = level.details.name;
-    gameMusic[musicName] = loadSound("/music/" + musicName + ".wav");
+    gameMusic[musicName] = loadSound("music/" + musicName + ".wav");
   }
 }
 

@@ -17,7 +17,7 @@
 
 ### Tester 3 (WITHOUT programming experience) - 2026-06-07
 
-- World could be a little more interesting
+- Thought world could be a little more interesting
 
 ### Tester 4 (WITHOUT programming experience) - 2026-06-07
 
