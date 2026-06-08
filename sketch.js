@@ -10,7 +10,6 @@
 // - PLACEHOLDER (later look through code to find things)
 
 //♯♭
-//level info in pause menu? show progress bar too?
 //attack sequences...
 
 //////// Constants ////////
@@ -392,50 +391,53 @@ function movePlayer() {
   let inputLeft = keyIsDown(KEYS.left) || keyIsDown(KEYS.a);
   let inputDown = keyIsDown(KEYS.down) || keyIsDown(KEYS.s);
   let inputUp = keyIsDown(KEYS.up) || keyIsDown(KEYS.w);
-  
-  // Convert input into movement direction
-  let angle = inputRight * 360 * inputUp + inputLeft * 180 + inputDown * 90 + inputUp * 270;
-  if (inputRight !== inputLeft && inputDown !== inputUp) {
-    angle = angle / 2;
-  }
-  
-  if (gameState === STATES.world) {
-    // Move player and collide with world walls
-    if (inputRight !== inputLeft || inputDown !== inputUp) {
-      let collide = false;
-      player.x += cos(angle) * player.speed;
-      for (let wall of worldWalls) {
-        if (wall.isCollidingPlayer()) {
-          collide = true;
-        }
-      }
-      if (collide) {
-        player.x -= cos(angle) * player.speed;
-      }
 
-      collide = false;
-      player.y += sin(angle) * player.speed;
-      for (let wall of worldWalls) {
-        if (wall.isCollidingPlayer()) {
-          collide = true;
+  // Only move if two or less directions are inputted
+  if (inputRight + inputLeft + inputDown + inputUp <= 2) {
+    // Convert input into movement direction
+    let angle = inputRight * 360 * inputUp + inputLeft * 180 + inputDown * 90 + inputUp * 270;
+    if (inputRight !== inputLeft && inputDown !== inputUp) {
+      angle = angle / 2;
+    }
+    
+    if (gameState === STATES.world) {
+      // Move player and collide with world walls
+      if (inputRight !== inputLeft || inputDown !== inputUp) {
+        let collide = false;
+        player.x += cos(angle) * player.speed;
+        for (let wall of worldWalls) {
+          if (wall.isCollidingPlayer()) {
+            collide = true;
+          }
+        }
+        if (collide) {
+          player.x -= cos(angle) * player.speed;
+        }
+  
+        collide = false;
+        player.y += sin(angle) * player.speed;
+        for (let wall of worldWalls) {
+          if (wall.isCollidingPlayer()) {
+            collide = true;
+          }
+        }
+        if (collide) {
+          player.y -= sin(angle) * player.speed;
         }
       }
-      if (collide) {
-        player.y -= sin(angle) * player.speed;
+    } else if (gameState === STATES.level) {
+      // Move player
+      if (inputRight !== inputLeft || inputDown !== inputUp) {
+        player.x += cos(angle) * player.speed;
+        player.y += sin(angle) * player.speed;
       }
+      
+      // Keep the player in the capsule
+      let currentCapsule = levelState.capsule;
+      
+      player.x = constrain(player.x, currentCapsule.x - (currentCapsule.width/2 - player.size/2), currentCapsule.x + (currentCapsule.width/2 - player.size/2));
+      player.y = constrain(player.y, currentCapsule.y - (currentCapsule.height/2 - player.size/2), currentCapsule.y + (currentCapsule.height/2 - player.size/2));
     }
-  } else if (gameState === STATES.level) {
-    // Move player
-    if (inputRight !== inputLeft || inputDown !== inputUp) {
-      player.x += cos(angle) * player.speed;
-      player.y += sin(angle) * player.speed;
-    }
-    
-    // Keep the player in the capsule
-    let currentCapsule = levelState.capsule;
-    
-    player.x = constrain(player.x, currentCapsule.x - (currentCapsule.width/2 - player.size/2), currentCapsule.x + (currentCapsule.width/2 - player.size/2));
-    player.y = constrain(player.y, currentCapsule.y - (currentCapsule.height/2 - player.size/2), currentCapsule.y + (currentCapsule.height/2 - player.size/2));
   }
 }
 
