@@ -10,7 +10,6 @@
 // - PLACEHOLDER (later look through code to find things)
 
 //♯♭
-//attack sequences...
 
 //////// Constants ////////
 
@@ -113,6 +112,9 @@ function setup() {
   colorMode(HSB);
   textAlign(CENTER, CENTER);
 
+  // Ensure audio is ready to play for when its needed
+  userStartAudio();
+
   // Set up game data
 
   // Level data
@@ -132,15 +134,22 @@ function setup() {
 
     // Set up the attacks to avoid in the level
     let newLevelAttacks = [];
-    let previousAttack = levelData.attacks[0];
-    for (let attack of levelData.attacks) {
+    for (let sequenceCall of levelData.attackProgram) {
+      // Make the attacks based on the sequences and programs in the data file
+      let sequenceAttacks = levelData.attackSequences[sequenceCall.sequence];
+      let previousAttack = sequenceAttacks[0];
+      for (let attack of sequenceAttacks) {
       // For each attack, set its properties based on the data object, or the previous attack's properties if not specified
-      let newAttack = structuredClone(previousAttack);
-      for (let property of Object.keys(attack)) {
-        newAttack[property] = attack[property];
+        let newAttack = structuredClone(previousAttack);
+        for (let property of Object.keys(attack)) {
+          newAttack[property] = attack[property];
+          if (sequenceCall[property] !== undefined) {
+            newAttack[property] += sequenceCall[property];
+          }
+        }
+        newLevelAttacks.push(newAttack);
+        previousAttack = newAttack;
       }
-      newLevelAttacks.push(newAttack);
-      previousAttack = newAttack;
     }
     
     // Add the level to the global array
@@ -181,7 +190,7 @@ function setup() {
     gameInfo.push(new Info(newInfo));
   }
   
-  setGameState(STATES.world, allLevels[0]);
+  setGameState(STATES.title);
 }
 
 function windowResized() {
@@ -353,17 +362,10 @@ function updateMusic() {
     let levelMusic = levelState.levelObject.music;
 
     if (levelState.musicPlaying !== levelMusic.isPlaying()) {
-      if (levelState.musicPlaying) {
+      if (levelState.musicPlaying && gameTime.time >= levelState.startTime) {
         // Play the sound file, account for the loading delay so everything stays synchronised
         let startMusicTime = millis();
-
-        if (gameTime.time < levelState.startTime) {
-          levelMusic.play((levelState.startTime - gameTime.time) / 1000);
-  
-        } else {
-          levelMusic.play(undefined, undefined, undefined, (gameTime.time - levelState.startTime) / 1000);
-        }
-
+        levelMusic.play(undefined, undefined, undefined, (gameTime.time - levelState.startTime) / 1000);
         gameTime.timeOffset += millis() - startMusicTime;
 
       } else {

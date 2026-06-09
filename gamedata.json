@@ -2,7 +2,7 @@
     "info": [
         {"showState": "", "focus": "view", "changeVariable": "", "x": 0, "xChange": 0, "y": 0, "yChange": 0, "width": 0, "widthChange": 0, "height": 0, "heightChange": 0, "rectColor": {"h": 0, "s": 0, "b": 100, "a": 1}, "textString": "", "textVariable": "", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 0, "a": 1}, "buttonAction": "", "hoverColor": {"h": 0, "s": 0, "b": 75, "a": 1}},
         
-        {"showState": "title", "width": 1, "height": 1, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0.5}, "textString": "The Essence of Frequency", "textPaddingScale": 0.3, "textColor": {"h": 0, "s": 0, "b": 80, "a": 1}},
+        {"showState": "title", "width": 1, "height": 1, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0.25}, "textString": "The Essence of Frequency", "textPaddingScale": 0.3, "textColor": {"h": 0, "s": 0, "b": 80, "a": 1}},
         {"showState": "title", "y": 0.1, "width": 1, "height": 1, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "Carsen's CSC30 Major Project", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 80, "a": 1}},
         {"showState": "title", "y": 0.3, "width": 0.25, "height": 0.1, "rectColor": {"h": 0, "s": 0, "b": 0, "a": 0}, "textString": "Play", "textPaddingScale": 0.5, "textColor": {"h": 0, "s": 0, "b": 80, "a": 1}, "buttonAction": "enterWorld", "hoverColor": {"h": 0, "s": 0, "b": 50, "a": 0.5}},
 
@@ -90,7 +90,7 @@
             {"levelIndex": 0, "x": -1800, "y": -200},
             {"levelIndex": 0, "x": -800, "y": -1600}
         ],
-        "backdrop": {"shape": "circle", "spacing": 100, "size": 50, "angle": 0, "colorBack": {"h": 0, "s": 0, "b": 0}, "colorFront": {"h": 0, "s": 0, "b": 10}},
+        "backdrop": {"shape": "circle", "spacing": 100, "size": 50, "angle": 0, "colorBack": {"h": 0, "s": 0, "b": 0}, "colorFront": {"h": 0, "s": 0, "b": 5}},
         "startPlayer": {"x": 0, "y": 0, "size": 10, "speed": 5, "color": {"h": 0, "s": 0, "b": 100}},
         "startView": {"x": 0, "y": 0, "size": 800},
         "startGameTime": {"time": 0, "timeOffset": 0, "paused": false, "pauseTime": 0, "pausedPending": false},
@@ -109,7 +109,7 @@
                     {"timeBeat": 8, "x": 200},
                     {"timeBeat": 16, "x": 400, "bdColorBack": {"s": 50, "b": 10}, "bdColorFront": {"s": 100, "b": 10}},
                     {"timeBeat": 24, "x": 600},
-                    {"timeBeat": 32, "x": 800, "capsuleW": 300, "capsuleH": 300},
+                    {"timeBeat": 32, "x": 800, "capsuleW": 250, "capsuleH": 250},
                     {"timeBeat": 36, "x": 900, "bdAngle": 180},
                     {"timeBeat": 40, "x": 1000},
                     {"timeBeat": 44, "x": 1100, "bdAngle": 0},
@@ -117,40 +117,54 @@
                     {"timeBeat": 52, "x": 1300, "bdAngle": 180},
                     {"timeBeat": 56, "x": 1400},
                     {"timeBeat": 60, "x": 1500, "bdAngle": 0},
-                    {"timeBeat": 64, "x": 1600}
+                    {"timeBeat": 64, "x": 1600, "bdColorBack": {"s": 100, "b": 10}}
                     
                 ],
-                "attacks": [
-                    {"startBeat": 0, "moveBeats": 8, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 200, "yStart": 100, "wStart": 25, "hStart": 200, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": -200, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
-                    {"startBeat": 4, "yStart": -100},
-                    {"startBeat": 8, "yStart": 100},
-                    {"startBeat": 12, "yStart": -100},
-                    {"startBeat": 16, "yStart": 100, "hStart": 100},
-                    {"startBeat": 20, "yStart": -100},
-                    {"startBeat": 24, "yStart": 100},
-                    {"startBeat": 28, "yStart": -100},
+                "attackSequences": {
+                    "pillarWeave": [
+                        {"startBeat": 0, "moveBeats": 8, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 200, "yStart": 100, "wStart": 25, "hStart": 200, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": -200, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                        {"startBeat": 4, "yStart": -100},
+                        {"startBeat": 8, "yStart": 100},
+                        {"startBeat": 12, "yStart": -100}
+                    ],
+                    "oncomingScatter": [
+                        {"startBeat": 0, "moveBeats": 4, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 300, "yStart": 0, "wStart": 15, "hStart": 15, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": -400, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                        {"startBeat": 1, "yStart": 100},
+                        {"startBeat": 2, "yStart": 0},
+                        {"startBeat": 3, "yStart": -100}
+                    ],
+                    "horizontalLasers": [
+                        {"startBeat": 0, "moveBeats": 0.25, "warnBeats": 2, "fadeBeats": 0.25, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "move", "xStart": 0, "yStart": -125, "wStart": 800, "hStart": 20, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                        {"startBeat": 1, "yStart": 25},
+                        {"startBeat": 2, "yStart": -50},
+                        {"startBeat": 3, "yStart": 75},
+                        {"startBeat": 4, "yStart": 125},
+                        {"startBeat": 5, "yStart": -25},
+                        {"startBeat": 6, "yStart": 50},
+                        {"startBeat": 7, "yStart": -75}
+                    ]
+                },
+                "attackProgram": [
+                    {"sequence": "pillarWeave", "startBeat": 0},
 
-                    {"startBeat": 16, "moveBeats": 8, "xStart": 400, "yStart": 0, "hStart": 25, "xMove": -800},
-                    {"startBeat": 17, "yStart": 50},
-                    {"startBeat": 18, "yStart": -75},
-                    {"startBeat": 19, "yStart": -25},
-                    {"startBeat": 20, "yStart": 75},
-                    {"startBeat": 21, "yStart": 0},
-                    {"startBeat": 22, "yStart": 25},
-                    {"startBeat": 23, "yStart": -50},
-                    {"startBeat": 24, "yStart": 0},
-                    {"startBeat": 25, "yStart": 50},
-                    {"startBeat": 26, "yStart": -75},
-                    {"startBeat": 27, "yStart": -25},
-                    {"startBeat": 28, "yStart": 75},
-                    {"startBeat": 29, "yStart": 0},
-                    {"startBeat": 30, "yStart": 25},
-                    {"startBeat": 31, "yStart": -50},
+                    {"sequence": "pillarWeave", "startBeat": 16, "hStart": -100},
+                    {"sequence": "oncomingScatter", "startBeat": 16},
+                    {"sequence": "oncomingScatter", "startBeat": 20},
+                    {"sequence": "oncomingScatter", "startBeat": 24},
+                    {"sequence": "oncomingScatter", "startBeat": 28},
 
-                    {"startBeat": 32, "moveBeats": 0.5, "warnBeats": 4, "fadeBeats": 0, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "move", "xStart": 0, "yStart": 0, "wStart": 0, "hStart": 10, "xMove": 0, "wMove": 800},
-                    {"startBeat": 36},
-                    {"startBeat": 40},
-                    {"startBeat": 44}
+                    {"sequence": "horizontalLasers", "startBeat": 32},
+                    {"sequence": "horizontalLasers", "startBeat": 40},
+                    {"sequence": "oncomingScatter", "startBeat": 32},
+                    {"sequence": "oncomingScatter", "startBeat": 36},
+                    {"sequence": "oncomingScatter", "startBeat": 40},
+                    {"sequence": "oncomingScatter", "startBeat": 44},
+
+                    {"sequence": "horizontalLasers", "startBeat": 48},
+                    {"sequence": "horizontalLasers", "startBeat": 56},
+                    {"sequence": "oncomingScatter", "startBeat": 48},
+                    {"sequence": "oncomingScatter", "startBeat": 52},
+                    {"sequence": "oncomingScatter", "startBeat": 56}
                 ]
             }
         ]
