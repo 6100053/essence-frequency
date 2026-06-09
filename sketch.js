@@ -7,7 +7,7 @@
 // - p5.collide2d library for collision between shapes (added before in-class demo)
 // - Storing game data in JSON file
 // - Using Object.keys() and object bracket notation for setting object properties from data file
-// - PLACEHOLDER (later look through code to find things)
+// - PLACEHOLDER (later look through code to find things - also can see if I did things in nice to have)
 
 //♯♭
 
