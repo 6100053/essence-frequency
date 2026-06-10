@@ -362,7 +362,7 @@ function updateMusic() {
     let levelMusic = levelState.levelObject.music;
 
     if (levelState.musicPlaying !== levelMusic.isPlaying()) {
-      if (levelState.musicPlaying && gameTime.time >= levelState.startTime) {
+      if (levelState.musicPlaying && gameTime.time >= levelState.startTime && getAudioContext().state === "running") {
         // Play the sound file, account for the loading delay so everything stays synchronised
         let startMusicTime = millis();
         levelMusic.play(undefined, undefined, undefined, (gameTime.time - levelState.startTime) / 1000);
@@ -1024,14 +1024,14 @@ class Obstacle {
         } else {
           let polygon = structuredClone(SHAPES[this.data.shape]);
           for (let corner of polygon) {
-            let originalX = corner.x * this.width;
-            let originalY = corner.y * this.height;
+            let scaledX = corner.x * this.width;
+            let scaledY = corner.y * this.height;
             
-            originalX = originalX * cos(-this.angle) + originalY * sin(-this.angle);
-            originalY = this.offsetX + (-originalX * sin(-this.angle) + originalY * cos(-this.angle));
+            let rotatedX = this.offsetX + (scaledX * cos(-this.angle) + scaledY * sin(-this.angle));
+            let rotatedY = -scaledX * sin(-this.angle) + scaledY * cos(-this.angle);
   
-            corner.x = this.x + (originalX * cos(-this.offsetAngle) + originalY * sin(-this.offsetAngle));
-            corner.y = this.y + (-originalX * sin(-this.offsetAngle) + originalY * cos(-this.offsetAngle));
+            corner.x = this.x + (rotatedX * cos(-this.offsetAngle) + rotatedY * sin(-this.offsetAngle));
+            corner.y = this.y + (-rotatedX * sin(-this.offsetAngle) + rotatedY * cos(-this.offsetAngle));
           }
           collision = collideRectPoly(player.x - player.size/2, player.y - player.size/2, player.size, player.size, polygon);
         }
