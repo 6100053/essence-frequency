@@ -10,10 +10,10 @@
 ### Tester 2 (WITH programming experience) - 2026-06-07
 
 - Found problem with loading music when starting game, didn't allow game to start
-- Some combinations of key presses cause unexpected movement
+- Discovered that some combinations of key presses cause unexpected movement
 - Initially confused if obstacles were to be avoided or not
-- It is possible to make more interesting capsule shapes
-- Escape key should pause
+- Thought it was possible to make more interesting capsule shapes
+- Suggested adding escape key to pause
 
 ### Tester 3 (WITHOUT programming experience) - 2026-06-07
 
@@ -21,8 +21,8 @@
 
 ### Tester 4 (WITHOUT programming experience) - 2026-06-07
 
-- Player square model is slightly simple
-- Game has good potential
-- Boss battle levels would be cool
-- Could put some thought into visual detail
-- Interesting game mechanics could be added
+- Thought player square model is slightly simple
+- Said the game has good potential
+- Thought boss battle levels would be cool
+- Suggested putting more thought into visual detail
+- Thought interesting game mechanics could be added

@@ -75,6 +75,8 @@ The player will be able to explore a main world area, and play levels from porta
             - Basic movement
             - Player collision
             - [x] **Different obstacle shapes**
+            - [x] **Warning and fading**
+            - [x] **Boss obstacles**
     - Progress
         - Start transition
         - Progress indicator

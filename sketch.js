@@ -7,9 +7,13 @@
 // - p5.collide2d library for collision between shapes (added before in-class demo)
 // - Storing game data in JSON file
 // - Using Object.keys() and object bracket notation for setting object properties from data file
-// - PLACEHOLDER (later look through code to find things - also can see if I did things in nice to have)
+// - Using p5.sound library to play music, considering loading delays and audioContext to synchronize it with the levels
+// - Different drawing modes, notably the HSB color system
+// - Functions with default parameters (level parameter for game state functions)
+// - Trigonometry functions for calculating player movement, as well as obstacle drawing and collision
+// - Functions such as constrain, lerp, min used in various calculations
+// - Drawing complex shapes with beginShape/endShape, vertex, and beginContour/endContour
 
-//♯♭
 
 //////// Constants ////////
 
@@ -127,7 +131,7 @@ let worldPlayer;
 // This object holds all the information for when a level is being played
 let levelState = {};
 
-// Holds size of the canvas
+// Size of the canvas
 let screenSize;
 
 // Regulates mouse clicking on things
@@ -408,7 +412,7 @@ function updateMusic() {
 
     if (levelState.musicPlaying !== levelMusic.isPlaying()) {
       if (levelState.musicPlaying && gameTime.time >= levelState.startTime && getAudioContext().state === "running") {
-        // Play the sound file, account for the loading delay so everything stays synchronised
+        // Play the sound file, account for the loading delay so everything stays synchronized
         let startMusicTime = millis();
         levelMusic.play(undefined, undefined, undefined, (gameTime.time - levelState.startTime) / 1000);
         gameTime.timeOffset += millis() - startMusicTime;
