@@ -37,7 +37,7 @@ The player will be able to explore a main world area, and play levels from porta
     - [x] Pause menu
 - Game data
     - [x] Prototype world area
-    - [ ] Prototype levels (1-3 levels, partial songs)
+    - [x] Prototype levels (1-3 levels, partial songs)
 
 ## Desired Features (in bold)
 

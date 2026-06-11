@@ -120,7 +120,7 @@
                     {"timeBeat": 56, "x": 1400},
                     {"timeBeat": 60, "x": 1500, "bdSize": 40},
 
-                    {"timeBeat": 64, "x": 1600, "capsuleW": 300, "capsuleH": 300, "bdSize": 60, "bdColorBack": {"s": 75, "b": 15}, "bdColorFront": {"s": 100, "b": 15}},
+                    {"timeBeat": 64, "x": 1600, "capsuleW": 200, "capsuleH": 200, "bdSize": 60, "bdColorBack": {"s": 75, "b": 15}, "bdColorFront": {"s": 100, "b": 15}, "viewSize": 900},
                     {"timeBeat": 68, "y": 200, "bdAngle": 90},
                     {"timeBeat": 72, "y": 400},
                     {"timeBeat": 76, "x": 1800, "bdAngle": 0},
@@ -140,6 +140,16 @@
                     {"timeBeat": 128, "x": 800}
                 ],
                 "attackSequences": {
+                    "boss": [
+                        {"startBeat": 0, "moveBeats": 32, "warnBeats": 0, "fadeBeats": 0, "color": {"s": 100, "b": 100}, "shape": "maneuversBoss", "withCapsule": "none", "xStart": 1200, "yStart": 0, "wStart": 225, "hStart": 200, "angleStart": -90, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                        {"shape": "square", "xStart": 1125, "yStart": 125, "wStart": 25, "hStart": 50},
+                        {"yStart": -125},
+                        {"startBeat": 32, "moveBeats": 28, "shape": "maneuversBoss", "withCapsule": "move", "xStart": 400, "yStart": 0, "wStart": 225, "hStart": 200},
+                        {"moveBeats": 28, "fadeBeats": 1, "shape": "square", "xStart": 325, "yStart": 125, "wStart": 25, "hStart": 50},
+                        {"yStart": -125},
+                        {"startBeat": 60, "moveBeats": 4, "fadeBeats": 0, "shape": "maneuversBoss", "xStart": 0, "yStart": 0, "wStart": 225, "hStart": 200, "offsetXStart": 400, "offsetXMove": -100, "offsetAngleMove": -90},
+                        {"startBeat": 64, "moveBeats": 64, "yStart": -300, "angleStart": -180, "offsetXStart": 0, "offsetXMove": 0, "offsetAngleMove": 0}
+                    ],
                     "pillarWeave": [
                         {"startBeat": 0, "moveBeats": 8, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 200, "yStart": 100, "wStart": 25, "hStart": 200, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": -200, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
                         {"startBeat": 4, "yStart": -100},
@@ -147,13 +157,13 @@
                         {"startBeat": 12, "yStart": -100}
                     ],
                     "oncomingScatter": [
-                        {"startBeat": 0, "moveBeats": 4, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 300, "yStart": 0, "wStart": 15, "hStart": 15, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": -400, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                        {"startBeat": 0, "moveBeats": 4, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "squareArch", "withCapsule": "start", "xStart": 300, "yStart": 0, "wStart": 15, "hStart": 15, "angleStart": 90, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": -400, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
                         {"startBeat": 1, "yStart": 100},
                         {"startBeat": 2, "yStart": 0},
                         {"startBeat": 3, "yStart": -100}
                     ],
                     "horizontalLasers": [
-                        {"startBeat": 0, "moveBeats": 0.25, "warnBeats": 2, "fadeBeats": 0.25, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "move", "xStart": 0, "yStart": -125, "wStart": 800, "hStart": 20, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                        {"startBeat": 0, "moveBeats": 0.25, "warnBeats": 2, "fadeBeats": 0.25, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "move", "xStart": -100, "yStart": -125, "wStart": 800, "hStart": 10, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
                         {"startBeat": 1, "yStart": 25},
                         {"startBeat": 2, "yStart": -50},
                         {"startBeat": 3, "yStart": 75},
@@ -163,11 +173,11 @@
                         {"startBeat": 7, "yStart": -75}
                     ],
                     "verticalDoubleLasers": [
-                        {"startBeat": 0, "moveBeats": 0.25, "warnBeats": 4, "fadeBeats": 0.25, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 50, "yStart": 0, "wStart": 40, "hStart": 1600, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                        {"startBeat": 0, "moveBeats": 0.25, "warnBeats": 4, "fadeBeats": 0.25, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 50, "yStart": 200, "wStart": 40, "hStart": 800, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
                         {"startBeat": 0, "xStart": -50}
                     ],
                     "squareRing": [
-                        {"startBeat": 0, "moveBeats": 4, "warnBeats": 4, "fadeBeats": 0, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "none", "xStart": 0, "yStart": 0, "wStart": 25, "hStart": 25, "angleStart": 0, "offsetXStart": 150, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 90},
+                        {"startBeat": 0, "moveBeats": 4, "warnBeats": 4, "fadeBeats": 0, "color": {"s": 100, "b": 100}, "shape": "squareBump", "withCapsule": "none", "xStart": 0, "yStart": 0, "wStart": 25, "hStart": 25, "angleStart": -90, "offsetXStart": 100, "offsetAngleStart": 0, "xMove": 0, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 90},
                         {"offsetAngleStart": 90},
                         {"offsetAngleStart": 180},
                         {"offsetAngleStart": 270},
@@ -202,6 +212,7 @@
                     ]
                 },
                 "attackProgram": [
+                    {"sequence": "boss", "startBeat": 0},
                     {"sequence": "pillarWeave", "startBeat": 0},
 
                     {"sequence": "pillarWeave", "startBeat": 16, "hStart": -100},
@@ -218,24 +229,23 @@
                     {"sequence": "oncomingScatter", "startBeat": 44},
 
                     {"sequence": "horizontalLasers", "startBeat": 48},
-                    {"sequence": "horizontalLasers", "startBeat": 56},
                     {"sequence": "oncomingScatter", "startBeat": 48},
                     {"sequence": "oncomingScatter", "startBeat": 52},
                     {"sequence": "oncomingScatter", "startBeat": 56},
 
-                    {"sequence": "verticalDoubleLasers", "startBeat": 64, "xStart": 50},
+                    {"sequence": "verticalDoubleLasers", "startBeat": 64, "xStart": 25},
                     {"sequence": "verticalDoubleLasers", "startBeat": 72, "xStart": -25},
                     {"sequence": "verticalDoubleLasers", "startBeat": 80, "xStart": 25},
-                    {"sequence": "verticalDoubleLasers", "startBeat": 88, "xStart": -50},
+                    {"sequence": "verticalDoubleLasers", "startBeat": 88, "xStart": 25},
                     {"sequence": "squareRing", "startBeat": 64, "xStart": 1600, "yStart": 200},
                     {"sequence": "squareRing", "startBeat": 64, "xStart": 1800, "yStart": 400},
                     {"sequence": "squareRing", "startBeat": 64, "xStart": 2000, "yStart": 600},
                     {"sequence": "squareRing", "startBeat": 64, "xStart": 1800, "yStart": 800},
 
-                    {"sequence": "verticalDoubleLasers", "startBeat": 96, "xStart": 50},
-                    {"sequence": "verticalDoubleLasers", "startBeat": 104, "xStart": -25},
-                    {"sequence": "verticalDoubleLasers", "startBeat": 112, "xStart": 25},
-                    {"sequence": "verticalDoubleLasers", "startBeat": 120, "xStart": -50},
+                    {"sequence": "verticalDoubleLasers", "startBeat": 96, "xStart": -25},
+                    {"sequence": "verticalDoubleLasers", "startBeat": 104, "xStart": 25},
+                    {"sequence": "verticalDoubleLasers", "startBeat": 112, "xStart": -25},
+                    {"sequence": "verticalDoubleLasers", "startBeat": 120, "xStart": 25},
                     {"sequence": "squareRing", "startBeat": 96, "xStart": 1600, "yStart": 1000, "wStart": 15, "hStart": 15},
                     {"sequence": "squareRing", "startBeat": 96, "xStart": 1400, "yStart": 1200, "wStart": 15, "hStart": 15},
                     {"sequence": "squareRing", "startBeat": 96, "xStart": 1200, "yStart": 1000, "wStart": 15, "hStart": 15},
