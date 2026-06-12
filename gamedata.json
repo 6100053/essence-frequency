@@ -137,7 +137,11 @@
                     {"timeBeat": 116, "y": 1000, "bdAngle": 90},
                     {"timeBeat": 120, "y": 800},
                     {"timeBeat": 124, "x": 1000, "bdAngle": 0},
-                    {"timeBeat": 128, "x": 800, "bdSize": 80, "bdColorBack": {"s": 100, "b": 15}, "bdColorFront": {"s": 100, "b": 10}, "viewSize": 600}
+
+                    {"timeBeat": 128, "x": 800, "bdSize": 80, "bdColorBack": {"s": 100, "b": 15}, "bdColorFront": {"s": 100, "b": 10}},
+                    {"timeBeat": 130, "x": 700, "capsuleW": 400},
+                    {"timeBeat": 132, "x": 600},
+                    {"timeBeat": 144, "y": 1200}
                 ],
                 "attackSequences": {
                     "boss": [
@@ -149,7 +153,14 @@
                         {"yStart": -125},
 
                         {"startBeat": 60, "moveBeats": 4, "fadeBeats": 0, "shape": "maneuversBoss", "xStart": 0, "yStart": 0, "wStart": 225, "hStart": 200, "offsetXStart": 400, "offsetXMove": -100, "offsetAngleMove": -90},
-                        {"startBeat": 64, "moveBeats": 64, "yStart": -300, "angleStart": -180, "offsetXStart": 0, "offsetXMove": 0, "offsetAngleMove": 0}
+                        {"startBeat": 64, "moveBeats": 64, "yStart": -300, "angleStart": -180, "offsetXStart": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+
+                        {"startBeat": 128, "moveBeats": 2, "xMove": -300},
+                        {"startBeat": 130, "xStart": -300, "xMove": 0},
+                        {"startBeat": 132, "moveBeats": 4, "xStart": -300, "xMove": 600},
+                        {"startBeat": 136, "moveBeats": 2, "xStart": 300, "xMove": -600},
+                        {"startBeat": 138, "xStart": -300, "xMove": 0},
+                        {"startBeat": 140, "moveBeats": 4, "xStart": -300, "xMove": 600}
                     ],
                     "pillarWeave": [
                         {"startBeat": 0, "moveBeats": 8, "warnBeats": 4, "fadeBeats": 4, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "start", "xStart": 200, "yStart": 100, "wStart": 25, "hStart": 200, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": -200, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
@@ -210,6 +221,16 @@
                         {"offsetAngleStart": 90},
                         {"offsetAngleStart": 180},
                         {"offsetAngleStart": 270}
+                    ],
+                    "squareThrow": [
+                        {"startBeat": 0, "moveBeats": 2, "warnBeats": 2, "fadeBeats": 0, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "move", "xStart": 150, "yStart": -300, "wStart": 50, "hStart": 50, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 0, "yMove": 600, "wMove": 0, "hMove": 0, "angleMove": 360, "offsetXMove": 0, "offsetAngleMove": 0},
+                        {"startBeat": 0.5, "xStart": 50},
+                        {"startBeat": 1, "xStart": -50},
+                        {"startBeat": 1.5, "xStart": -150}
+                    ],
+                    "pillarSweep": [
+                        {"startBeat": 0, "moveBeats": 4, "warnBeats": 2, "fadeBeats": 2, "color": {"s": 100, "b": 100}, "shape": "square", "withCapsule": "move", "xStart": -200, "yStart": 100, "wStart": 25, "hStart": 200, "angleStart": 0, "offsetXStart": 0, "offsetAngleStart": 0, "xMove": 600, "yMove": 0, "wMove": 0, "hMove": 0, "angleMove": 0, "offsetXMove": 0, "offsetAngleMove": 0},
+                        {"xStart": -400, "yStart": -100}
                     ]
                 },
                 "attackProgram": [
@@ -250,7 +271,12 @@
                     {"sequence": "squareRing", "startBeat": 96, "xStart": 1600, "yStart": 1000, "wStart": 15, "hStart": 15},
                     {"sequence": "squareRing", "startBeat": 96, "xStart": 1400, "yStart": 1200, "wStart": 15, "hStart": 15},
                     {"sequence": "squareRing", "startBeat": 96, "xStart": 1200, "yStart": 1000, "wStart": 15, "hStart": 15},
-                    {"sequence": "squareRing", "startBeat": 96, "xStart": 1000, "yStart": 800, "wStart": 15, "hStart": 15}
+                    {"sequence": "squareRing", "startBeat": 96, "xStart": 1000, "yStart": 800, "wStart": 15, "hStart": 15},
+
+                    {"sequence": "squareThrow", "startBeat": 130},
+                    {"sequence": "squareThrow", "startBeat": 138},
+                    {"sequence": "pillarSweep", "startBeat": 132},
+                    {"sequence": "pillarSweep", "startBeat": 140}
                 ]
             }
         ]
