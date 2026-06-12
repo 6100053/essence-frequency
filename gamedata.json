@@ -137,7 +137,7 @@
                     {"timeBeat": 116, "y": 1000, "bdAngle": 90},
                     {"timeBeat": 120, "y": 800},
                     {"timeBeat": 124, "x": 1000, "bdAngle": 0},
-                    {"timeBeat": 128, "x": 800}
+                    {"timeBeat": 128, "x": 800, "bdSize": 80, "bdColorBack": {"s": 100, "b": 15}, "bdColorFront": {"s": 100, "b": 10}, "viewSize": 600}
                 ],
                 "attackSequences": {
                     "boss": [
@@ -147,6 +147,7 @@
                         {"startBeat": 32, "moveBeats": 28, "shape": "maneuversBoss", "withCapsule": "move", "xStart": 400, "yStart": 0, "wStart": 225, "hStart": 200},
                         {"moveBeats": 28, "fadeBeats": 1, "shape": "square", "xStart": 325, "yStart": 125, "wStart": 25, "hStart": 50},
                         {"yStart": -125},
+
                         {"startBeat": 60, "moveBeats": 4, "fadeBeats": 0, "shape": "maneuversBoss", "xStart": 0, "yStart": 0, "wStart": 225, "hStart": 200, "offsetXStart": 400, "offsetXMove": -100, "offsetAngleMove": -90},
                         {"startBeat": 64, "moveBeats": 64, "yStart": -300, "angleStart": -180, "offsetXStart": 0, "offsetXMove": 0, "offsetAngleMove": 0}
                     ],
