@@ -65,6 +65,31 @@ const SHAPES = {
     {x: 1/2, y: 1/2},
     {x: -1/2, y: 1/2},
   ],
+  "squareDivots": [
+    {x: -1/2, y: -1/2},
+    {x: -1/6, y: -1/2},
+    {x: -1/6, y: -3/8},
+    {x: 1/6, y: -3/8},
+    {x: 1/6, y: -1/2},
+
+    {x: 1/2, y: -1/2},
+    {x: 1/2, y: -1/6},
+    {x: 3/8, y: -1/6},
+    {x: 3/8, y: 1/6},
+    {x: 1/2, y: 1/6},
+
+    {x: 1/2, y: 1/2},
+    {x: 1/6, y: 1/2},
+    {x: 1/6, y: 3/8},
+    {x: -1/6, y: 3/8},
+    {x: -1/6, y: 1/2},
+
+    {x: -1/2, y: 1/2},
+    {x: -1/2, y: 1/6},
+    {x: -3/8, y: 1/6},
+    {x: -3/8, y: -1/6},
+    {x: -1/2, y: -1/6},
+  ],
   "maneuversBoss": [
     {x: -1/2, y: -1/2},
 
@@ -193,7 +218,11 @@ function setup() {
         for (let property of Object.keys(attack)) {
           newAttack[property] = attack[property];
           if (sequenceCall[property] !== undefined) {
-            newAttack[property] += sequenceCall[property];
+            if (typeof sequenceCall[property] === "number") {
+              newAttack[property] += sequenceCall[property];
+            } else {
+              newAttack[property] = sequenceCall[property];
+            }
           }
         }
         newLevelAttacks.push(newAttack);
@@ -357,13 +386,14 @@ function setGameState(state, level = []) {
     levelState.capsule = levelsData.capsuleProperties;
     levelState.path = levelsData.pathProperties;
 
+    levelState.levelObject = level;
+
     levelState.obstacles = [];
     for (let attackData of level.attacks) {
       let newObstacle = new Obstacle(attackData);
+      newObstacle.findStartPosition();
       levelState.obstacles.push(newObstacle);
     }
-    
-    levelState.levelObject = level;
 
     levelState.intro = levelsData.introProperties;
     
@@ -1021,6 +1051,26 @@ class Obstacle {
     this.visible = false;
     this.active = false;
   }
+
+  findStartPosition() {
+    if (this.data.withCapsule === "start") {
+      // Find the capsule's position at the obstacle start time
+      levelState.startTime = gameTime.time - beatsToMillis(this.data.startBeat);
+      levelProgress();
+
+      let currentPath = levelState.levelObject.nodes[levelState.currentNodeIndex];
+      let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
+      let amountBetweenNodes = (beatsToMillis(this.data.startBeat) - (levelState.lastNodeTime - levelState.startTime)) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat));
+    
+      // Set the obstacle start position relative to the calculated capsule position
+      this.startPosX = lerp(currentPath.x, nextPath.x, amountBetweenNodes) + this.data.xStart;
+      this.startPosY = lerp(currentPath.y, nextPath.y, amountBetweenNodes) + this.data.yStart;
+      
+    } else {
+      this.startPosX = this.data.xStart;
+      this.startPosY = this.data.yStart;
+    }
+  }
   
   move() {
     // Check if it's time for the obstacle to exist in the level
@@ -1029,23 +1079,6 @@ class Obstacle {
 
     // Move the obstacle by setting the position based on its attack data
     if (this.visible) {
-      if (this.startPosX === undefined || this.startPosY === undefined) {
-        if (this.data.withCapsule === "start") {
-          // Find the capsule's position at the obstacle start time
-          let currentPath = levelState.levelObject.nodes[levelState.currentNodeIndex];
-          let nextPath = levelState.levelObject.nodes[levelState.currentNodeIndex + 1];
-          let amountBetweenNodes = (beatsToMillis(this.data.startBeat) - (levelState.lastNodeTime - levelState.startTime)) / (beatsToMillis(nextPath.timeBeat) - beatsToMillis(currentPath.timeBeat));
-    
-          // Set the obstacle start position relative to the calculated capsule position
-          this.startPosX = lerp(currentPath.x, nextPath.x, amountBetweenNodes) + this.data.xStart;
-          this.startPosY = lerp(currentPath.y, nextPath.y, amountBetweenNodes) + this.data.yStart;
-          
-        } else {
-          this.startPosX = this.data.xStart;
-          this.startPosY = this.data.yStart;
-        }
-      }
-
       // Amount from the attack start to end (0 to 1)
       let amountThroughMovement = (gameTime.time - levelState.startTime - beatsToMillis(this.data.startBeat)) / beatsToMillis(this.data.moveBeats);
 
